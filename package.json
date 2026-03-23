@@ -2,11 +2,19 @@
   "name": "thuocare",
   "private": true,
   "packageManager": "pnpm@10.32.1",
+  "pnpm": {
+    "overrides": {
+      "react": "19.2.4",
+      "react-dom": "19.2.4"
+    }
+  },
   "scripts": {
     "dev": "turbo dev",
     "dev:web": "pnpm --filter @thuocare/web dev",
     "dev:desktop": "pnpm --filter @thuocare/desktop dev",
     "dev:mobile": "pnpm --filter @thuocare/mobile start",
+    "expo:start": "pnpm --filter @thuocare/mobile exec expo start",
+    "eas:ios:dev": "pnpm dlx eas-cli@latest build --platform ios --profile development",
     "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",

@@ -13,7 +13,11 @@
   },
   "dependencies": {
     "@react-navigation/native": "^7.1.33",
+    "@tanstack/react-query": "^5.95.2",
+    "@thuocare/adherence": "workspace:*",
     "@thuocare/auth": "workspace:*",
+    "@thuocare/prescription": "workspace:*",
+    "@thuocare/refill": "workspace:*",
     "@thuocare/supabase": "workspace:*",
     "@thuocare/types": "workspace:*",
     "@thuocare/ui-mobile": "workspace:*",
@@ -21,6 +25,7 @@
     "@thuocare/validation": "workspace:*",
     "expo": "~55.0.8",
     "expo-constants": "~55.0.9",
+    "expo-dev-client": "~55.0.18",
     "expo-font": "~55.0.4",
     "expo-linking": "~55.0.8",
     "expo-router": "~55.0.7",
@@ -30,8 +35,8 @@
     "expo-symbols": "~55.0.5",
     "expo-web-browser": "~55.0.10",
     "nativewind": "^4.2.3",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-native": "0.83.2",
     "react-native-reanimated": "4.2.1",
     "react-native-safe-area-context": "~5.6.2",
@@ -44,5 +49,13 @@
   "devDependencies": {
     "@types/react": "~19.2.2",
     "typescript": "~5.9.2"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "react",
+        "react-dom"
+      ]
+    }
   }
 }

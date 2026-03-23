@@ -1,21 +1,24 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
+import type { ErrorBoundaryProps } from 'expo-router';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { type PropsWithChildren, useEffect, useRef } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { runAdherenceContractVerification } from '@/lib/adherence/dev-contract-verification';
 import { MobileAuthProvider, useMobileAuth } from '@/lib/auth/mobile-auth';
+import { AppQueryProvider } from '@/lib/query/query-provider';
+import { RootErrorFallback } from '@/components/root-error-fallback';
 import { Text, View } from '@/components/Themed';
 
 import '../global.css';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+export function ErrorBoundary(props: ErrorBoundaryProps) {
+  return <RootErrorFallback {...props} />;
+}
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -52,7 +55,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <MobileAuthProvider>
+    <AppProviders>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <AuthBootGate />
         <Stack>
@@ -61,6 +64,16 @@ function RootLayoutNav() {
           <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         </Stack>
       </ThemeProvider>
+    </AppProviders>
+  );
+}
+
+type AppProvidersProps = PropsWithChildren;
+
+function AppProviders({ children }: AppProvidersProps) {
+  return (
+    <MobileAuthProvider>
+      <AppQueryProvider>{children}</AppQueryProvider>
     </MobileAuthProvider>
   );
 }
@@ -69,6 +82,17 @@ function AuthBootGate() {
   const router = useRouter();
   const segments = useSegments();
   const { actor, actorStatus, bootstrapStatus, session } = useMobileAuth();
+  const adherenceVerificationRanRef = useRef(false);
+
+  useEffect(() => {
+    if (adherenceVerificationRanRef.current) return;
+    if (bootstrapStatus !== 'ready') return;
+    if (actorStatus !== 'ready') return;
+    if (!actor || actor.kind !== 'patient') return;
+
+    adherenceVerificationRanRef.current = true;
+    void runAdherenceContractVerification(actor);
+  }, [actor, actorStatus, bootstrapStatus]);
 
   useEffect(() => {
     if (bootstrapStatus === 'loading') return;

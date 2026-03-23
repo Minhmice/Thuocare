@@ -15,7 +15,7 @@
     "clean": "rm -rf .turbo"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.99.3",
+    "@supabase/supabase-js": "^2.100.0",
     "@thuocare/contracts": "workspace:*",
     "zod": "^4.3.6"
   },

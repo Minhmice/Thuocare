@@ -12,6 +12,7 @@
 
 import type { AnyActorContext, ResolvedStaffActorContext } from "@thuocare/auth";
 import {
+  isStaffActor,
   requireCapability,
   requirePatientActor,
   requireStaffActor,
@@ -203,9 +204,24 @@ export async function discontinuePrescription(client: any, actorCtx: AnyActorCon
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getPrescriptionById(client: any, actorCtx: AnyActorContext, prescriptionId: EntityId): Promise<PrescriptionDetail | null> {
-  const actor = requireStaffActor(actorCtx);
-  requireCapability(actor, "canReadPrescription");
-  return loadPrescriptionDetail(client, prescriptionId);
+  if (isStaffActor(actorCtx)) {
+    const actor = requireStaffActor(actorCtx);
+    requireCapability(actor, "canReadPrescription");
+    return loadPrescriptionDetail(client, prescriptionId);
+  }
+
+  const actor = requirePatientActor(actorCtx);
+  const detail = await loadPrescriptionDetail(client, prescriptionId);
+  if (detail === null) {
+    return null;
+  }
+  if (
+    detail.prescription.patient_id !== actor.patientId
+    || detail.prescription.organization_id !== actor.organizationId
+  ) {
+    return null;
+  }
+  return detail;
 }
 
 /**

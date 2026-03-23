@@ -102,7 +102,7 @@ pnpm install
 pnpm dev          # run workspace dev pipeline
 pnpm dev:web      # run web app
 pnpm dev:desktop  # run desktop frontend
-pnpm dev:mobile   # run Expo mobile
+pnpm dev:mobile   # run Expo mobile (do not use `npx expo start` at repo root)
 
 pnpm typecheck
 pnpm lint

@@ -1,10 +1,29 @@
 import { Pressable, StyleSheet } from 'react-native';
+import { useState } from 'react';
 
 import { Text, View } from '@/components/Themed';
 import { useMobileAuth } from '@/lib/auth/mobile-auth';
 
 export default function ResolveAccountScreen() {
   const { actorError, refreshActor, signOut } = useMobileAuth();
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+
+  const onSignOut = async () => {
+    if (isSigningOut) {
+      return;
+    }
+
+    setSignOutError(null);
+    setIsSigningOut(true);
+    try {
+      await signOut();
+    } catch (error) {
+      setSignOutError(error instanceof Error ? error.message : 'Failed to sign out. Please try again.');
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -14,11 +33,16 @@ export default function ResolveAccountScreen() {
           Your session was restored, but the account binding is incomplete. Finish onboarding on web, then return and retry.
         </Text>
         {actorError ? <Text style={styles.error}>{actorError}</Text> : null}
+        {signOutError ? <Text style={styles.error}>{signOutError}</Text> : null}
         <Pressable onPress={refreshActor} style={styles.primaryButton}>
           <Text style={styles.primaryText}>Retry Actor Resolve</Text>
         </Pressable>
-        <Pressable onPress={signOut} style={styles.secondaryButton}>
-          <Text style={styles.secondaryText}>Sign Out</Text>
+        <Pressable
+          disabled={isSigningOut}
+          onPress={onSignOut}
+          style={[styles.secondaryButton, isSigningOut ? styles.buttonDisabled : null]}
+        >
+          <Text style={styles.secondaryText}>{isSigningOut ? 'Signing Out...' : 'Sign Out'}</Text>
         </Pressable>
       </View>
     </View>
@@ -76,5 +100,8 @@ const styles = StyleSheet.create({
   secondaryText: {
     color: '#111827',
     fontWeight: '600',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
 });
