@@ -1,0 +1,20 @@
+{
+  "name": "@thuocare/utils",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf .turbo"
+  },
+  "devDependencies": {
+    "@thuocare/config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,17 @@
+---
+description: Internationalization (react-i18next). Use when adding translations, i18n keys, or localized text in React. Default locale zh-CN; edit only src/locales/default/; run pnpm i18n to generate.
+globs:
+  - "src/locales/**/*.ts"
+  - "**/locales/**/*.ts"
+  - "**/*.tsx"
+alwaysApply: false
+---
+# i18n (Internationalization)
+
+- **Framework**: react-i18next. Default language: Chinese (zh-CN).
+- **Edit only**: `src/locales/default/*.ts` — never edit JSON under `locales/` (generated). Run `pnpm i18n` to generate.
+- **Keys**: Flat dot notation, e.g. `'feature.context.action': 'Text'`. Parameters: `{{variableName}}`. Avoid nested objects and key conflicts.
+- **Workflow**: Add keys in `src/locales/default/{namespace}.ts`, export namespace in `src/locales/default/index.ts`; for dev preview translate zh-CN/en-US JSON then run `pnpm i18n`.
+- **Usage**: `useTranslation('common')`, `t('key')`, `t('key', { var: value })`. Common namespaces: common, chat, setting.
+
+Full guide: `.cursor/agents/skills/i18n.md`

@@ -1,0 +1,37 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build
+dist
+.next
+out
+build
+.turbo
+*.tsbuildinfo
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# OS / IDE
+.DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Expo
+.expo
+expo-env.d.ts
+
+# Tauri
+apps/desktop/src-tauri/target
+
+# Debug
+npm-debug.log*
+pnpm-debug.log*
+
+# Supabase
+supabase/.branches
+supabase/.temp

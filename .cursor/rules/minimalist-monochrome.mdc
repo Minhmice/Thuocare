@@ -1,0 +1,15 @@
+---
+description: Minimalist Monochrome editorial theme — tokens, sharp geometry, inversion hover. Use when editing monochrome theme files or building B&W editorial UI.
+globs: components/themes/monochrome/**/*.tsx,components/themes/monochrome/**/*.ts
+alwaysApply: false
+---
+
+# Minimalist Monochrome
+
+When the task involves **Minimalist Monochrome**, **editorial black & white**, or files under `components/themes/monochrome/**`:
+
+1. **Read the full skill:** `.cursor/agents/skills/minimalist-monochrome.md` (design rules, tokens, checklists).
+2. **Implement with:** semantic tokens (`bg-background`, `text-foreground`, `border-border`, `bg-card`, `text-muted-foreground`) — not ad-hoc blues/gradients/rounded-xl for this aesthetic.
+3. **Specialist:** frontend-developer; handoff must reference both `frontend.md` and `minimalist-monochrome.md` for theme work.
+
+If the user asks to style **other** components (e.g. workspace, marketing page) in this style, still attach `minimalist-monochrome.md` even when globs don’t match.

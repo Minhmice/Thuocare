@@ -1,0 +1,15 @@
+---
+description: Bauhaus preset — primaries, hard shadows, geometric type, mechanical press. Use when editing Bauhaus theme components or build pages in this style.
+globs: components/themes/bauhaus/**/*.tsx,components/themes/bauhaus/**/*.ts
+alwaysApply: false
+---
+
+# Bauhaus theme
+
+When editing **`components/themes/bauhaus/**`** or implementing **Bauhaus / constructivist** UI:
+
+1. Read **`.cursor/agents/skills/bauhaus-theme.md`** (tokens, motion, layout, checklist).
+2. Use **semantic + `--rv-*`** tokens from `bauhaus-light` / `bauhaus-dark` in `app/globals.css`.
+3. **frontend-developer**; handoff should include `bauhaus-theme.md` for full-page or component work in this style.
+
+For theme plumbing (new preset, `data-theme`), use **`theme-instructions.md`**.

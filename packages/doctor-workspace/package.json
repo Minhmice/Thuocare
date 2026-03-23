@@ -1,0 +1,28 @@
+{
+  "name": "@thuocare/doctor-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf .turbo"
+  },
+  "dependencies": {
+    "@thuocare/adherence": "workspace:*",
+    "@thuocare/auth": "workspace:*",
+    "@thuocare/contracts": "workspace:*",
+    "@thuocare/prescription": "workspace:*",
+    "@thuocare/refill": "workspace:*"
+  },
+  "devDependencies": {
+    "@thuocare/config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}

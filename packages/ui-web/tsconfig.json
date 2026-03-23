@@ -1,0 +1,9 @@
+{
+  "extends": "@thuocare/config/typescript/react-library.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "src",
+    "baseUrl": "."
+  },
+  "include": ["src/**/*.tsx", "src/**/*.ts"]
+}

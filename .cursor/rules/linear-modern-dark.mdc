@@ -1,0 +1,15 @@
+---
+description: Linear / modern dark preset — cinematic depth, indigo accent, blobs, spotlight cards, expo-out motion. Use when editing linear theme or building this aesthetic.
+globs: components/themes/linear/**/*.tsx,components/themes/linear/**/*.ts
+alwaysApply: false
+---
+
+# Linear / Modern Dark
+
+When editing **`components/themes/linear/**`** or building **cinematic dark / Linear-style** UI:
+
+1. Read **`.cursor/agents/skills/linear-modern-dark.md`**.
+2. Preserve **layered background** (grid, radial, noise, blobs in `globals.css`); use **`--rv-*`** + semantic tokens for surfaces and accent.
+3. **frontend-developer**; handoff includes `linear-modern-dark.md` for landing, bento, or motion-heavy pages.
+
+Theme wiring: **`theme-instructions.md`**.

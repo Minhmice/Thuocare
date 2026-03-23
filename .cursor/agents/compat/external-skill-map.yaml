@@ -1,0 +1,96 @@
+version: 1
+source_pack: awesome-claude-code-subagents
+governance:
+  internal_role_authority: true
+  precedence:
+    - core_safety_and_routing_rules
+    - shared_agent_contract
+    - internal_agent_boundary_rules
+    - imported_skill_style_rules
+  allowed_import_modes:
+    - replace
+    - augment
+    - subordinate
+  default_mode: augment
+  require_scope_tags: true
+  require_contract_compatibility: true
+mappings:
+  orchestrator:
+    suitable_external_skills:
+      - orchestration
+      - delegation
+      - workflow-coordinator
+    mode: augment
+    notes: external orchestrators cannot bypass internal quality gates
+  planner:
+    suitable_external_skills:
+      - planning
+      - decomposition
+      - roadmap
+    mode: augment
+  product-manager:
+    suitable_external_skills:
+      - prd-writer
+      - requirements-analyst
+      - prioritization
+    mode: augment
+  research-analyst:
+    suitable_external_skills:
+      - technical-research
+      - standards-research
+      - vendor-comparison
+    mode: augment
+  frontend-developer:
+    suitable_external_skills:
+      - react-specialist
+      - nextjs-specialist
+      - ui-implementation
+    mode: augment
+  backend-developer:
+    suitable_external_skills:
+      - api-engineer
+      - service-architecture
+      - auth-specialist
+    mode: augment
+  typescript-specialist:
+    suitable_external_skills:
+      - typescript-expert
+      - zod-contracts
+      - type-migration
+    mode: replace
+  database-specialist:
+    suitable_external_skills:
+      - sql-optimizer
+      - migration-specialist
+      - rls-policy-expert
+    mode: augment
+  debugger:
+    suitable_external_skills:
+      - bug-investigator
+      - incident-debugger
+      - tracing-specialist
+    mode: augment
+  code-reviewer:
+    suitable_external_skills:
+      - security-reviewer
+      - quality-reviewer
+      - maintainability-auditor
+    mode: augment
+  qa-tester:
+    suitable_external_skills:
+      - test-designer
+      - e2e-tester
+      - regression-tester
+    mode: augment
+  documentation-writer:
+    suitable_external_skills:
+      - technical-writer
+      - runbook-writer
+      - api-doc-writer
+    mode: augment
+  devops-engineer:
+    suitable_external_skills:
+      - cicd-specialist
+      - sre-specialist
+      - release-engineer
+    mode: augment

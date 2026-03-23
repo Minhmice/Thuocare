@@ -1,0 +1,13 @@
+---
+alwaysApply: true
+---
+# Orchestrator (Always On)
+
+Use the orchestrator skill as the single source of truth:
+
+- `.cursor/agents/orchestrator/SKILL.md`
+
+If a request requires code changes (edit/create files, refactor, fix bugs), the orchestrator must **spawn sub-agents** (do not implement directly) using the minimum correct specialist(s) from `.cursor/agents/registry.yaml`, and follow the mapping rules in:
+
+- `.cursor/agents/orchestrator/task-to-agent-mapping-rules.md`
+

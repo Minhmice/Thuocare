@@ -1,0 +1,9 @@
+{
+  "extends": "@thuocare/config/typescript/base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "src",
+    "baseUrl": "."
+  },
+  "include": ["src/**/*.ts"]
+}
