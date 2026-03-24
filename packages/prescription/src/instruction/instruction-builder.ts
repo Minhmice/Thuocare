@@ -28,7 +28,22 @@
 
 import type { DosageForm, Route, TimingRelation } from "@thuocare/contracts";
 import type { FrequencyCode, InstructionLanguage } from "../domain/types.js";
-import { getFrequencyMeta } from "../schedule/frequency.js";
+import { parseFrequencyCode } from "../schedule/frequency.js";
+import type { FrequencyMeta } from "../schedule/frequency.js";
+
+function instructionFrequencyMeta(code: string): FrequencyMeta {
+  return (
+    parseFrequencyCode(code) ?? {
+      dosesPerDay: 0,
+      isInterval: false,
+      intervalHours: null,
+      isPrn: false,
+      defaultDoseTimes: [],
+      textVi: code,
+      textEn: code,
+    }
+  );
+}
 
 // ─── Translation tables ───────────────────────────────────────────────────────
 
@@ -105,7 +120,7 @@ export function buildPatientInstruction(input: BuildInstructionInput): string {
  */
 export function buildAdministrationInstruction(input: BuildInstructionInput): string {
   const lang = input.language ?? "vi";
-  const meta = getFrequencyMeta(input.frequencyCode);
+  const meta = instructionFrequencyMeta(input.frequencyCode);
 
   if (lang === "vi") {
     const parts: string[] = [
@@ -129,7 +144,7 @@ export function buildAdministrationInstruction(input: BuildInstructionInput): st
 // ─── Vietnamese instruction ───────────────────────────────────────────────────
 
 function buildViInstruction(input: BuildInstructionInput): string {
-  const meta = getFrequencyMeta(input.frequencyCode);
+  const meta = instructionFrequencyMeta(input.frequencyCode);
   const routeVerb = ROUTE_VI[input.route] ?? "Dùng";
   const timing = TIMING_VI[input.timingRelation];
   const prnMax = input.prnMaxDailyDoses ?? 3;
@@ -165,7 +180,7 @@ function buildViInstruction(input: BuildInstructionInput): string {
 // ─── English instruction ──────────────────────────────────────────────────────
 
 function buildEnInstruction(input: BuildInstructionInput): string {
-  const meta = getFrequencyMeta(input.frequencyCode);
+  const meta = instructionFrequencyMeta(input.frequencyCode);
   const routeVerb = ROUTE_EN[input.route] ?? "Use";
   const timing = TIMING_EN[input.timingRelation];
   const prnMax = input.prnMaxDailyDoses ?? 3;

@@ -138,16 +138,8 @@ export const FREQUENCY_META: Record<FrequencyCode, FrequencyMeta> = {
 };
 
 /**
- * Look up frequency metadata for a given code.
- * Returns null for unknown codes (callers should reject).
- */
-export function getFrequencyMeta(code: FrequencyCode): FrequencyMeta {
-  return FREQUENCY_META[code];
-}
-
-/**
  * Parse a frequency code string and return metadata.
- * Returns null if the string is not a recognized FrequencyCode.
+ * Returns null if the string is not a recognized FrequencyCode (including DB drift).
  */
 export function parseFrequencyCode(code: string): FrequencyMeta | null {
   const meta = FREQUENCY_META[code as FrequencyCode];
@@ -155,13 +147,23 @@ export function parseFrequencyCode(code: string): FrequencyMeta | null {
 }
 
 /**
+ * Look up frequency metadata for a given code.
+ * Returns null for unknown codes — callers must handle (read models) or throw (writes).
+ */
+export function getFrequencyMeta(code: string): FrequencyMeta | null {
+  return parseFrequencyCode(code);
+}
+
+/**
  * Derive a human-readable frequency text string from a code.
- * Used to populate `prescription_item.frequency_text`.
+ * Unknown codes return the raw `code` string (never throws).
+ * Used to populate `prescription_item.frequency_text` and patient/doctor read models.
  */
 export function frequencyCodeToText(
-  code: FrequencyCode,
+  code: string,
   language: "vi" | "en" = "vi",
 ): string {
-  const meta = getFrequencyMeta(code);
+  const meta = parseFrequencyCode(code);
+  if (meta === null) return code;
   return language === "vi" ? meta.textVi : meta.textEn;
 }

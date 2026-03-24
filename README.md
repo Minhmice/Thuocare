@@ -102,7 +102,8 @@ pnpm install
 pnpm dev          # run workspace dev pipeline
 pnpm dev:web      # run web app
 pnpm dev:desktop  # run desktop frontend
-pnpm dev:mobile   # run Expo mobile (do not use `npx expo start` at repo root)
+pnpm dev:mobile      # Expo dev server (Metro); press `i` for iOS Simulator
+pnpm mobile:ios:run  # build & install dev client on Simulator (Xcode); see apps/mobile/README.md
 
 pnpm typecheck
 pnpm lint

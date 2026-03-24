@@ -22,7 +22,7 @@ import type {
   IntervalBasedScheduleJson,
   PrnScheduleJson,
 } from "../domain/types.js";
-import { getFrequencyMeta } from "./frequency.js";
+import { parseFrequencyCode } from "./frequency.js";
 
 // ─── Input types ──────────────────────────────────────────────────────────────
 
@@ -103,7 +103,10 @@ function shiftDoseTimes(times: string[], firstTimeHint: string): string[] {
 export function generateDoseSchedule(
   input: GenerateScheduleInput,
 ): CreateDoseScheduleInput {
-  const meta = getFrequencyMeta(input.frequencyCode);
+  const meta = parseFrequencyCode(input.frequencyCode);
+  if (meta === null) {
+    throw new Error(`Unknown frequency code: ${input.frequencyCode}`);
+  }
   const timezone: TimezoneMode = input.timezoneMode ?? "patient_local_time";
   const grace = input.graceWindowMinutes ?? 30;
   const markMissed = input.markMissedAfterMinutes ?? 120;

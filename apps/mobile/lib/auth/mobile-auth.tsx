@@ -71,6 +71,12 @@ export function MobileAuthProvider({ children }: { children: ReactNode }) {
   const [actor, setActor] = useState<AnyActorContext | null>(null);
   const [actorError, setActorError] = useState<string | null>(null);
   const actorResolutionRunRef = useRef(0);
+  const actorRef = useRef<AnyActorContext | null>(null);
+  const refreshActorInFlightRef = useRef(false);
+
+  useEffect(() => {
+    actorRef.current = actor;
+  }, [actor]);
 
   const resolveActor = useCallback(async (nextSession: Session | null) => {
     const runId = ++actorResolutionRunRef.current;
@@ -119,10 +125,36 @@ export function MobileAuthProvider({ children }: { children: ReactNode }) {
     const stopAutoRefresh = bindMobileSupabaseAutoRefresh();
     const {
       data: { subscription },
-    } = mobileSupabase.auth.onAuthStateChange((_event, nextSession) => {
+    } = mobileSupabase.auth.onAuthStateChange((event, nextSession) => {
       if (!isMounted) return;
-      authDebugLog("auth", "auth_state_change", getSessionSummary(nextSession));
+      authDebugLog("auth", "auth_state_change", {
+        event,
+        ...getSessionSummary(nextSession),
+      });
       setSession(nextSession);
+
+      // Cold start: Supabase emits INITIAL_SESSION as soon as the listener is
+      // registered; our bootstrap() also calls getSession() + resolveActor().
+      // Running both in parallel can fire RPC before the JS client attaches the
+      // access token to PostgREST requests → empty binding → kind "unresolved".
+      // Bootstrap is the single source of truth for the first resolve.
+      if (event === "INITIAL_SESSION") {
+        authDebugLog("actor", "resolve_deferred_to_bootstrap", getSessionSummary(nextSession));
+        return;
+      }
+
+      const uid = nextSession?.user?.id ?? null;
+      if (event === "TOKEN_REFRESHED" && uid) {
+        const current = actorRef.current;
+        if (current !== null && current.authUserId === uid) {
+          authDebugLog("actor", "resolve_skipped_token_refresh", {
+            authUserId: uid,
+            actorKind: current.kind,
+          });
+          return;
+        }
+      }
+
       void resolveActor(nextSession);
     });
 
@@ -193,6 +225,11 @@ export function MobileAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshActor = useCallback(async () => {
+    if (refreshActorInFlightRef.current) {
+      authDebugLog("actor", "refresh_skipped_in_flight");
+      return;
+    }
+    refreshActorInFlightRef.current = true;
     authDebugLog("actor", "refresh_requested");
     setActorStatus("loading");
     setActorError(null);
@@ -200,7 +237,10 @@ export function MobileAuthProvider({ children }: { children: ReactNode }) {
       const refreshed = await resolveActorFromCurrentSession();
       setActor(refreshed);
       setActorStatus(refreshed ? "ready" : "idle");
-      authDebugLog("actor", "refresh_success", { hasActor: refreshed !== null });
+      authDebugLog("actor", "refresh_success", {
+        hasActor: refreshed !== null,
+        actorKind: refreshed?.kind ?? null,
+      });
     } catch (error) {
       setActor(null);
       setActorStatus("error");
@@ -208,6 +248,8 @@ export function MobileAuthProvider({ children }: { children: ReactNode }) {
       authDebugLog("actor", "refresh_failure", {
         message: error instanceof Error ? error.message : "unknown_error",
       });
+    } finally {
+      refreshActorInFlightRef.current = false;
     }
   }, []);
 

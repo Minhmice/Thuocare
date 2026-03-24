@@ -16,21 +16,45 @@ Do not add server secrets (for example `SUPABASE_SERVICE_ROLE_KEY`) to mobile en
 **Do not run `npx expo start` from the monorepo root** (`Thuocare/`): the root `package.json` is not the Expo app (wrong `main` / Metro project). Use `pnpm dev:mobile` / `pnpm expo:start`, or `cd apps/mobile && npx expo start`.  
 (EAS / `expo install` are OK from the repo root: root `app.config.js` forwards `apps/mobile/app.json`.)
 
-From repo root:
+### Commands (cheat sheet)
 
-- `pnpm dev:mobile` or `pnpm expo:start`
-- `pnpm --filter @thuocare/mobile start`
-- `pnpm --filter @thuocare/mobile android`
-- `pnpm --filter @thuocare/mobile ios`
-- `pnpm --filter @thuocare/mobile web`
+| Goal | From repo root | From `apps/mobile` |
+|------|----------------|--------------------|
+| Dev server only (Metro) | `pnpm dev:mobile` | `pnpm start` |
+| Dev server + open iOS Simulator | `pnpm --filter @thuocare/mobile ios` | `pnpm ios` |
+| **Native build** (Xcode) + install **dev client** on Simulator | `pnpm mobile:ios:run` | `pnpm ios:run` |
+| Android | `pnpm --filter @thuocare/mobile android` | `pnpm android` |
+| Web | `pnpm --filter @thuocare/mobile web` | `pnpm web` |
 
-Or from `apps/mobile`:
+Use `pnpm android:run` / `pnpm ios:run` inside `apps/mobile` when you need a **full native rebuild** (same as `expo run:android` / `expo run:ios`). Day-to-day, prefer `android` / `ios` so Metro starts quickly.
 
-- `pnpm start`
+`pnpm expo:start` is equivalent to running `expo start` with the correct package context.
 
-## iOS: Expo Go says “requires a newer version”
+## iOS: development build (`expo-dev-client`)
 
-Store **Expo Go** can lag behind **SDK 55**. Use a **development build** (your own client) instead of Expo Go.
+Store **Expo Go** can lag behind **SDK 55**. This app uses **`expo-dev-client`**: you run a **custom development build**, not Expo Go from the App Store.
+
+### Local Mac + Simulator (typical day-to-day)
+
+1. **First time**, or after native changes (plugins, iOS config, upgrading Expo SDK):
+
+   ```bash
+   pnpm mobile:ios:run
+   ```
+
+   Same as `cd apps/mobile && pnpm exec expo run:ios`. This uses **Xcode** to compile, creates/updates the `ios/` project if needed, installs the app on the **iOS Simulator**, and starts Metro.
+
+2. **Most days**: start Metro and open the app on Simulator:
+
+   ```bash
+   pnpm dev:mobile
+   ```
+
+   Then press **`i`** in the Expo terminal, or use `pnpm --filter @thuocare/mobile ios` / `pnpm ios` to open iOS in one step.
+
+**Prerequisites:** Xcode installed, iOS Simulator available, and (if prompted) `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`.
+
+### Physical device or CI: EAS development build
 
 From **repo root** (after `pnpm dlx eas-cli login` if needed):
 

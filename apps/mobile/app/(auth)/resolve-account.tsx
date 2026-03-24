@@ -34,7 +34,7 @@ export default function ResolveAccountScreen() {
         </Text>
         {actorError ? <Text style={styles.error}>{actorError}</Text> : null}
         {signOutError ? <Text style={styles.error}>{signOutError}</Text> : null}
-        <Pressable onPress={refreshActor} style={styles.primaryButton}>
+        <Pressable onPress={() => void refreshActor()} style={styles.primaryButton}>
           <Text style={styles.primaryText}>Retry Actor Resolve</Text>
         </Pressable>
         <Pressable

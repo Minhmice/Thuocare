@@ -5,23 +5,30 @@ const userRoleSchema = z.enum(USER_ROLE_VALUES);
 
 const roleLiterals = USER_ROLE_VALUES as readonly string[];
 
+/**
+ * Postgres / app entity ids are 8-4-4-4-12 hex. Zod 4's `z.uuid()` enforces RFC variant
+ * and version nibbles, so demo seeds like `a0000000-0000-0000-0000-000000000003` fail there
+ * and would null out `patient_id` / `organization_id` after RPC parse → stuck `unresolved`.
+ */
+const UUID_LIKE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
 function normalizeUuidRpc(val: unknown): string | null {
   if (val === null || val === undefined) return null;
   if (typeof val !== "string") return null;
-  const t = val.trim();
+  const t = val.trim().toLowerCase();
   if (t === "") return null;
-  if (z.uuid().safeParse(t).success) return t;
+  if (UUID_LIKE.test(t)) return t;
   const compact = t.replace(/-/g, "");
-  if (compact.length === 32 && /^[0-9a-fA-F]+$/.test(compact)) {
+  if (compact.length === 32 && /^[0-9a-f]+$/.test(compact)) {
     const withHyphens = `${compact.slice(0, 8)}-${compact.slice(8, 12)}-${compact.slice(12, 16)}-${compact.slice(16, 20)}-${compact.slice(20)}`;
-    return z.uuid().safeParse(withHyphens).success ? withHyphens : null;
+    return UUID_LIKE.test(withHyphens) ? withHyphens : null;
   }
   return null;
 }
 
 const rpcUuidNullable = z.preprocess(
   normalizeUuidRpc,
-  z.union([z.uuid(), z.null()]),
+  z.union([z.string().regex(UUID_LIKE), z.null()]),
 );
 
 /**

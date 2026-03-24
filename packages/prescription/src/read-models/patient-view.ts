@@ -21,8 +21,8 @@ import type {
   PrescriptionItemPatientView,
   PrescriptionPatientView,
 } from "../domain/types.js";
-import { frequencyCodeToText } from "../schedule/frequency.js";
-import type { FrequencyCode, FixedTimesDailyScheduleJson } from "../domain/types.js";
+import { frequencyCodeToText, parseFrequencyCode } from "../schedule/frequency.js";
+import type { FixedTimesDailyScheduleJson } from "../domain/types.js";
 
 // ─── Main mapper ──────────────────────────────────────────────────────────────
 
@@ -71,9 +71,12 @@ function toItemPatientView(
   const medicationName = medication?.generic_name ?? "Unknown";
   const strengthText = medication?.strength_text ?? "";
 
-  const frequencyText = item.frequency_code
-    ? frequencyCodeToText(item.frequency_code as FrequencyCode, "vi")
-    : item.frequency_text;
+  const frequencyText =
+    item.frequency_code == null || item.frequency_code === ""
+      ? item.frequency_text
+      : parseFrequencyCode(item.frequency_code) !== null
+        ? frequencyCodeToText(item.frequency_code, "vi")
+        : (item.frequency_text ?? item.frequency_code);
 
   const daysRemaining = computeDaysRemaining(item.start_date, item.days_supply, today);
   const { timesPerDay, doseTimes } = extractScheduleTimes(doseSchedule);

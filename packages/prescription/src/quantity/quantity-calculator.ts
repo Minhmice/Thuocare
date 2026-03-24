@@ -18,7 +18,7 @@
 
 import type { DosageForm } from "@thuocare/contracts";
 import type { FrequencyCode, QuantityCalculation } from "../domain/types.js";
-import { getFrequencyMeta } from "../schedule/frequency.js";
+import { parseFrequencyCode } from "../schedule/frequency.js";
 
 // ─── Dosage form classification ───────────────────────────────────────────────
 
@@ -39,7 +39,10 @@ function totalDoseCount(
   durationDays: number,
   prnMaxDailyDoses: number,
 ): number {
-  const meta = getFrequencyMeta(frequencyCode);
+  const meta = parseFrequencyCode(frequencyCode);
+  if (meta === null) {
+    throw new Error(`Unknown frequency code: ${frequencyCode}`);
+  }
 
   if (meta.isPrn) {
     return prnMaxDailyDoses * durationDays;
@@ -87,7 +90,10 @@ export function calculateQuantity(
     throw new Error(`Invalid durationDays: ${input.durationDays}. Must be a positive integer.`);
   }
 
-  const meta = getFrequencyMeta(input.frequencyCode);
+  const meta = parseFrequencyCode(input.frequencyCode);
+  if (meta === null) {
+    throw new Error(`Unknown frequency code: ${input.frequencyCode}`);
+  }
   const prnMax = input.prnMaxDailyDoses ?? 3;
   const totalDoses = totalDoseCount(input.frequencyCode, input.durationDays, prnMax);
   const rawQuantity = doseAmountNum * totalDoses;
@@ -123,7 +129,10 @@ export function calculateDaysSupply(
 ): number {
   const qty = parseFloat(totalQuantity);
   const dose = parseFloat(doseAmount);
-  const meta = getFrequencyMeta(frequencyCode);
+  const meta = parseFrequencyCode(frequencyCode);
+  if (meta === null) {
+    throw new Error(`Unknown frequency code: ${frequencyCode}`);
+  }
 
   if (meta.isPrn || meta.dosesPerDay === 0) {
     // Cannot reliably back-calculate days from PRN quantity

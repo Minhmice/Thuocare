@@ -23,8 +23,7 @@ import type {
   PrescriptionItemDoctorView,
   RefillPolicySummary,
 } from "../domain/types.js";
-import { frequencyCodeToText } from "../schedule/frequency.js";
-import type { FrequencyCode } from "../domain/types.js";
+import { frequencyCodeToText, parseFrequencyCode } from "../schedule/frequency.js";
 
 // ─── Main mapper ──────────────────────────────────────────────────────────────
 
@@ -95,9 +94,12 @@ function toItemDoctorView(
         isControlledSubstance: false,
       };
 
-  const frequencyText = item.frequency_code
-    ? frequencyCodeToText(item.frequency_code as FrequencyCode, "vi")
-    : item.frequency_text;
+  const frequencyText =
+    item.frequency_code == null || item.frequency_code === ""
+      ? item.frequency_text
+      : parseFrequencyCode(item.frequency_code) !== null
+        ? frequencyCodeToText(item.frequency_code, "vi")
+        : (item.frequency_text ?? item.frequency_code);
 
   return {
     itemId: item.id,
