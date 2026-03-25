@@ -1,5 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  careIntentFromUserMetadata,
+  landingRouteForCareIntent,
+} from "@/lib/workflow/care-intent";
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -54,12 +58,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Redirect authenticated users away from /login (prefer patient portal when signup metadata says patient)
-  if (user && pathname.startsWith("/login")) {
+  // Redirect authenticated users away from auth entry pages using the lane intent.
+  if (user && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) {
     const url = request.nextUrl.clone();
     const rawMeta = user.user_metadata as Record<string, unknown> | undefined;
-    const at = typeof rawMeta?.actor_type === "string" ? rawMeta.actor_type : "";
-    url.pathname = at === "patient" ? "/patient" : "/dashboard";
+    const intent = careIntentFromUserMetadata(rawMeta) ?? "hospital";
+    url.pathname = landingRouteForCareIntent(intent);
     return NextResponse.redirect(url);
   }
 

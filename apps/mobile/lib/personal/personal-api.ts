@@ -1,0 +1,36 @@
+import {
+  detectCurrentLane,
+  getPersonalProfile,
+  getPersonalMedications,
+  getPersonalMedicationsAllForPatient,
+  getPersonalMedicationByIdForPatient,
+  addPersonalMedication,
+  updatePersonalMedicationById,
+  stopPersonalMedication,
+  getPersonalTimeline,
+  getPersonalTimelineRange,
+  getPersonalMedicationAdherenceSnippet,
+  markPersonalDoseTaken,
+  markPersonalDoseSkipped,
+  resetPersonalDoseLog,
+  updatePersonalProfileSettings,
+} from "@thuocare/personal";
+
+/** Thin mobile facade over @thuocare/personal service entrypoints. */
+export const personalApi = {
+  detectCurrentLane,
+  getPersonalProfile,
+  getPersonalMedications,
+  getPersonalMedicationsAllForPatient,
+  getPersonalMedicationByIdForPatient,
+  addPersonalMedication,
+  updatePersonalMedicationById,
+  stopPersonalMedication,
+  getPersonalTimeline,
+  getPersonalTimelineRange,
+  markPersonalDoseTaken,
+  markPersonalDoseSkipped,
+  resetPersonalDoseLog,
+  getPersonalMedicationAdherenceSnippet,
+  updatePersonalProfileSettings,
+};

@@ -11,9 +11,13 @@ type CancelRefillResult = Awaited<ReturnType<typeof refillApi.cancelRefillReques
 
 function assertPatientActor(
   actor: ReturnType<typeof useMobileAuth>["actor"],
-): asserts actor is NonNullable<typeof actor> & { kind: "patient"; patientId: string } {
-  if (!actor || actor.kind !== "patient") {
-    throw new Error("Patient actor required to cancel a refill request");
+): asserts actor is NonNullable<typeof actor> & {
+  kind: "patient";
+  patientId: string;
+  organizationId: string;
+} {
+  if (!actor || actor.kind !== "patient" || actor.organizationId === null) {
+    throw new Error("Hospital-linked patient actor required to cancel a refill request");
   }
 }
 
@@ -33,7 +37,8 @@ export function useCancelRefillRequest() {
     session != null &&
     actorStatus === "ready" &&
     actor != null &&
-    actor.kind === "patient";
+    actor.kind === "patient" &&
+    actor.organizationId != null;
 
   const mutation = useMutation<CancelRefillResult, Error, CancelRefillRequestInput>({
     mutationFn: async (input) => {

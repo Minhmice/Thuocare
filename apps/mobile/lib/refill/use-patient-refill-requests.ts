@@ -49,6 +49,7 @@ export function usePatientRefillRequests(patientId?: string) {
     actorStatus === "ready" &&
     actor != null &&
     actor.kind === "patient" &&
+    actor.organizationId != null &&
     effectivePatientId != null &&
     !patientIdMismatch;
 

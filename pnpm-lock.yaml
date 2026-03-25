@@ -79,6 +79,9 @@ importers:
       '@thuocare/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@thuocare/personal':
+        specifier: workspace:*
+        version: link:../../packages/personal
       '@thuocare/prescription':
         specifier: workspace:*
         version: link:../../packages/prescription
@@ -352,6 +355,25 @@ importers:
       '@thuocare/adherence':
         specifier: workspace:*
         version: link:../adherence
+      '@thuocare/auth':
+        specifier: workspace:*
+        version: link:../auth
+      '@thuocare/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+    devDependencies:
+      '@thuocare/config':
+        specifier: workspace:*
+        version: link:../config
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/personal:
+    dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.100.0
+        version: 2.100.0
       '@thuocare/auth':
         specifier: workspace:*
         version: link:../auth

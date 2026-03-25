@@ -50,7 +50,7 @@ export default function SignInScreen() {
       >
         <View style={styles.card}>
           <Text style={styles.title}>Thuocare</Text>
-          <Text style={styles.subtitle}>Sign in to your patient account</Text>
+          <Text style={styles.subtitle}>Sign in to your account</Text>
 
           <TextInput
             autoCapitalize="none"

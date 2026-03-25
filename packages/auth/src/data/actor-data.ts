@@ -61,7 +61,8 @@ const doctorProfileRowSchema = z.object({
 
 const patientRowSchema = z.object({
   id: z.string(),
-  organization_id: z.string(),
+  /** Null for self-serve personal/family patients (Phase 12). */
+  organization_id: z.string().nullable(),
   external_patient_code: z.string().nullable(),
   full_name: z.string(),
   date_of_birth: z.string().nullable(),

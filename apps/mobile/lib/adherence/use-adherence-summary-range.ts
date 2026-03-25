@@ -5,6 +5,7 @@ import { useMobileAuth } from "@/lib/auth/mobile-auth";
 import { mobileSupabase } from "@/lib/supabase/mobile-client";
 
 import { adherenceApi } from "./adherence-api";
+import { adherenceQueryKeys } from "./adherence-keys";
 import { defaultHistoryRange, normalizeHistoryRange } from "./history-window";
 
 export type UseAdherenceSummaryRangeOptions = {
@@ -43,7 +44,7 @@ export function useAdherenceSummaryRange(options: UseAdherenceSummaryRangeOption
   const patientId = actor?.kind === "patient" ? actor.patientId : null;
 
   const query = useQuery<AdherenceSummaryVM>({
-    queryKey: ["adherence", "summary-range", patientId, startDate, endDate],
+    queryKey: adherenceQueryKeys.summaryRange(patientId, startDate, endDate),
     queryFn: () =>
       adherenceApi.getAdherenceSummary(mobileSupabase, actor!, patientId!, startDate, endDate),
     enabled,

@@ -127,8 +127,11 @@ export interface ResolvedPatientActorContext {
   kind: "patient";
   /** Supabase auth.users.id */
   authUserId: AuthUserId;
-  /** public.patient.organization_id */
-  organizationId: EntityId;
+  /**
+   * public.patient.organization_id — null for self-serve personal-lane patients
+   * who are not tied to a hospital organization.
+   */
+  organizationId: EntityId | null;
   /** public.patient.id */
   patientId: EntityId;
   capabilities: FullCapabilities;

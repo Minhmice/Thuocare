@@ -90,6 +90,20 @@ function checkOrgBoundary(
     return accessDenied("forbidden", `Unresolved actor cannot access ${resourceLabel}.`);
   }
   const rowOrgId = row["organization_id"];
+  /**
+   * Self-serve patients are resolved with `organizationId === null`. They may only
+   * access org-scoped rows that also have a null organization_id; hospital-scoped
+   * resources remain blocked.
+   */
+  if (actor.kind === "patient" && actor.organizationId === null) {
+    if (rowOrgId === null || rowOrgId === undefined) {
+      return ACCESS_ALLOWED;
+    }
+    return accessDenied(
+      "organization_mismatch",
+      `${resourceLabel} is organization-scoped; personal-lane patient has no organization.`,
+    );
+  }
   if (typeof rowOrgId !== "string" || rowOrgId !== actor.organizationId) {
     return accessDenied(
       "organization_mismatch",

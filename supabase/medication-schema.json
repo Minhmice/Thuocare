@@ -1,0 +1,115 @@
+{
+  "schema_name": "thuocare_medication_excel_import_v2_supabase_aligned",
+  "description": "Supabase-aligned medication import schema. Built from current project DB metadata via Supabase MCP.",
+  "excel_instructions": {
+    "one_sheet_per_table": true,
+    "sheet_name_must_match_table_name": true,
+    "id_strategy": "Keep UUID columns empty in Excel. Use external keys for lookup and map to UUID in ETL.",
+    "null_value": "Leave cell empty for NULL",
+    "boolean_value": "Use TRUE/FALSE",
+    "notes": [
+      "Enums must match DB exactly.",
+      "Suggested load order: active_ingredient -> medication_catalog -> medication_ingredient_map -> drug_interaction_rule -> drug_interaction_rule_detail -> drug_combination_guidance -> drug_contraindication -> drug_allergy_cross_reactivity."
+    ]
+  },
+  "enum_definitions_from_supabase": {
+    "record_status_enum": ["active", "inactive"],
+    "interaction_severity_enum": ["minor", "moderate", "major", "contraindicated"],
+    "dosage_form_enum": ["tablet", "capsule", "injection", "solution", "inhaler", "cream", "other"],
+    "route_enum": ["oral", "iv", "im", "sc", "topical", "inhalation", "other"]
+  },
+  "tables": [
+    {
+      "table_name": "medication_catalog",
+      "required_columns": ["generic_name", "strength_text", "dosage_form", "route", "status"],
+      "optional_columns": ["medication_master_id", "catalog_code", "brand_name", "atc_class", "is_high_risk", "is_controlled_substance", "metadata"],
+      "excel_lookup_columns": ["external_medication_key"],
+      "enum_columns": {
+        "dosage_form": "dosage_form_enum",
+        "route": "route_enum",
+        "status": "record_status_enum"
+      }
+    },
+    {
+      "table_name": "active_ingredient",
+      "required_columns": ["ingredient_name", "status"],
+      "optional_columns": ["ingredient_code", "display_name", "standard_system"],
+      "excel_lookup_columns": ["external_ingredient_key"],
+      "enum_columns": {
+        "status": "record_status_enum"
+      }
+    },
+    {
+      "table_name": "medication_ingredient_map",
+      "required_columns": ["medication_catalog_id", "active_ingredient_id"],
+      "optional_columns": ["ingredient_strength_text", "strength_value", "strength_unit", "is_primary"],
+      "excel_lookup_columns": ["external_medication_key", "external_ingredient_key"],
+      "enum_columns": {}
+    },
+    {
+      "table_name": "drug_interaction_rule",
+      "required_columns": ["title", "severity", "status"],
+      "optional_columns": ["rule_code", "clinical_effect", "mechanism", "recommendation", "evidence_level", "source_ref"],
+      "excel_lookup_columns": ["external_rule_key"],
+      "enum_columns": {
+        "severity": "interaction_severity_enum",
+        "status": "record_status_enum"
+      }
+    },
+    {
+      "table_name": "drug_interaction_rule_detail",
+      "required_columns": ["rule_id", "ingredient_a_id", "ingredient_b_id"],
+      "optional_columns": ["directionality", "dose_context", "population_context", "notes"],
+      "excel_lookup_columns": ["external_rule_key", "external_ingredient_a_key", "external_ingredient_b_key"],
+      "enum_columns": {
+        "directionality": ["bidirectional", "a_to_b", "b_to_a"]
+      }
+    },
+    {
+      "table_name": "drug_combination_guidance",
+      "required_columns": [
+        "external_medication_a_key",
+        "external_medication_b_key",
+        "guidance_text",
+        "severity",
+        "status"
+      ],
+      "optional_columns": [],
+      "excel_lookup_columns": ["external_medication_a_key", "external_medication_b_key"],
+      "enum_columns": {
+        "severity": "interaction_severity_enum",
+        "status": "record_status_enum"
+      }
+    },
+    {
+      "table_name": "drug_contraindication",
+      "required_columns": [
+        "medication_catalog_id",
+        "contraindication_label",
+        "severity",
+        "status"
+      ],
+      "optional_columns": ["contraindication_code", "clinical_note"],
+      "excel_lookup_columns": ["external_medication_key"],
+      "enum_columns": {
+        "severity": "interaction_severity_enum",
+        "status": "record_status_enum"
+      }
+    },
+    {
+      "table_name": "drug_allergy_cross_reactivity",
+      "required_columns": [
+        "active_ingredient_id",
+        "allergy_group_label",
+        "severity",
+        "status"
+      ],
+      "optional_columns": ["allergy_group_code", "risk_note"],
+      "excel_lookup_columns": ["external_ingredient_key"],
+      "enum_columns": {
+        "severity": "interaction_severity_enum",
+        "status": "record_status_enum"
+      }
+    }
+  ]
+}

@@ -52,3 +52,14 @@ export function normalizeHistoryRange(
   }
   return { startDate: endDate, endDate: startDate };
 }
+
+/**
+ * Local wall-clock instant → ISO-8601 UTC string for `timestamptz` (Postgres / Supabase).
+ * `dateYmd` is the calendar day in the user's timezone; `hhmm` is normalized "HH:MM".
+ */
+export function localWallClockToUtcIso(dateYmd: HistoryIsoDate, hhmm: string): string {
+  const [y, m, d] = dateYmd.split("-").map(Number);
+  const [hh, mm] = hhmm.split(":").map(Number);
+  const local = new Date(y, m - 1, d, hh, mm, 0, 0);
+  return local.toISOString();
+}

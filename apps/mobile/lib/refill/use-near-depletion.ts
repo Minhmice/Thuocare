@@ -60,6 +60,7 @@ export function useNearDepletion(options?: UseNearDepletionOptions) {
     actorStatus === "ready" &&
     actor != null &&
     actor.kind === "patient" &&
+    actor.organizationId != null &&
     effectivePatientId != null &&
     !patientIdMismatch;
 

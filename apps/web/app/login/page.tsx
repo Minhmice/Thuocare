@@ -10,26 +10,26 @@ export default async function LoginPage({
 
   return (
     <div className="min-h-screen flex">
-      {/* Left panel — branding */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-blue-600 px-12 py-10">
         <div>
           <span className="text-xl font-semibold text-white tracking-tight">Thuocare</span>
         </div>
         <div>
           <h2 className="text-4xl font-semibold text-white leading-snug">
-            Manage your patients<br />smarter, not harder.
+            Your medication,
+            <br />
+            your way.
           </h2>
           <p className="mt-4 text-blue-100 text-sm leading-relaxed max-w-sm">
-            A clinical workspace built for doctors — track prescriptions, adherence, refills, and follow-ups in one place.
+            Personal, family, or hospital — Thuocare starts from your intent and
+            keeps everything in one safe place.
           </p>
         </div>
-        <p className="text-xs text-blue-200">© 2026 Thuocare</p>
+        <p className="text-xs text-blue-200">(c) 2026 Thuocare</p>
       </div>
 
-      {/* Right panel — form */}
       <div className="flex flex-1 items-center justify-center bg-white px-6 py-12">
         <div className="w-full max-w-sm">
-          {/* Mobile logo */}
           <div className="lg:hidden mb-8 text-center">
             <span className="text-2xl font-semibold text-blue-600">Thuocare</span>
           </div>
@@ -53,25 +53,45 @@ export default async function LoginPage({
 
           <form action={signInAction} className="mt-8 space-y-5">
             <fieldset className="space-y-2">
-              <legend className="block text-sm font-medium text-gray-700 mb-2">I am signing in as</legend>
-              <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <legend className="block text-sm font-medium text-gray-700 mb-2">
+                Sign in as
+              </legend>
+              <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-blue-300 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
                 <input
                   type="radio"
-                  name="portalIntent"
-                  value="doctor"
+                  name="careIntent"
+                  value="personal"
                   defaultChecked
-                  className="text-blue-600 focus:ring-blue-500"
+                  className="mt-0.5 text-blue-600 focus:ring-blue-500"
                 />
-                Doctor / clinic staff (doctor workspace)
+                <span>
+                  <span className="block text-sm font-medium text-gray-900">Personal</span>
+                  <span className="block text-xs text-gray-500 mt-0.5">Your own medication, no clinic needed</span>
+                </span>
               </label>
-              <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-blue-300 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
                 <input
                   type="radio"
-                  name="portalIntent"
-                  value="patient"
-                  className="text-blue-600 focus:ring-blue-500"
+                  name="careIntent"
+                  value="family"
+                  className="mt-0.5 text-blue-600 focus:ring-blue-500"
                 />
-                Patient
+                <span>
+                  <span className="block text-sm font-medium text-gray-900">Family</span>
+                  <span className="block text-xs text-gray-500 mt-0.5">Coordinate care for your household</span>
+                </span>
+              </label>
+              <label className="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer hover:border-blue-300 transition has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                <input
+                  type="radio"
+                  name="careIntent"
+                  value="hospital"
+                  className="mt-0.5 text-blue-600 focus:ring-blue-500"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-gray-900">Hospital / Clinic</span>
+                  <span className="block text-xs text-gray-500 mt-0.5">Doctor or staff — clinical workflows</span>
+                </span>
               </label>
             </fieldset>
 
@@ -102,7 +122,7 @@ export default async function LoginPage({
                 type="password"
                 autoComplete="current-password"
                 required
-                placeholder="••••••••"
+                placeholder="********"
                 className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition"
               />
             </div>

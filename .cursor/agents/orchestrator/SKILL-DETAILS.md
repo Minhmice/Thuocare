@@ -5,12 +5,29 @@ description: Detailed operating procedures for the orchestrator (referenced by S
 
 ## Mandatory flow (for any task that involves code/implementation)
 
+0. **Decompose the request (orchestrator — automatic, not the user)**  
+   - Read the full user request and relevant thread context.  
+   - Infer goal, constraints, regressions vs new work, and dependencies (what must run before what).  
+   - Produce an **Execution Plan** (see format below): phases, parallel agents, file scopes, merge owner.  
+   - **Do not** require or expect the user to supply this plan. Only ask clarifying questions if the task is truly underspecified.
+
 1. Classify the task (UI, API, schema, docs, etc.)
 2. Select the minimum correct sub-agent(s) per Task-to-Agent Mapping
    - If routing is ambiguous, use `python3 .cursor/agents/scripts/find_skill.py "<task description>"` before delegating.
 3. **Phase 1 — Implement**: Delegate to implementation specialist(s) (e.g. frontend-developer, backend-developer). Run in parallel when mapping says Yes (2). Each prompt must include the specialist's SKILL.
 4. **Phase 2 — Review & QA (mandatory)**: After Phase 1 completes and outputs are merged, **immediately** run **code-reviewer** and **qa-tester** in parallel. Do not present as complete until both outputs are received (unless the user explicitly asks to skip review/QA or the task is non-code). **Do not ask the user to trigger Phase 2 manually.**
 5. Synthesize: Combine implementation + review + QA and present one integrated result.
+
+## Mapping registry specialist IDs to host sub-agents
+
+Registry names (`frontend-developer`, `backend-developer`, …) are the **logical** roles. If the IDE only offers a generic sub-agent (e.g. `generalPurpose` / `Task`), the orchestrator still:
+
+1. Performs **step 0 decomposition** alone.  
+2. Spawns **one sub-agent per slice**, each with an opening line such as:  
+   `Act as frontend-developer per .cursor/agents/specialists/frontend-developer/SKILL.md`  
+   plus objective, scope paths, constraints, and expected artifacts.
+
+The user never has to map “which Task type equals which specialist”; **you** do that.
 
 ## Hard execution constraints
 

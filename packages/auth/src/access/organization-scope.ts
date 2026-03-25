@@ -92,6 +92,15 @@ export async function assertResourceInActorOrg(
   const row = data as Record<string, unknown>;
   const resourceOrgId = row["organization_id"];
 
+  if (actor.kind === "patient" && actor.organizationId === null) {
+    if (resourceOrgId === null || resourceOrgId === undefined) {
+      return;
+    }
+    throw new OrganizationMismatchError(
+      `table=${table} id=${resourceId} is organization-scoped; personal-lane patient has no organization.`,
+    );
+  }
+
   if (typeof resourceOrgId !== "string" || resourceOrgId !== actor.organizationId) {
     throw new OrganizationMismatchError(
       `table=${table} id=${resourceId} org=${String(resourceOrgId)} !== actor org=${actor.organizationId}.`,

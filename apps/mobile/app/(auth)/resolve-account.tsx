@@ -28,14 +28,14 @@ export default function ResolveAccountScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>Account Setup Required</Text>
+        <Text style={styles.title}>Completing account setup</Text>
         <Text style={styles.body}>
-          Your session was restored, but the account binding is incomplete. Finish onboarding on web, then return and retry.
+          Your sign-in was successful. Thuocare is finalising your profile — this usually takes just a moment. Tap &apos;Retry&apos; if the screen doesn&apos;t clear automatically.
         </Text>
         {actorError ? <Text style={styles.error}>{actorError}</Text> : null}
         {signOutError ? <Text style={styles.error}>{signOutError}</Text> : null}
         <Pressable onPress={() => void refreshActor()} style={styles.primaryButton}>
-          <Text style={styles.primaryText}>Retry Actor Resolve</Text>
+          <Text style={styles.primaryText}>Retry</Text>
         </Pressable>
         <Pressable
           disabled={isSigningOut}

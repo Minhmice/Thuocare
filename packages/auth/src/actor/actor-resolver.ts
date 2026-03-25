@@ -133,8 +133,8 @@ function classifyBinding(
 ): AnyActorContext {
   const isStaffBound =
     raw.staff_user_account_id !== null && raw.organization_id !== null;
-  const isPatientBound =
-    raw.patient_id !== null && raw.organization_id !== null;
+  /** Personal-lane patients may have a linked patient row without an organization. */
+  const isPatientBound = raw.patient_id !== null;
 
   const staffRole = resolveStaffRoleForBinding(raw);
 
@@ -158,7 +158,7 @@ function classifyBinding(
     const patientCtx: ResolvedPatientActorContext = {
       kind: "patient",
       authUserId,
-      organizationId: raw.organization_id!,
+      organizationId: raw.organization_id ?? null,
       patientId: raw.patient_id!,
       capabilities: resolveFullCapabilities({ kind: "patient" }),
     };
@@ -238,11 +238,11 @@ async function resolveActorContextFromTables(
     const patientId = typeof row.id === "string" ? row.id : null;
     const organizationId =
       typeof row.organization_id === "string" ? row.organization_id : null;
-    if (patientId && organizationId) {
+    if (patientId) {
       return {
         kind: "patient",
         authUserId,
-        organizationId,
+        organizationId: organizationId ?? null,
         patientId,
         capabilities: resolveFullCapabilities({ kind: "patient" }),
       };

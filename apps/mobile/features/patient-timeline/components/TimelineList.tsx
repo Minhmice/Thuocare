@@ -1,12 +1,12 @@
 import React from 'react';
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 
-type TimelineDoseLike = {
+export type TimelineDoseLike = {
   prescriptionItemId: string;
   scheduledTime: string;
   status: string;
   medicationName?: string | null;
-  instructionText?: string | null;
+  patientInstruction?: string | null;
 };
 
 interface TimelineListProps {
@@ -56,7 +56,7 @@ export function TimelineList({
             <Text style={styles.title}>{item.medicationName ?? 'Medication'}</Text>
             <Text style={styles.meta}>{item.scheduledTime}</Text>
             <Text style={styles.meta}>Status: {item.status}</Text>
-            {item.instructionText ? <Text style={styles.meta}>{item.instructionText}</Text> : null}
+            {item.patientInstruction ? <Text style={styles.meta}>{item.patientInstruction}</Text> : null}
             {actionable ? (
               <View style={styles.actions}>
                 <Pressable

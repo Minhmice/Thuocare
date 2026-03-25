@@ -121,6 +121,7 @@ export {
   resolveOnboardingState,
   claimStaffAccount,
   claimPatientAccount,
+  patientClaimFailureAllowsSelfServeBootstrap,
   registerMyDoctorAccount,
   assertOnboardingComplete,
 } from "./onboarding/onboarding-state.js";

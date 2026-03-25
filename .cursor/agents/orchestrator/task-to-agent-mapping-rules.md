@@ -2,6 +2,8 @@
 
 **Purpose**: Remove ambiguity in how tasks map to agents. Enforce precise routing for backend/frontend paired work and targeted fixes.
 
+**Who decides the split?** The **orchestrator** reads the user request (and thread context), decomposes work, and selects rows from the mapping table below. The user does **not** need to specify agent names, parallel fan-out, or phase boundaries unless they choose to add detail.
+
 **Core rule**: When the orchestrator is called, **agents run in parallel within a phase**. If the work is split into **multiple sub-phases**, those sub-phases run **sequentially**, and each sub-phase may run multiple agents in parallel. This preserves speed while avoiding dependency deadlocks.
 
 **Post-implementation gate (mandatory)**: After implementation agents finish and their output is merged, the orchestrator **must** run **code-reviewer** and **qa-tester** in parallel before declaring the task complete. Do not skip this step unless the user explicitly asks to skip review/QA or the task is non-code.

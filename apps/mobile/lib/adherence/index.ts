@@ -1,4 +1,5 @@
 export { adherenceApi } from "./adherence-api";
+export { adherenceQueryKeys } from "./adherence-keys";
 export {
   addCalendarDays,
   defaultHistoryRange,

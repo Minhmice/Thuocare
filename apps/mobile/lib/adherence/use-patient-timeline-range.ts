@@ -5,6 +5,7 @@ import { useMobileAuth } from "@/lib/auth/mobile-auth";
 import { mobileSupabase } from "@/lib/supabase/mobile-client";
 
 import { adherenceApi } from "./adherence-api";
+import { adherenceQueryKeys } from "./adherence-keys";
 import { defaultHistoryRange, normalizeHistoryRange } from "./history-window";
 
 export type UsePatientTimelineRangeOptions = {
@@ -45,7 +46,7 @@ export function usePatientTimelineRange(options: UsePatientTimelineRangeOptions 
   const patientId = actor?.kind === "patient" ? actor.patientId : null;
 
   const query = useQuery<DailyTimelineVM[]>({
-    queryKey: ["adherence", "timeline-range", patientId, startDate, endDate],
+    queryKey: adherenceQueryKeys.timelineRange(patientId, startDate, endDate),
     queryFn: () =>
       adherenceApi.getPatientTimelineRange(mobileSupabase, actor!, {
         patientId: patientId!,

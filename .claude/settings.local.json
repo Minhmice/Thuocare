@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/minhmice/Documents/projects/Thuocare/packages -maxdepth 2 -name package.json -not -path */node_modules/*)",
+      "Bash(while read:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/minhmice/Documents/projects/Thuocare/**)",
+      "Bash(done)",
+      "Bash(find /c/Users/minhmice/Documents/projects/Thuocare/packages/contracts/src/tables -name \"*.ts\" -exec head -50 {} +)",
+      "Bash(dir \"C:\\\\Users\\\\minhmice\\\\Documents\\\\projects\\\\Thuocare\" /b /a-d)",
+      "Bash(findstr /i \"readme\\\\|\\\\.md\")",
+      "Bash(find \"C:/Users/minhmice/Documents/projects/Thuocare/apps/mobile/app/\\(personal\\)\" -type f)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\minhmice\\\\Documents\\\\projects\\\\Thuocare\\\\packages\\\\personal\\\\src\")",
+      "Bash(find C:/Users/minhmice/Documents/projects/Thuocare/apps/web/app -maxdepth 2 -name *.tsx)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm lint:*)"
+    ]
+  }
+}

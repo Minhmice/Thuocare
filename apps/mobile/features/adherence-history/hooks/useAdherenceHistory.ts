@@ -1,48 +1,52 @@
-import { useQuery } from '@tanstack/react-query';
-import { mobileSupabase } from '@/lib/supabase/mobile-client';
-import { getPatientTimelineRange, DailyTimelineVM } from '@thuocare/adherence';
-import { useActor } from '@/features/auth/useActor';
+import { useQuery } from "@tanstack/react-query";
+import type { DailyTimelineVM } from "@thuocare/adherence";
 
-const getLocalIsoDate = (d: Date) => {
-  const tzOffset = d.getTimezoneOffset() * 60000;
-  return new Date(d.getTime() - tzOffset).toISOString().split('T')[0];
-};
+import { useMobileAuth } from "@/lib/auth/mobile-auth";
+import { mobileSupabase } from "@/lib/supabase/mobile-client";
+import { adherenceApi } from "@/lib/adherence/adherence-api";
+import { adherenceQueryKeys } from "@/lib/adherence/adherence-keys";
+import { defaultHistoryRange } from "@/lib/adherence/history-window";
 
-export function useAdherenceHistory(daysBack = 13) {
-  const { actor } = useActor();
-  
-  const today = new Date();
-  const past = new Date();
-  // If daysBack is 13, today - 13 days = 14 days full window exactly.
-  past.setDate(today.getDate() - daysBack);
-  
-  const startDate = getLocalIsoDate(past);
-  const endDate = getLocalIsoDate(today);
+/**
+ * Adherence history for the signed-in patient over a rolling N-day window.
+ *
+ * Actor identity is resolved from {@link useMobileAuth} — no need to pass
+ * patientId or organizationId from the caller.
+ *
+ * @param daysInclusive - Total calendar days to include, ending today (default 14).
+ *   e.g. daysInclusive=14 → today + the 13 prior days = 14 days total.
+ *
+ * Results are sorted descending (newest day first) for history display.
+ *
+ * The queryKey is shared with {@link usePatientTimelineRange} so mutations that
+ * invalidate via `adherenceQueryKeys.timelineRangeByPatient` will refresh this
+ * hook automatically.
+ */
+export function useAdherenceHistory(daysInclusive = 14) {
+  const { bootstrapStatus, actorStatus, session, actor, actorError } = useMobileAuth();
 
-  const patientId = actor?.kind === 'patient' ? actor.patientId : undefined;
-  const organizationId = actor?.kind === 'patient' ? actor.organizationId : undefined;
+  const { startDate, endDate } = defaultHistoryRange(daysInclusive);
+  const patientId = actor?.kind === "patient" ? actor.patientId : null;
+
+  const enabled =
+    bootstrapStatus === "ready" &&
+    session != null &&
+    actorStatus === "ready" &&
+    actor != null &&
+    actor.kind === "patient";
 
   return useQuery<DailyTimelineVM[]>({
-    queryKey: ['adherence', 'timeline-range', patientId, startDate, endDate],
+    queryKey: adherenceQueryKeys.timelineRange(patientId, startDate, endDate),
     queryFn: async () => {
-      if (!patientId || !organizationId) throw new Error("No patient actor");
-      
-      const actorCtx = {
-        kind: 'patient',
-        patientId,
-        organizationId,
-      } as any;
-
-      const data = await getPatientTimelineRange(mobileSupabase, actorCtx, {
-        patientId,
+      const data = await adherenceApi.getPatientTimelineRange(mobileSupabase, actor!, {
+        patientId: patientId!,
         startDate,
         endDate,
       });
-
-      // DailyTimelineVM[] is sorted by day ascending by the backend usually
-      // History is better viewed descending (newest first)
+      // Sort descending so the history screen shows newest day first
       return data.sort((a, b) => b.date.localeCompare(a.date));
     },
-    enabled: !!patientId && !!organizationId,
+    enabled,
+    meta: { actorError },
   });
 }

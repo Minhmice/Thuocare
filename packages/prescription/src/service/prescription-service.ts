@@ -256,6 +256,10 @@ export async function getPrescriptionsByEpisode(client: any, actorCtx: AnyActorC
 export async function getMyActivePrescriptions(client: any, actorCtx: AnyActorContext): Promise<PrescriptionPatientView[]> {
   const actor = requirePatientActor(actorCtx);
 
+  if (actor.organizationId === null) {
+    return [];
+  }
+
   const allPrescriptions = await findPrescriptionsByPatient(
     client,
     actor.patientId,

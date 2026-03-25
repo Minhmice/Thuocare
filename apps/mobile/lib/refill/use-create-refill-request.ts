@@ -11,9 +11,13 @@ type CreateRefillResult = Awaited<ReturnType<typeof refillApi.createRefillReques
 
 function assertPatientActor(
   actor: ReturnType<typeof useMobileAuth>["actor"],
-): asserts actor is NonNullable<typeof actor> & { kind: "patient"; patientId: string } {
-  if (!actor || actor.kind !== "patient") {
-    throw new Error("Patient actor required to create a refill request");
+): asserts actor is NonNullable<typeof actor> & {
+  kind: "patient";
+  patientId: string;
+  organizationId: string;
+} {
+  if (!actor || actor.kind !== "patient" || actor.organizationId === null) {
+    throw new Error("Hospital-linked patient actor required to create a refill request");
   }
 }
 
@@ -33,7 +37,8 @@ export function useCreateRefillRequest() {
     session != null &&
     actorStatus === "ready" &&
     actor != null &&
-    actor.kind === "patient";
+    actor.kind === "patient" &&
+    actor.organizationId != null;
 
   const mutation = useMutation<CreateRefillResult, Error, CreateRefillRequestInput>({
     mutationFn: async (input) => {

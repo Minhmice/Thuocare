@@ -1,78 +1,77 @@
 # Thuocare
 
-**Thuocare** is a platform that helps doctors and outpatient clinics manage the full medication lifecycle: from prescription to adherence, refill, and follow-up.
+**Thuocare** is a personalized medication management and care coordination platform built around three lanes:
+- **Personal lane**
+- **Family lane**
+- **Hospital lane**
 
-> Product direction: **Prescription-to-Adherence Platform**
+Users can start immediately without a doctor, clinic, or prescription, then connect to hospital workflows later when needed.
 
-## What problem does Thuocare solve?
+## What problem Thuocare solves
 
-Traditional e-prescribing tools usually stop at "issuing the prescription." In real outpatient care, patients often:
-- forget to take medicine on time,
-- run out of medication mid-treatment,
-- miss follow-up visits,
-- or misunderstand usage instructions.
+Medication management often fails in everyday life:
+- missed doses,
+- poor schedule consistency,
+- medication stockouts,
+- weak coordination between family and care teams,
+- unsafe combinations when people self-manage medicines.
 
-Thuocare is designed to turn a one-time visit into a continuous treatment workflow.
+Thuocare helps users coordinate medication safely across personal, family, and clinical contexts.
 
-## Target users
+## Three-lane model
 
-- **Outpatient doctors** (internal medicine, cardiology, endocrinology, respiratory, geriatrics, pediatrics, etc.)
-- **Patients on long or recurring treatment plans**, especially chronic conditions
-- **Family/caregivers** who help monitor medication use
-- **Clinics and care teams** that want better post-visit continuity and follow-up rates
+### 1) Personal lane
+- For users managing their own medication.
+- Fast start: add medicine, set schedule, receive reminders, log taken/skipped doses.
+- No mandatory clinical linkage at entry.
 
-## Core software capabilities
+### 2) Family lane
+- For one account managing medication for multiple people.
+- Supports children, parents, elderly relatives, and dependents.
+- Role-based household coordination (owner/coordinator/caregiver/dependent).
 
-### 1) Doctor Workspace
-- Electronic prescribing
-- Treatment templates and one-click repeat prescription
-- Refill governance rules by medication/risk type
-- Priority lists for patients who are near stockout or overdue for follow-up
+### 3) Hospital lane
+- For organizations and medical staff.
+- Keeps existing clinical lifecycle: prescribing, refill governance, follow-up, and safety rules.
+- Can be linked to personal/family data through explicit patient consent.
 
-### 2) Patient App / Patient Channel
-- Medication reminders by daily timeline (morning, noon, evening, night)
-- Dose confirmation (taken/skipped)
-- Remaining medication days indicator
-- Clear, patient-friendly medication instructions
-- Follow-up appointment reminders
+## Intent-first onboarding
 
-### 3) Refill and Delivery Engine
-- Refill timing prediction
-- Refill request submission workflow
-- Approve/reject/review-before-refill flow
-- Delivery integration readiness (pharmacy/logistics)
+After sign-up, Thuocare asks what the user wants to do:
+- manage my own medication,
+- manage medication for my family,
+- manage treatment in a hospital/clinic context.
 
-### 4) Clinical Safety Layer
-- Drug interaction alerts
-- Allergy alerts
-- Duplicate active-ingredient checks
-- Safety rules for high-risk medications
+The selected intent determines the initial dashboard, permissions, and first actions.
 
-## Main workflow
+## Core capabilities
 
-1. Doctor creates a prescription and follow-up plan.
-2. Patient receives daily medication reminders.
-3. System tracks adherence and remaining supply.
-4. When supply is low, patient sends a refill request.
-5. Doctor/staff approve refill or require reassessment.
-6. System reminds follow-up and continues the treatment cycle.
+1. **Medication management**
+   - Medication list and dosage schedule
+   - Reminder timeline and dose confirmations
+   - Remaining supply visibility
 
-## Value delivered
+2. **Care coordination**
+   - Shared tasks across family members
+   - Delegated caregiver workflows
+   - Alerts for missed doses and follow-up actions
 
-### For doctors
-- Less repetitive prescribing work
-- Better visibility after the visit
-- Faster prioritization of high-risk patients
+3. **Safety and knowledge**
+   - Drug interaction checks
+   - Contraindication and allergy cross-reactivity checks
+   - Practical guidance such as: safe together, separate by time, or avoid combination
 
-### For patients
-- Fewer missed doses
-- Less treatment interruption due to stockout
-- Better follow-up compliance
+4. **Clinical continuity (Hospital lane)**
+   - Prescription and refill workflows
+   - Follow-up planning
+   - Clinical oversight with role-based access control
 
-### For clinics
-- Higher return/follow-up rates
-- Stronger patient retention
-- Better long-term treatment data
+## Data architecture direction
+
+- Keep existing hospital schema intact for backward compatibility.
+- Add personal/family tables and bridge them to hospital entities.
+- Introduce consent-based cross-lane sharing.
+- Use one medication knowledge base for all lanes with lane-specific UX presentation.
 
 ## Current repository status
 
@@ -86,6 +85,7 @@ This monorepo is currently at the foundation stage:
 ## Run the project
 
 ### Requirements
+
 - Node.js >= 20
 - pnpm >= 10
 - Rust toolchain (for desktop/Tauri)
@@ -99,18 +99,18 @@ pnpm install
 ### Main commands
 
 ```bash
-pnpm dev          # run workspace dev pipeline
-pnpm dev:web      # run web app
-pnpm dev:desktop  # run desktop frontend
-pnpm dev:mobile      # Expo dev server (Metro); press `i` for iOS Simulator
-pnpm mobile:ios:run  # build & install dev client on Simulator (Xcode); see apps/mobile/README.md
+pnpm dev             # run workspace dev pipeline
+pnpm dev:web         # run web app
+pnpm dev:desktop     # run desktop frontend
+pnpm dev:mobile      # build prescription package + start Expo (Metro)
+pnpm mobile:ios:run  # build and install iOS dev client via Expo
 
 pnpm typecheck
 pnpm lint
 pnpm build
 ```
 
-## Supabase (brief)
+## Supabase notes
 
 - Supabase is used for auth, database, and row-level security.
 - SQL migrations are in `supabase/migrations/`.
@@ -120,27 +120,26 @@ pnpm build
 supabase gen types typescript --local > packages/supabase/src/database.types.ts
 ```
 
-## Product roadmap
+## Roadmap
 
-### Core (priority)
-- E-prescribing
-- Medication reminders
-- Remaining-supply tracking
-- Refill request + approval workflow
-- Follow-up reminders
-- Patient risk/priority dashboard
+### Near term
 
-### Expansion level 2
-- Pharmacy integration
-- Medication delivery coordination
-- Telehealth refill review
-- Family/caregiver mode
+- Three-lane onboarding (Personal / Family / Hospital)
+- Personal medication routines and reminders
+- Family household care coordination
+- Shared medication knowledge base (interactions and guidance)
 
-### Expansion level 3
-- Advanced refill prediction engine
-- Adherence and no-show risk scoring
-- Disease-specific care programs
-- Outcome-linked follow-up flows
+### Mid term
+
+- Consent-based cross-lane data sharing
+- Advanced medication safety alerting and explainability
+- Stronger follow-up and refill orchestration across lanes
+
+### Longer term
+
+- Predictive adherence and stockout risk scoring
+- Condition-specific pathways
+- Outcome-linked care journeys across personal, family, and hospital contexts
 
 ## License
 

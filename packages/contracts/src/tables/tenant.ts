@@ -140,7 +140,8 @@ export type DoctorProfileSummary = Pick<
 /** `public.patient` — includes `auth_user_id` from RLS migration. */
 export interface PatientRow {
   id: EntityId;
-  organization_id: EntityId;
+  /** Null for self-serve personal/family patients (Phase 12). */
+  organization_id: EntityId | null;
   external_patient_code: string | null;
   full_name: string;
   date_of_birth: IsoDate | null;

@@ -4,12 +4,16 @@ import { buildRequestActorContext, isDoctorActor, isPatientActor } from "@thuoca
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
+import {
+  actorTypeForCareIntent,
+  normalizeCareIntent,
+  onboardingRouteForCareIntent,
+} from "@/lib/workflow/care-intent";
 
 export async function signInAction(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const intentRaw = formData.get("portalIntent");
-  const portalIntent = intentRaw === "patient" ? "patient" : "doctor";
+  const careIntent = normalizeCareIntent(formData.get("careIntent"), "personal");
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -20,31 +24,31 @@ export async function signInAction(formData: FormData) {
 
   const actor = await buildRequestActorContext(supabase);
 
-  if (portalIntent === "doctor") {
+  if (careIntent === "hospital") {
     if (isDoctorActor(actor)) {
       redirect("/dashboard");
     }
     if (isPatientActor(actor)) {
       redirect(
         `/login?error=${encodeURIComponent(
-          'This account is a patient. Choose "Patient" below and sign in again.',
+          'This account is not a hospital workspace account. Choose Personal or Family instead.',
         )}`,
       );
     }
-    redirect("/onboarding?intent=doctor");
+    redirect(onboardingRouteForCareIntent(careIntent));
   }
 
   if (isPatientActor(actor)) {
-    redirect("/patient");
+    redirect(careIntent === "family" ? "/family" : "/patient");
   }
   if (isDoctorActor(actor)) {
     redirect(
       `/login?error=${encodeURIComponent(
-        'This account is a doctor. Choose "Doctor" below and sign in again.',
+        'This account belongs to the hospital lane. Choose Hospital below and sign in again.',
       )}`,
     );
   }
-  redirect("/onboarding?intent=patient");
+  redirect(onboardingRouteForCareIntent(careIntent));
 }
 
 export async function signOutAction() {
@@ -57,21 +61,22 @@ export async function signUpAction(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const fullName = (formData.get("fullName") as string)?.trim() ?? "";
-  const accountTypeRaw = formData.get("accountType");
-  const isPatient = accountTypeRaw === "patient";
+  const careIntent = normalizeCareIntent(formData.get("careIntent"), "personal");
+  const actorType = actorTypeForCareIntent(careIntent);
+  const isHospital = careIntent === "hospital";
   const orgRaw = formData.get("organizationCode");
   const organizationCode =
     typeof orgRaw === "string" && orgRaw.trim() !== "" ? orgRaw.trim() : undefined;
 
-  if (!isPatient) {
+  if (isHospital) {
     if (!organizationCode) {
       redirect(
-        `/signup?error=${encodeURIComponent("Organization code is required to register as a doctor.")}`,
+        `/signup?error=${encodeURIComponent("Organization code is required for the hospital lane.")}`,
       );
     }
     if (!fullName) {
       redirect(
-        `/signup?error=${encodeURIComponent("Full name is required to register as a doctor.")}`,
+        `/signup?error=${encodeURIComponent("Full name is required for the hospital lane.")}`,
       );
     }
   }
@@ -80,7 +85,8 @@ export async function signUpAction(formData: FormData) {
 
   const user_metadata: Record<string, string> = {
     full_name: fullName,
-    actor_type: isPatient ? "patient" : "doctor",
+    actor_type: actorType,
+    care_intent: careIntent,
   };
   if (organizationCode) {
     user_metadata.organization_code = organizationCode;
@@ -104,5 +110,5 @@ export async function signUpAction(formData: FormData) {
     redirect(`/login?message=${encodeURIComponent("Account created. Please sign in.")}`);
   }
 
-  redirect(isPatient ? "/onboarding?intent=patient" : "/onboarding");
+  redirect(onboardingRouteForCareIntent(careIntent));
 }

@@ -414,12 +414,46 @@ export async function registerMyDoctorAccount(
  *
  * Same semantics as `claimStaffAccount` but for patient rows.
  */
+function describePatientClaimFailure(
+  issueCode: string | undefined,
+  organizationCode: string | null | undefined,
+  sessionEmail: string | null | undefined,
+): string {
+  const oc = organizationCode?.trim() || null;
+  const em = sessionEmail ?? null;
+  switch (issueCode) {
+    case "org_not_found":
+      return `Organization code "${oc ?? "(none)"}" was not found. Check spelling or leave the code empty if you are not clinic-linked.`;
+    case "no_matching_profile":
+      return `No hospital patient record matches your email${em ? ` (${em})` : ""}. If you meant to track your own medications only, continue with personal account setup.`;
+    case "multiple_matching_profiles":
+      return "More than one patient record matches your email. Enter your organization code or contact your clinic.";
+    case "profile_already_linked":
+      return "This patient record is already linked to a different login.";
+    case "claim_conflict":
+      return "Account linking conflict. Contact an administrator.";
+    case "missing_email":
+      return "Your login session has no email. Sign out and sign in again with email/password.";
+    default:
+      return "Could not link a clinic patient record to this login. Check your email and organization code.";
+  }
+}
+
+/**
+ * After a failed `claimPatientAccount`, self-serve bootstrap (`bootstrap_self_serve_account`)
+ * must run only when the claim failed because no clinic patient matched — not on conflicts
+ * or already-linked profiles.
+ */
+export function patientClaimFailureAllowsSelfServeBootstrap(result: ClaimResult): boolean {
+  return !result.success && result.issueCode === "no_matching_profile";
+}
+
 export async function claimPatientAccount(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: SupabaseClient<any>,
   organizationCode?: string | null,
 ): Promise<ClaimResult> {
-  await requireAuthenticatedSession(supabase);
+  const session = await requireAuthenticatedSession(supabase);
 
   const args = organizationCode != null ? { p_organization_code: organizationCode } : {};
   const { data, error } = await callRpc(supabase, "claim_my_patient_account", args);
@@ -437,11 +471,28 @@ export async function claimPatientAccount(
     return { success: true, message: "Patient account linked successfully." };
   }
 
-  return {
+  const issues = await loadOpenOnboardingIssues(supabase, session.authUserId);
+  const latest = issues
+    .filter((row) => row.actor_type === "patient")
+    .slice()
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
+  const issueCodeRaw = latest?.issue_code;
+
+  const failure: Extract<ClaimResult, { success: false }> = {
     success: false,
-    error:
-      "No matching patient profile was linked. Use the same email as on file, try the correct organization code, or ask an admin.",
+    error: describePatientClaimFailure(
+      issueCodeRaw,
+      organizationCode ?? latest?.organization_code ?? undefined,
+      session.email,
+    ),
   };
+  if (
+    issueCodeRaw &&
+    (ONBOARDING_ISSUE_CODE_VALUES as readonly string[]).includes(issueCodeRaw)
+  ) {
+    failure.issueCode = issueCodeRaw as OnboardingIssueCode;
+  }
+  return failure;
 }
 
 /**
