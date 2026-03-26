@@ -77,6 +77,8 @@ export type ClaimResult =
   | { success: true; message: string }
   | { success: false; error: string; issueCode?: OnboardingIssueCode };
 
+export type SelfServeCareLane = "personal" | "family";
+
 // ─── Zod schemas for RPC responses ───────────────────────────────────────────
 
 const onboardingIssueRowSchema = z.object({
@@ -446,6 +448,44 @@ function describePatientClaimFailure(
  */
 export function patientClaimFailureAllowsSelfServeBootstrap(result: ClaimResult): boolean {
   return !result.success && result.issueCode === "no_matching_profile";
+}
+
+export async function bootstrapSelfServePatientAccount(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  supabase: SupabaseClient<any>,
+  careLane: SelfServeCareLane,
+): Promise<ClaimResult> {
+  const lane = careLane === "family" ? "family" : "personal";
+
+  const { data, error } = await callRpc(supabase, "bootstrap_self_serve_account", {
+    p_care_lane: lane,
+  });
+
+  if (error !== null) {
+    const missingFn = error.message.includes("Could not find the function");
+    if (missingFn) {
+      return {
+        success: false,
+        error:
+          "Account setup is not yet fully deployed on this instance. A database migration is pending (bootstrap_self_serve_account). Please contact support or try again later.",
+      };
+    }
+
+    return {
+      success: false,
+      error: error.message || "Account setup failed. Please try again.",
+    };
+  }
+
+  const id = parseUuidClaimRpc(data);
+  if (id !== null) {
+    return { success: true, message: "Self-serve patient account bootstrapped successfully." };
+  }
+
+  return {
+    success: false,
+    error: "Account setup failed. Please try again.",
+  };
 }
 
 export async function claimPatientAccount(

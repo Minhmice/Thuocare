@@ -116,12 +116,14 @@ export type {
   OnboardingState,
   OnboardingIssueDetail,
   ClaimResult,
+  SelfServeCareLane,
 } from "./onboarding/onboarding-state.js";
 export {
   resolveOnboardingState,
   claimStaffAccount,
   claimPatientAccount,
   patientClaimFailureAllowsSelfServeBootstrap,
+  bootstrapSelfServePatientAccount,
   registerMyDoctorAccount,
   assertOnboardingComplete,
 } from "./onboarding/onboarding-state.js";

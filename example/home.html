@@ -1,0 +1,446 @@
+<!doctype html>
+
+<html class="light" lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sức Khỏe Của Bạn - Hôm Nay</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-headline {
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+        vertical-align: middle;
+      }
+      .premium-gradient-primary {
+        background: linear-gradient(135deg, #0058bc 0%, #0070eb 100%);
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      .soft-elevation {
+        box-shadow: 0 20px 40px -10px rgba(0, 88, 188, 0.25);
+      }
+    </style>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#ededf2",
+              "surface-tint": "#005bc1",
+              "on-surface-variant": "#414755",
+              "on-primary-fixed-variant": "#004493",
+              "inverse-surface": "#2e3034",
+              "surface-dim": "#d9dade",
+              "on-secondary-container": "#626267",
+              "on-tertiary-fixed": "#410001",
+              "surface-container-low": "#f3f3f8",
+              tertiary: "#bc000a",
+              "inverse-on-surface": "#f0f0f5",
+              "secondary-fixed": "#e3e2e7",
+              "on-background": "#1a1c1f",
+              "tertiary-fixed": "#ffdad5",
+              "on-primary-container": "#fefcff",
+              "on-secondary-fixed": "#1a1b1f",
+              "surface-bright": "#f9f9fe",
+              "secondary-fixed-dim": "#c6c6cb",
+              "on-tertiary-container": "#fffbff",
+              "primary-fixed-dim": "#adc6ff",
+              outline: "#717786",
+              "tertiary-fixed-dim": "#ffb4aa",
+              primary: "#0058bc",
+              surface: "#f9f9fe",
+              "on-tertiary-fixed-variant": "#930005",
+              "secondary-container": "#e0dfe4",
+              "inverse-primary": "#adc6ff",
+              "on-error-container": "#93000a",
+              "on-tertiary": "#ffffff",
+              "surface-container-high": "#e8e8ed",
+              "on-surface": "#1a1c1f",
+              "error-container": "#ffdad6",
+              "on-error": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              error: "#ba1a1a",
+              "on-secondary-fixed-variant": "#46464b",
+              "surface-variant": "#e2e2e7",
+              "primary-fixed": "#d8e2ff",
+              "on-primary-fixed": "#001a41",
+              "primary-container": "#0070eb",
+              secondary: "#5d5e63",
+              "on-primary": "#ffffff",
+              background: "#f9f9fe",
+              "outline-variant": "#c1c6d7",
+              "surface-container-highest": "#e2e2e7",
+              "tertiary-container": "#e2241f",
+              "on-secondary": "#ffffff",
+            },
+            fontFamily: {
+              headline: ["Plus Jakarta Sans"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+            borderRadius: {
+              DEFAULT: "1rem",
+              lg: "1.5rem",
+              xl: "2rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-surface text-on-surface min-h-screen pb-32">
+    <!-- Header: Compact -->
+    <header
+      class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl px-6 pt-8 pb-4"
+    >
+      <div class="flex justify-between items-center max-w-md mx-auto">
+        <div class="flex items-baseline gap-2">
+          <h1
+            class="font-headline text-2xl font-extrabold tracking-tight text-on-surface"
+          >
+            Hôm nay
+          </h1>
+          <p class="text-sm font-medium text-on-surface-variant/70">
+            Thứ Ba, 24 Th10
+          </p>
+        </div>
+        <div
+          class="flex items-center gap-1.5 px-3 py-1 bg-surface-container-low rounded-full"
+        >
+          <span
+            class="material-symbols-outlined text-primary text-[18px]"
+            data-icon="schedule"
+            >schedule</span
+          >
+          <span class="text-sm font-bold text-primary">08:45</span>
+        </div>
+      </div>
+    </header>
+    <main class="pt-24 px-6 max-w-md mx-auto space-y-6">
+      <!-- 2. Alert: Missed Dose -->
+      <section>
+        <div
+          class="bg-error/5 border border-error/10 rounded-lg px-4 py-3 flex items-center justify-between"
+        >
+          <div class="flex items-center gap-3">
+            <span
+              class="material-symbols-outlined text-error text-xl"
+              data-icon="error"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >error</span
+            >
+            <p class="text-[13px] font-medium text-on-surface-variant">
+              Bạn đã lỡ 1 liều
+              <span class="font-bold text-error">Paracetamol</span>
+            </p>
+          </div>
+          <button
+            class="text-[10px] font-bold text-error uppercase tracking-widest px-2 py-1"
+          >
+            Uống ngay
+          </button>
+        </div>
+      </section>
+      <!-- 3. Dashboard: Lightweight Stats -->
+      <section class="grid grid-cols-3 gap-6 py-2">
+        <div class="text-center space-y-0.5">
+          <p
+            class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest"
+          >
+            Đã uống
+          </p>
+          <p class="font-headline text-2xl font-extrabold text-primary">3</p>
+        </div>
+        <div class="text-center space-y-0.5 border-x border-surface-container">
+          <p
+            class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest"
+          >
+            Còn lại
+          </p>
+          <p class="font-headline text-2xl font-extrabold text-on-surface">5</p>
+        </div>
+        <div class="text-center space-y-0.5">
+          <p
+            class="text-[10px] font-bold text-on-surface-variant/50 uppercase tracking-widest"
+          >
+            Quên
+          </p>
+          <p class="font-headline text-2xl font-extrabold text-error">1</p>
+        </div>
+      </section>
+      <!-- 4. Hero Card: Focus High Contrast Blue (Redesigned) -->
+      <section class="pt-2">
+        <div
+          class="rounded-xl p-6 text-white soft-elevation relative overflow-hidden bg-[#0058BC] min-h-[460px] flex flex-col"
+        >
+          <!-- Top: Time state badge -->
+          <div class="mb-4">
+            <span
+              class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold text-white tracking-widest uppercase"
+              >Trễ 10 phút</span
+            >
+          </div>
+          <!-- Below badge: Time section -->
+          <div class="mb-8">
+            <h2 class="font-headline text-6xl font-extrabold tracking-tighter">
+              09:00
+            </h2>
+          </div>
+          <!-- Main Body: Medication List -->
+          <div class="flex-1 space-y-4">
+            <!-- Med 1 -->
+            <div
+              class="flex items-center justify-between py-2 border-b border-white/10 last:border-0"
+            >
+              <div>
+                <p class="font-headline font-bold text-base leading-tight">
+                  Aspirin 81mg
+                </p>
+                <p class="text-xs text-white/60 font-medium">Tim mạch</p>
+              </div>
+              <div
+                class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"
+              >
+                <span
+                  class="material-symbols-outlined text-white text-base"
+                  data-icon="pill"
+                  >pill</span
+                >
+              </div>
+            </div>
+            <!-- Med 2 -->
+            <div
+              class="flex items-center justify-between py-2 border-b border-white/10 last:border-0"
+            >
+              <div>
+                <p class="font-headline font-bold text-base leading-tight">
+                  Vitamin C 500mg
+                </p>
+                <p class="text-xs text-white/60 font-medium">Tăng đề kháng</p>
+              </div>
+              <div
+                class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"
+              >
+                <span
+                  class="material-symbols-outlined text-white text-base"
+                  data-icon="pill"
+                  >pill</span
+                >
+              </div>
+            </div>
+            <!-- Med 3 -->
+            <div
+              class="flex items-center justify-between py-2 border-b border-white/10 last:border-0"
+            >
+              <div>
+                <p class="font-headline font-bold text-base leading-tight">
+                  Omega 3
+                </p>
+                <p class="text-xs text-white/60 font-medium">Bổ não</p>
+              </div>
+              <div
+                class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"
+              >
+                <span
+                  class="material-symbols-outlined text-white text-base"
+                  data-icon="pill"
+                  >pill</span
+                >
+              </div>
+            </div>
+          </div>
+          <!-- Bottom: Swipe CTA -->
+          <div class="mt-8">
+            <div
+              class="relative bg-black/15 rounded-full p-1.5 flex items-center group cursor-pointer active:scale-[0.98] transition-all"
+            >
+              <div
+                class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-[#0058BC] shadow-lg"
+              >
+                <span
+                  class="material-symbols-outlined font-bold text-3xl"
+                  data-icon="chevron_right"
+                  >chevron_right</span
+                >
+              </div>
+              <p
+                class="flex-1 text-center text-[10px] font-extrabold uppercase tracking-[0.25em] mr-8 text-white"
+              >
+                Trượt để uống
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- 5. Timeline: Today Schedule -->
+      <section class="space-y-8 pt-4 pb-12">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="font-headline text-lg font-extrabold tracking-tight">
+            Lịch trình hôm nay
+          </h3>
+          <button
+            class="text-xs font-bold text-primary/70 uppercase tracking-widest"
+          >
+            Tất cả
+          </button>
+        </div>
+        <!-- Morning -->
+        <div class="space-y-6">
+          <div class="flex items-center gap-4">
+            <span
+              class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-[0.2em] whitespace-nowrap"
+              >SÁNG</span
+            >
+            <div class="h-px w-full bg-surface-container-high/50"></div>
+          </div>
+          <div class="flex items-center justify-between group">
+            <div class="flex items-center gap-6">
+              <p class="text-sm font-bold text-on-surface-variant/50 w-10">
+                07:00
+              </p>
+              <div>
+                <p
+                  class="font-headline font-bold text-on-surface/50 line-through"
+                >
+                  Vitamin C 500mg
+                </p>
+                <p class="text-[11px] text-on-surface-variant/40">
+                  1 viên • Đã dùng 07:05
+                </p>
+              </div>
+            </div>
+            <span
+              class="material-symbols-outlined text-primary text-xl"
+              data-icon="check_circle"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >check_circle</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-6">
+              <p class="text-sm font-bold text-error w-10">07:00</p>
+              <div>
+                <p class="font-headline font-bold text-on-surface">
+                  Paracetamol
+                </p>
+                <p class="text-[11px] text-error font-medium">
+                  500mg • Bị bỏ lỡ
+                </p>
+              </div>
+            </div>
+            <span
+              class="material-symbols-outlined text-error/30 text-xl"
+              data-icon="cancel"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >cancel</span
+            >
+          </div>
+        </div>
+        <!-- Afternoon -->
+        <div class="space-y-6">
+          <div class="flex items-center gap-4">
+            <span
+              class="text-[10px] font-bold text-on-surface-variant/40 uppercase tracking-[0.2em] whitespace-nowrap"
+              >CHIỀU</span
+            >
+            <div class="h-px w-full bg-surface-container-high/50"></div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-6">
+              <p class="text-sm font-bold text-primary w-10">12:30</p>
+              <div>
+                <p class="font-headline font-bold text-on-surface">Omega 3</p>
+                <p class="text-[11px] text-on-surface-variant/60 font-medium">
+                  1 viên • Sau ăn trưa
+                </p>
+              </div>
+            </div>
+            <div
+              class="w-5 h-5 rounded-full border-2 border-surface-container"
+            ></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Floating Action Button -->
+    <button
+      class="fixed bottom-32 right-6 w-14 h-14 premium-gradient-primary rounded-full text-on-primary shadow-2xl flex items-center justify-center active:scale-90 transition-transform duration-200 z-50"
+    >
+      <span class="material-symbols-outlined text-3xl" data-icon="add"
+        >add</span
+      >
+    </button>
+    <!-- Bottom Navigation -->
+    <nav
+      class="fixed bottom-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md flex justify-around items-center px-4 pb-10 pt-4 border-t border-surface-container/30"
+    >
+      <a class="flex flex-col items-center gap-1 group" href="#">
+        <span
+          class="material-symbols-outlined text-[26px] text-primary"
+          data-icon="event_note"
+          style="font-variation-settings: &quot;FILL&quot; 1"
+          >event_note</span
+        >
+        <span
+          class="text-[9px] font-bold uppercase tracking-widest text-primary"
+          >Hôm nay</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center gap-1 group text-on-surface-variant/40 hover:text-primary transition-colors"
+        href="#"
+      >
+        <span
+          class="material-symbols-outlined text-[26px]"
+          data-icon="medication"
+          >medication</span
+        >
+        <span class="text-[9px] font-bold uppercase tracking-widest"
+          >Tủ thuốc</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center gap-1 group text-on-surface-variant/40 hover:text-primary transition-colors"
+        href="#"
+      >
+        <span class="material-symbols-outlined text-[26px]" data-icon="history"
+          >history</span
+        >
+        <span class="text-[9px] font-bold uppercase tracking-widest"
+          >Lịch sử</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center gap-1 group text-on-surface-variant/40 hover:text-primary transition-colors"
+        href="#"
+      >
+        <span class="material-symbols-outlined text-[26px]" data-icon="person"
+          >person</span
+        >
+        <span class="text-[9px] font-bold uppercase tracking-widest">Tôi</span>
+      </a>
+    </nav>
+  </body>
+</html>

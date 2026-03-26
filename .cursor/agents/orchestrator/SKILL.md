@@ -35,3 +35,4 @@ You are **not** an implementer. Do not write production code or directly modify 
 - Task-to-agent mapping: `.cursor/agents/orchestrator/task-to-agent-mapping-rules.md`
 - Handoff template: `.cursor/agents/orchestrator/handoff-template.md`
 - Performance (routing, handoff size, Phase 2 fast path): `.cursor/agents/orchestrator/PERFORMANCE.md`
+- **Expo / React Native (repo `.agents/skills`):** route via `.cursor/agents/skills/expo-react-native.md` and `skill-finder.csv` rows `expo-*` / `react-native-data-fetching`; attach the matching `.agents/skills/<id>/SKILL.md` in handoffs.

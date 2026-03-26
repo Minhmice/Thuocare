@@ -5,17 +5,22 @@
   "pnpm": {
     "overrides": {
       "react": "19.2.4",
-      "react-dom": "19.2.4"
-    }
+      "react-dom": "19.2.4",
+      "lightningcss": "1.30.1"
+    },
+    "onlyBuiltDependencies": [
+      "sharp",
+      "unrs-resolver"
+    ]
   },
   "scripts": {
     "dev": "turbo dev",
     "dev:web": "pnpm --filter @thuocare/web dev",
-    "dev:desktop": "pnpm --filter @thuocare/desktop dev",
-    "dev:mobile": "pnpm --filter @thuocare/prescription build && pnpm --filter @thuocare/personal build && pnpm --filter @thuocare/mobile start",
+    "dev:mobile": "pnpm --filter @thuocare/mobile start",
     "mobile:ios:run": "pnpm --filter @thuocare/mobile exec expo run:ios",
-    "expo:start": "pnpm --filter @thuocare/prescription build && pnpm --filter @thuocare/personal build && pnpm --filter @thuocare/mobile exec expo start",
-    "eas:ios:dev": "pnpm dlx eas-cli@latest build --platform ios --profile development",
+    "expo:start": "pnpm --filter @thuocare/mobile exec expo start",
+    "expo:install": "pnpm --dir apps/mobile exec expo install",
+    "eas:ios:dev": "cd apps/mobile && pnpm dlx eas-cli@latest build --platform ios --profile development",
     "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",

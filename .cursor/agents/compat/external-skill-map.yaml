@@ -45,7 +45,10 @@ mappings:
       - react-specialist
       - nextjs-specialist
       - ui-implementation
+      - expo-router
+      - react-native-ui
     mode: augment
+    notes_repo: "Thuocare `.agents/skills/*` is routed via .cursor/agents/skills/expo-react-native.md (do not treat as external vendor)"
   backend-developer:
     suitable_external_skills:
       - api-engineer

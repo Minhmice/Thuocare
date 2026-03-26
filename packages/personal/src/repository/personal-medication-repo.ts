@@ -56,14 +56,21 @@ export async function insertPersonalMedication(
   db: PersonalDbClient,
   input: AddPersonalMedicationInput,
 ): Promise<PersonalMedicationRow> {
+  const catalogId = input.catalogId ?? null;
+  const displayName = input.displayName.trim();
+  let customName = input.customName?.trim() ?? null;
+  if (catalogId == null) {
+    customName = customName && customName.length > 0 ? customName : displayName;
+  }
+
   const { data, error } = await db
     .from("personal_medication")
     .insert({
       patient_id: input.patientId,
       personal_profile_id: input.personalProfileId,
-      catalog_id: input.catalogId ?? null,
-      custom_name: input.customName ?? null,
-      display_name: input.displayName,
+      catalog_id: catalogId,
+      custom_name: customName,
+      display_name: displayName,
       strength_text: input.strengthText ?? null,
       dosage_form: input.dosageForm ?? null,
       dose_amount: input.doseAmount,
@@ -91,6 +98,7 @@ export async function updatePersonalMedication(
   const patch: Record<string, unknown> = {};
   if (updates.displayName !== undefined) patch.display_name = updates.displayName;
   if (updates.strengthText !== undefined) patch.strength_text = updates.strengthText;
+  if (updates.dosageForm !== undefined) patch.dosage_form = updates.dosageForm;
   if (updates.doseAmount !== undefined) patch.dose_amount = updates.doseAmount;
   if (updates.doseUnit !== undefined) patch.dose_unit = updates.doseUnit;
   if (updates.frequencyCode !== undefined) patch.frequency_code = updates.frequencyCode;

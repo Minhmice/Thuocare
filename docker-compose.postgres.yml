@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: thuocare_cocoindex_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cocoindex
+      POSTGRES_USER: cocoindex
+      POSTGRES_PASSWORD: cocoindex_local_dev_change_me
+    ports:
+      - "54329:5432"
+    volumes:
+      - cocoindex_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB -h 127.0.0.1 -p 5432",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  cocoindex_postgres_data:

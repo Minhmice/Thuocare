@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#717786",
+              "secondary-fixed": "#e3e2e7",
+              "on-secondary": "#ffffff",
+              "on-secondary-container": "#626267",
+              "on-primary-container": "#fefcff",
+              "surface-container-low": "#f3f3f8",
+              "surface": "#f9f9fe",
+              "secondary-container": "#e0dfe4",
+              "on-primary-fixed-variant": "#004493",
+              "tertiary": "#bc000a",
+              "on-primary-fixed": "#001a41",
+              "inverse-on-surface": "#f0f0f5",
+              "on-primary": "#ffffff",
+              "inverse-primary": "#adc6ff",
+              "surface-variant": "#e2e2e7",
+              "on-error-container": "#93000a",
+              "primary-container": "#0070eb",
+              "on-tertiary-fixed-variant": "#930005",
+              "surface-dim": "#d9dade",
+              "surface-tint": "#005bc1",
+              "secondary-fixed-dim": "#c6c6cb",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed": "#1a1b1f",
+              "tertiary-fixed-dim": "#ffb4aa",
+              "surface-container-high": "#e8e8ed",
+              "tertiary-container": "#e2241f",
+              "inverse-surface": "#2e3034",
+              "tertiary-fixed": "#ffdad5",
+              "surface-container-lowest": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-tertiary-container": "#fffbff",
+              "on-tertiary-fixed": "#410001",
+              "primary-fixed-dim": "#adc6ff",
+              "surface-container": "#ededf2",
+              "primary-fixed": "#d8e2ff",
+              "error": "#ba1a1a",
+              "on-error": "#ffffff",
+              "outline-variant": "#c1c6d7",
+              "on-surface-variant": "#414755",
+              "on-surface": "#1a1c1f",
+              "on-secondary-fixed-variant": "#46464b",
+              "secondary": "#5d5e63",
+              "primary": "#0058bc",
+              "on-background": "#1a1c1f",
+              "surface-container-highest": "#e2e2e7",
+              "background": "#f9f9fe",
+              "surface-bright": "#f9f9fe"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface antialiased selection:bg-primary/10">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-[#F9F9FE]/80 backdrop-blur-xl shadow-[0_48px_48px_0_rgba(0,88,188,0.04)]">
+<div class="flex items-center justify-between px-6 h-16 w-full">
+<button class="text-[#0058BC] active:scale-95 duration-200 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline font-bold text-lg tracking-tight text-[#0058BC]">Add Medication</h1>
+<button class="text-[#0058BC] font-semibold text-sm hover:opacity-80 active:scale-95 transition-all">
+                Save
+            </button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto space-y-10">
+<!-- Hero Photo Picker Section -->
+<section class="space-y-4">
+<div class="relative group">
+<div class="w-full aspect-[4/3] rounded-xl bg-surface-container-low overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:bg-surface-container">
+<div class="text-center space-y-3">
+<div class="w-16 h-16 rounded-full bg-primary-container/10 flex items-center justify-center mx-auto text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="photo_camera">photo_camera</span>
+</div>
+<div>
+<p class="font-headline font-bold text-on-surface">Identify your pill</p>
+<p class="text-on-surface-variant text-sm mt-1">Snap a photo for instant recognition</p>
+</div>
+</div>
+<img class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-10 transition-opacity duration-500" data-alt="close-up studio shot of a white pill on a clean clinical blue background with soft dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaFF_5W0DWus6J191XGnI4ll955u5OHUjWt5QXVGfuai07jAHBBdJvxWaVCdXZ_wSnFtRzFZXN13oXkiau9HuQJQ4M-l1K2sxvanDTyMi_vIOWtpvPG8SZmexdI75GweeN9b00ZQSeCSC2NO-iWuh22vIDJCS9asNgsi5bnkbZyhmwoccJYOJS1ldhLYD7nccT8XA-0qW1uXIhP3T8ICU8s6ypvliE4HKFRdgOZp3CFxfLbqVJhQ91hljYJyX9Pf0rsMGB_xpJ2yM"/>
+</div>
+</div>
+</section>
+<!-- Primary Information Form -->
+<section class="space-y-6">
+<div class="space-y-2">
+<p class="font-label text-[11px] font-medium tracking-widest uppercase text-on-surface-variant/60 ml-1">Core Details</p>
+<div class="bg-surface-container-lowest rounded-lg p-6 space-y-8 shadow-[0_8px_24px_rgba(0,0,0,0.02)]">
+<!-- Medication Name Input -->
+<div class="space-y-2">
+<label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Medication Name</label>
+<input class="w-full bg-transparent border-0 border-b border-surface-container p-0 pb-2 text-xl font-headline font-bold text-on-surface focus:ring-0 focus:border-primary placeholder:text-surface-variant transition-colors" placeholder="e.g. Sertraline" type="text"/>
+</div>
+<!-- Dosage & Type Grid -->
+<div class="grid grid-cols-2 gap-8">
+<div class="space-y-2">
+<label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Strength</label>
+<div class="flex items-baseline gap-1">
+<input class="w-full bg-transparent border-0 border-b border-surface-container p-0 pb-2 text-xl font-headline font-bold text-on-surface focus:ring-0 focus:border-primary placeholder:text-surface-variant transition-colors" placeholder="50" type="number"/>
+<span class="text-on-surface-variant font-medium">mg</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Form</label>
+<div class="relative">
+<select class="w-full bg-transparent border-0 border-b border-surface-container p-0 pb-2 text-xl font-headline font-bold text-on-surface focus:ring-0 focus:border-primary appearance-none cursor-pointer">
+<option>Capsule</option>
+<option>Tablet</option>
+<option>Liquid</option>
+<option>Injection</option>
+</select>
+<span class="material-symbols-outlined absolute right-0 bottom-2 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Schedule Configuration -->
+<section class="space-y-4">
+<p class="font-label text-[11px] font-medium tracking-widest uppercase text-on-surface-variant/60 ml-1">Timing &amp; Frequency</p>
+<div class="grid grid-cols-1 gap-4">
+<!-- Frequency Selector -->
+<div class="bg-surface-container-low rounded-lg p-6 flex items-center justify-between active:scale-[0.98] transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="event_repeat">event_repeat</span>
+</div>
+<div>
+<p class="font-bold text-on-surface">Every Day</p>
+<p class="text-xs text-on-surface-variant">Scheduled daily medication</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Time Picker -->
+<div class="bg-surface-container-low rounded-lg p-6 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</div>
+<p class="font-bold text-on-surface">Time of Day</p>
+</div>
+<button class="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold hover:bg-primary/20 transition-colors">
+                            Add Time
+                        </button>
+</div>
+<div class="flex flex-wrap gap-3 pt-2">
+<div class="bg-surface-container-lowest px-4 py-3 rounded-xl flex items-center gap-3 shadow-sm border border-transparent hover:border-primary/20 transition-all cursor-pointer">
+<span class="font-headline font-bold text-primary">08:00</span>
+<span class="text-[10px] font-bold uppercase text-on-surface-variant/60 tracking-wider">Morning</span>
+<button class="text-on-surface-variant/40 hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest px-4 py-3 rounded-xl flex items-center gap-3 shadow-sm border border-transparent hover:border-primary/20 transition-all cursor-pointer">
+<span class="font-headline font-bold text-primary">21:30</span>
+<span class="text-[10px] font-bold uppercase text-on-surface-variant/60 tracking-wider">Evening</span>
+<button class="text-on-surface-variant/40 hover:text-error transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Additional Settings -->
+<section class="space-y-4">
+<p class="font-label text-[11px] font-medium tracking-widest uppercase text-on-surface-variant/60 ml-1">Reminders &amp; Stocks</p>
+<div class="bg-surface-container-lowest rounded-lg overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.01)]">
+<div class="p-5 flex items-center justify-between hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="notifications_active">notifications_active</span>
+</div>
+<span class="font-medium text-on-surface">Smart Notifications</span>
+</div>
+<div class="w-10 h-6 bg-primary-container rounded-full relative p-1 transition-all">
+<div class="w-4 h-4 bg-white rounded-full absolute right-1"></div>
+</div>
+</div>
+<div class="h-[1px] bg-surface-container mx-5"></div>
+<div class="p-5 flex items-center justify-between hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="inventory_2">inventory_2</span>
+</div>
+<div>
+<span class="font-medium text-on-surface block">Inventory Tracking</span>
+<span class="text-[10px] text-on-surface-variant font-medium">Notify when pills are low</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Save Button CTA -->
+<div class="pt-6">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-5 rounded-full font-headline font-bold text-lg shadow-[0_20px_40px_rgba(0,88,188,0.2)] active:scale-95 transition-all duration-300">
+                Confirm Medication
+            </button>
+<p class="text-center text-xs text-on-surface-variant mt-6 px-10 leading-relaxed">
+                By adding this medication, you agree to receive reminders based on your medical provider's advice.
+            </p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full bg-[#FFFFFF]/80 backdrop-blur-xl rounded-t-[2rem] z-50 shadow-[0_-8px_24px_rgba(0,0,0,0.02)]">
+<div class="flex justify-around items-center px-8 py-4 w-full">
+<div class="flex flex-col items-center justify-center text-[#1A1C1F]/40 hover:text-[#0058BC] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined group-active:scale-90 duration-200" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Today</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#0058BC] relative after:content-[''] after:absolute after:-bottom-1 after:w-1 after:h-1 after:bg-[#0058BC] after:rounded-full group cursor-pointer">
+<span class="material-symbols-outlined group-active:scale-90 duration-200" data-icon="pill" style="font-variation-settings: 'FILL' 1;">pill</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Medications</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#1A1C1F]/40 hover:text-[#0058BC] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined group-active:scale-90 duration-200" data-icon="analytics">analytics</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Insights</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#1A1C1F]/40 hover:text-[#0058BC] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined group-active:scale-90 duration-200" data-icon="person">person</span>
+<span class="font-['Inter'] text-[11px] font-medium tracking-wide uppercase mt-1">Profile</span>
+</div>
+</div>
+</nav>
+</body></html>

@@ -1,25 +1,44 @@
 /**
  * Monorepo root Expo config: the real app lives in `apps/mobile`.
  * EAS CLI and `expo install` run from the repo root and read this file.
- * Asset paths in `apps/mobile/app.json` are relative to that folder — resolve them here.
+ * Asset paths from the mobile app are relative to `apps/mobile` — resolve them here.
  *
- * For day-to-day dev server, still prefer: `pnpm dev:mobile` (correct package.json `main`).
+ * expo-router `root` in the mobile app is `./src/app` (relative to apps/mobile). When this
+ * file is evaluated from the repo root, rewrite it to `apps/mobile/src/app` so router resolves.
+ *
+ * For day-to-day dev server, prefer: `pnpm dev:mobile` (correct package.json `main`).
  */
 const path = require("path");
 
 const mobileRoot = path.join(__dirname, "apps", "mobile");
-const { expo: base } = require(path.join(mobileRoot, "app.json"));
+const getMobileExpoConfig = require(path.join(mobileRoot, "app.config.js"));
+
+const ROUTER_ROOT_FROM_REPO = "apps/mobile/src/app";
+
+function rewriteExpoRouterRoot(plugins) {
+  if (!Array.isArray(plugins)) return plugins;
+  return plugins.map((p) => {
+    if (Array.isArray(p) && p[0] === "expo-router") {
+      const opts = typeof p[1] === "object" && p[1] !== null ? { ...p[1] } : {};
+      opts.root = ROUTER_ROOT_FROM_REPO;
+      return ["expo-router", opts];
+    }
+    return p;
+  });
+}
 
 function fromMobile(rel) {
   if (rel == null || typeof rel !== "string") return rel;
   return path.resolve(mobileRoot, rel);
 }
 
+const base = getMobileExpoConfig();
 const adaptive = base.android?.adaptiveIcon;
 
 module.exports = {
   expo: {
     ...base,
+    plugins: rewriteExpoRouterRoot(base.plugins),
     icon: fromMobile(base.icon),
     splash: {
       ...base.splash,

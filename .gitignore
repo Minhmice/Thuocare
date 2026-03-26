@@ -23,6 +23,7 @@ build
 
 # Expo
 .expo
+.expo-shared
 expo-env.d.ts
 
 # Tauri
@@ -35,3 +36,7 @@ pnpm-debug.log*
 # Supabase
 supabase/.branches
 supabase/.temp
+
+# Python (optional tooling)
+.venv
+.python-version

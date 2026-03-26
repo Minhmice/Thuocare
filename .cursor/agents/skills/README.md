@@ -9,6 +9,7 @@ The detailed searchable knowledge now lives in:
 - `.cursor/agents/mappings/rule-map.csv` for canonical rule ownership
 - `.cursor/agents/mappings/skill-finder.csv` for task-to-field routing hints
 - `.cursor/agents/scripts/find_skill.py` for field/specialist suggestions
+- **Expo / React Native (repo):** `.agents/skills/**` — indexed from Cursor via [expo-react-native.md](expo-react-native.md) and [data/expo-native-skills-catalog.csv](data/expo-native-skills-catalog.csv)
 
 ## How it works
 
@@ -43,6 +44,7 @@ When you assign a task to a field, use the skill file below so the executor know
 | Bauhaus (constructivist) | [bauhaus-theme.md](bauhaus-theme.md) | `frontend-developer` |
 | Linear / modern dark (cinematic) | [linear-modern-dark.md](linear-modern-dark.md) | `frontend-developer` |
 | **Orchestrator** | — | See `.cursor/agents/orchestrator/SKILL.md` |
+| **Expo + React Native** (Thuocare `.agents` pack) | [expo-react-native.md](expo-react-native.md) | Usually `frontend-developer`; `devops-engineer` / `typescript-specialist` / `backend-developer` per task (see that file) |
 
 ## Using a skill in a handoff
 

@@ -143,6 +143,7 @@ export interface AddPersonalMedicationInput {
 export interface UpdatePersonalMedicationInput {
   displayName?: string;
   strengthText?: string | null;
+  dosageForm?: string | null;
   doseAmount?: number;
   doseUnit?: string;
   frequencyCode?: FrequencyCode;
