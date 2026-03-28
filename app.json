@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Thuocare",
+    "slug": "thuocare-mobile",
+    "scheme": "thuocare",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-navigation-bar",
+        {
+          "enforceContrast": false,
+          "barStyle": "dark",
+          "visibility": "visible"
+        }
+      ],
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.thuocare-mobile"
+    },
+    "android": {},
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

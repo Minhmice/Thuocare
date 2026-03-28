@@ -1,0 +1,38 @@
+import type { StyleProp, ViewStyle } from 'react-native';
+
+export interface SliderConfirmProps {
+  /**
+   * Called once when the thumb crosses the confirm threshold and the snap
+   * animation completes. The parent is responsible for what happens next:
+   * unmounting, setting loading=true, navigating, etc.
+   */
+  onConfirm: () => void;
+
+  /**
+   * Instructional text shown centered inside the track while the thumb is idle.
+   * Rendered in uppercase automatically.
+   * @default "Slide to confirm"
+   */
+  label?: string;
+
+  /**
+   * Fraction of track width (0–1) the thumb must travel to trigger confirm.
+   * @default 0.75
+   */
+  threshold?: number;
+
+  /**
+   * Prevents interaction. The track is dimmed to communicate unavailability.
+   */
+  disabled?: boolean;
+
+  /**
+   * Shows a spinner on the thumb and prevents drag. Intended for use while
+   * an async operation triggered by onConfirm is in progress.
+   * The center label is hidden while loading is true.
+   */
+  loading?: boolean;
+
+  /** Applied to the outer track container. */
+  style?: StyleProp<ViewStyle>;
+}

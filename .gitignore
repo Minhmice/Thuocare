@@ -1,42 +1,27 @@
-# Dependencies
-node_modules
-.pnpm-store
+node_modules/
+.expo/
+dist/
+.DS_Store
 
-# Build
-dist
-.next
-out
-build
-.turbo
-*.tsbuildinfo
-
-# Env
 .env
 .env.local
 .env.*.local
-
-# OS / IDE
 .DS_Store
-.idea
-.vscode/*
-!.vscode/extensions.json
+node_modules
 
-# Expo
+# build outputs
+dist
+.turbo
+.next
+
+# Expo / React Native
 .expo
-.expo-shared
+*.expo.*
 expo-env.d.ts
+android
+ios
 
-# Tauri
-apps/desktop/src-tauri/target
-
-# Debug
-npm-debug.log*
-pnpm-debug.log*
-
-# Supabase
-supabase/.branches
-supabase/.temp
-
-# Python (optional tooling)
-.venv
-.python-version
+# env files
+.env
+.env.local
+.env.*.local

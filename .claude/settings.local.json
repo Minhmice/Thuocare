@@ -1,19 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find /c/Users/minhmice/Documents/projects/Thuocare/packages -maxdepth 2 -name package.json -not -path */node_modules/*)",
-      "Bash(while read:*)",
-      "Bash(do echo:*)",
-      "Read(//c/Users/minhmice/Documents/projects/Thuocare/**)",
-      "Bash(done)",
-      "Bash(find /c/Users/minhmice/Documents/projects/Thuocare/packages/contracts/src/tables -name \"*.ts\" -exec head -50 {} +)",
-      "Bash(dir \"C:\\\\Users\\\\minhmice\\\\Documents\\\\projects\\\\Thuocare\" /b /a-d)",
-      "Bash(findstr /i \"readme\\\\|\\\\.md\")",
-      "Bash(find \"C:/Users/minhmice/Documents/projects/Thuocare/apps/mobile/app/\\(personal\\)\" -type f)",
-      "Bash(dir /s /b \"C:\\\\Users\\\\minhmice\\\\Documents\\\\projects\\\\Thuocare\\\\packages\\\\personal\\\\src\")",
-      "Bash(find C:/Users/minhmice/Documents/projects/Thuocare/apps/web/app -maxdepth 2 -name *.tsx)",
+      "Bash(xcodebuild -workspace ios/Thuocare.xcworkspace -scheme Thuocare -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build)",
+      "Bash(xcodebuild -workspace ios/Thuocare.xcworkspace -scheme Thuocare -configuration Debug -sdk iphonesimulator build)",
+      "Bash(grep -E \"^.*error:.*$\")",
+      "Bash(grep -r RCTDevMenuConfiguration /Users/minhmice/Documents/Projects/Thuocare/ios/Pods/ --include=*.h -l)",
+      "Bash(node -e \"const p = require\\(''''./node_modules/expo/package.json''''\\); console.log\\(''''expo:'''', p.version\\); const rn = require\\(''''./node_modules/react-native/package.json''''\\); console.log\\(''''react-native:'''', rn.version\\);\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''react-native:'''', d[''''version'''']\\)\")",
+      "Bash(pnpm install:*)",
+      "Bash(pod install:*)",
       "Bash(pnpm typecheck:*)",
-      "Bash(pnpm lint:*)"
+      "Bash(pkill -f \"expo start\")",
+      "Bash(ls:*)",
+      "Bash(find /Users/minhmice/Documents/Projects/Thuocare/node_modules -name MaterialCommunityIcons*)"
     ]
   }
 }
