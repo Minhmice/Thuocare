@@ -1,33 +1,43 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   Animated,
   PanResponder,
   StyleSheet,
   View,
-} from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { Icon } from '../../wrapper/icon';
-import { Typography } from '../../wrapper/typography';
-import type { SliderConfirmProps } from './types';
+} from "react-native";
+import { useTheme } from "react-native-paper";
+import { Icon } from "../../wrapper/icon";
+import { Typography } from "../../wrapper/typography";
+import type { SliderConfirmProps } from "./types";
 
-// These match the Home hero's SlideToConfirm for visual consistency.
-const THUMB_SIZE = 56;
-const TRACK_PADDING = 6;
+// md/medium = standard compact; lg/large = primary-action (Apple-alarm inspired, visibly larger)
+const SIZE_CONFIG = {
+  medium: { thumb: 56, padding: 6 },
+  large: { thumb: 72, padding: 10 },
+} as const;
+
+type NormalizedSize = keyof typeof SIZE_CONFIG;
+
+function normalizeSize(size: SliderConfirmProps["size"]): NormalizedSize {
+  if (size === "lg" || size === "large") return "large";
+  return "medium";
+}
 
 export const SliderConfirm: React.FC<SliderConfirmProps> = ({
   onConfirm,
-  label = 'Slide to confirm',
+  label = "Slide to confirm",
   threshold = 0.75,
   disabled = false,
   loading = false,
+  size = "medium",
   style,
 }) => {
   const theme = useTheme();
 
-  // Use refs for everything the PanResponder closure must read.
-  // PanResponder is created once; refs let it see current values without
-  // needing to be recreated on each render.
+  const sz = normalizeSize(size);
+  const { thumb: THUMB_SIZE, padding: TRACK_PADDING } = SIZE_CONFIG[sz];
+
   const trackWidthRef = useRef(0);
   const onConfirmRef = useRef(onConfirm);
   const thresholdRef = useRef(threshold);
@@ -39,7 +49,6 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
 
   const thumbAnim = useRef(new Animated.Value(0)).current;
 
-  // Maximum x distance the thumb can travel.
   const maxX = () =>
     Math.max(0, trackWidthRef.current - THUMB_SIZE - TRACK_PADDING * 2);
 
@@ -54,8 +63,17 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
 
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => !blockedRef.current,
-      onMoveShouldSetPanResponder: () => !blockedRef.current,
+      // Do not claim on touch-start: let ScrollView's responder run first.
+      // This preserves vertical scroll when the user touches the slider area.
+      onStartShouldSetPanResponder: () => false,
+
+      // Only claim once movement is clearly horizontal (dx > dy, with a small
+      // dead zone of 3px to avoid accidental claims on near-diagonal drags).
+      onMoveShouldSetPanResponder: (_, gs) => {
+        if (blockedRef.current) return false;
+        return Math.abs(gs.dx) > Math.abs(gs.dy) && Math.abs(gs.dx) > 3;
+      },
+
       onPanResponderGrant: () => {
         thumbAnim.stopAnimation();
       },
@@ -64,7 +82,6 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
       },
       onPanResponderRelease: (_, gs) => {
         if (gs.dx >= maxX() * thresholdRef.current) {
-          // Snap to end, then fire confirm.
           Animated.timing(thumbAnim, {
             toValue: maxX(),
             duration: 120,
@@ -77,7 +94,6 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
         }
       },
       onPanResponderTerminate: () => {
-        // Gesture interrupted by OS (incoming call, scroll conflict, etc.)
         springBack();
       },
     })
@@ -85,9 +101,9 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
 
   // Label fades out as the thumb moves right.
   const labelOpacity = thumbAnim.interpolate({
-    inputRange: [0, 60],
+    inputRange: [0, 80],
     outputRange: [1, 0],
-    extrapolate: 'clamp',
+    extrapolate: "clamp",
   });
 
   const isBlocked = disabled || loading;
@@ -96,7 +112,7 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
     <View
       style={[
         styles.track,
-        // Only dim when disabled (not loading — the spinner communicates that).
+        { height: THUMB_SIZE + TRACK_PADDING * 2, padding: TRACK_PADDING },
         disabled && !loading && styles.trackDisabled,
         style,
       ]}
@@ -104,14 +120,13 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
         trackWidthRef.current = e.nativeEvent.layout.width;
       }}
     >
-      {/* Label — centered, fades as thumb advances */}
       {!loading && (
         <Animated.View
           style={[styles.overlay, { opacity: labelOpacity }]}
           pointerEvents="none"
         >
           <Typography
-            variant="label-sm"
+            variant={sz === "large" ? "label-md" : "label-sm"}
             weight="bold"
             style={styles.labelText}
           >
@@ -120,16 +135,22 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
         </Animated.View>
       )}
 
-      {/* Track-level loading indicator */}
       {loading && (
         <View style={styles.overlay} pointerEvents="none">
           <ActivityIndicator size="small" color="rgba(255,255,255,0.6)" />
         </View>
       )}
 
-      {/* Draggable thumb */}
       <Animated.View
-        style={[styles.thumb, { transform: [{ translateX: thumbAnim }] }]}
+        style={[
+          styles.thumb,
+          {
+            width: THUMB_SIZE,
+            height: THUMB_SIZE,
+            borderRadius: THUMB_SIZE / 2,
+            transform: [{ translateX: thumbAnim }],
+          },
+        ]}
         {...(!isBlocked ? panResponder.panHandlers : {})}
       >
         {loading ? (
@@ -137,7 +158,7 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
         ) : (
           <Icon
             name="chevron-right"
-            size={28}
+            size={sz === "large" ? 36 : 28}
             color={disabled ? theme.colors.onSurfaceVariant : theme.colors.primary}
           />
         )}
@@ -147,44 +168,32 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
 };
 
 const styles = StyleSheet.create({
-  // Default track is designed for use on the primary blue Home hero.
-  // Consumers rendering on a light background should override via `style`.
   track: {
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
     borderRadius: 9999,
-    padding: TRACK_PADDING,
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: THUMB_SIZE + TRACK_PADDING * 2,
+    flexDirection: "row",
+    alignItems: "center",
   },
   trackDisabled: {
     opacity: 0.45,
   },
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   labelText: {
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: "rgba(255, 255, 255, 0.9)",
     letterSpacing: 2.5,
   },
   thumb: {
-    width: THUMB_SIZE,
-    height: THUMB_SIZE,
-    borderRadius: THUMB_SIZE / 2,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000000',
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
     zIndex: 1,
   },
 });

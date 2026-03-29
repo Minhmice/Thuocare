@@ -52,6 +52,11 @@ This file tracks work explicitly deferred by product or implementation decisions
 - persist dose confirmation state across screen reloads (requires backend or local state store)
 - decide whether next dose hero should auto-advance to next group after confirmation
 - implement dashboard expansion (weekly/monthly reports and historical trends)
+- implement real medication images in Home reminder surface (currently pill icon placeholder in 80×80 slot in PrimaryMedicationCard)
+- adopt PrimaryMedicationCard in Meds tab detail/expanded view when that phase starts
+- implement deep linking for reminder notifications to open the Home reminder surface
+- implement per-medication confirmation in the reminder surface (group confirmation is the MVP approach)
+- revisit scroll-driven reminder collapse: currently removed because height change on collapse causes ScrollView offset jump; a stable-height container approach (overflow:hidden + opacity, no layout change) could reintroduce it if needed
 
 ## Backend Readiness
 
@@ -62,10 +67,9 @@ This file tracks work explicitly deferred by product or implementation decisions
 ## UX And Design
 
 - implement glass treatment for Dialog and Sheet components as defined in component specs
+- implement future localization (Vietnamese) and visibility settings for Lab content
 - refine Android parity for iPhone-first Expo patterns
 - tune motion and polish after auth flow implementation is stable
 - implement onboarding as multiple screens with slide animation when that phase starts
-- implement first composed component batch (ScreenHeader, AlertBanner, SummaryStatsRow)
-- implement second composed component batch (SettingsSection, SupportSection)
-- implement SliderConfirm composed component
-- refactor Home and Meds screens to use the new component system
+- refine Home screen state polish (animate AllSetCard transition, empty-schedule state)
+- consider Home empty state when no schedule data exists (currently no explicit empty treatment)

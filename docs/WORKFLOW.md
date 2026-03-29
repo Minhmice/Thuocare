@@ -1,6 +1,6 @@
 # Thuocare Execution Workflow
 
-Last updated: 2026-03-27
+Last updated: 2026-03-28
 
 ## Purpose
 
@@ -22,9 +22,13 @@ The main goal is to prevent the same mistakes from repeating:
    - the recommended model
    - a copyable code block
    - instructions for the agent to update the relevant docs after finishing the phase
-5. Do not replace prompts with docs. Both are required when the user expects prompt-driven execution.
-6. If the user says `not yet`, only update specs and planning docs. Do not write prompts or code.
-7. If a screenshot or image is missing, do not invent details from it. Fall back to chat context and existing docs.
+5. This repo always operates with exactly `2 agents`: `Gemini` and `Claude`.
+6. When the user wants prompt-driven execution, always return `2 prompts` in chat:
+   - one prompt for `Gemini`
+   - one prompt for `Claude`
+7. Do not replace prompts with docs. Both are required when the user expects prompt-driven execution.
+8. If the user says `not yet`, only update specs and planning docs. Do not write prompts or code.
+9. If a screenshot or image is missing, do not invent details from it. Fall back to chat context and existing docs.
 
 ## Required Reading Order
 
@@ -62,13 +66,16 @@ If the user wants agent-driven work:
 
 - output prompts directly in chat
 - do not hide prompts only inside markdown files
+- always output `2 prompts`: one for `Gemini` and one for `Claude`
 - put each prompt in a code block
-- state the model immediately before the code block
+- state the model immediately before each code block
 
 Prompt format expectation:
 
-- line before prompt: `Use model: <model name>`
-- then the prompt in a code block
+- first prompt line: `Use model: <Gemini model name>`
+- then the Gemini prompt in a code block
+- second prompt line: `Use model: <Claude model name>`
+- then the Claude prompt in a code block
 - then return to chat and ask the user about the next screen or next unresolved scope
 
 ### 4. Implement
@@ -85,6 +92,9 @@ When outputting prompts:
 
 - write them in English
 - keep them practical and execution-oriented
+- split responsibilities clearly between `Gemini` and `Claude`
+- prefer `Gemini` for UX direction, visual critique, state design, IA, and copy shaping
+- prefer `Claude` for implementation, TypeScript/Expo changes, API safety, and doc synchronization
 - do not add unnecessary reporting sections like:
   - `Docs created/updated: ...`
 - instead, tell the agent to update docs, and allow the agent to clean `docs/TODO_LATER.md` if entries are stale, duplicated, or no longer useful
@@ -154,6 +164,7 @@ Put in chat:
 This workflow is being violated if:
 
 - a prompt was expected but only a markdown spec was written
+- the user asked for prompts and only one agent prompt was returned
 - a new function was started without at least `5` questions
 - docs and chat drift apart
 - deferred items are left implicit instead of recorded in `docs/TODO_LATER.md`
@@ -164,6 +175,7 @@ A turn is correct when:
 
 - the user was asked enough questions
 - the relevant spec was written to `docs/`
-- the prompt was returned directly in chat when requested
-- the model was stated clearly
+- the prompts were returned directly in chat when requested
+- both agent prompts were included when prompt-driven execution was requested
+- the model was stated clearly for each prompt
 - backlog and phase docs stayed in sync

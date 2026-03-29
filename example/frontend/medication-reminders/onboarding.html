@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medication Reminders - Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] },
+          colors: {
+            brand: { DEFAULT: "#4a65f6", light: "#dde3ff", lighter: "#e8ebfb", text: "#334acc" },
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-stone-100 font-sans text-stone-900 antialiased">
+  <!-- Mobile Frame -->
+  <main class="mx-auto flex relative min-h-screen max-w-md flex-col bg-white shadow-2xl overflow-hidden">
+    
+    <!-- Illustration area -->
+    <div class="flex-1 flex items-center justify-center p-8 bg-white mt-12">
+      <div class="relative w-64 h-80 grid gap-2 grid-cols-2 grid-rows-3">
+        <!-- Top Left -->
+        <div class="bg-brand/30 rounded-t-full rounded-bl-full"></div>
+        <!-- Top Right -->
+        <div class="bg-transparent"></div>
+        <!-- Middle Left -->
+        <div class="bg-brand rounded-tl-full rounded-b-full col-span-1 row-span-2"></div>
+        <!-- Middle Right (Circle) -->
+        <div class="flex items-center justify-center">
+          <div class="w-full aspect-square bg-brand rounded-full"></div>
+        </div>
+        <!-- Bottom Right -->
+        <div class="bg-brand/10 rounded-t-full rounded-br-full"></div>
+      </div>
+    </div>
+
+    <!-- Text content -->
+    <div class="px-8 pb-12">
+      <h1 class="text-3xl font-bold leading-tight mb-4">Simplify your<br/>medication routine</h1>
+      <p class="text-stone-500 text-sm leading-relaxed mb-12">
+        We make it easy to manage your medication routine. Input your medication schedule, and let the app take care of the rest.
+      </p>
+
+      <!-- Bottom bar -->
+      <div class="flex items-center justify-between">
+        <!-- Paginator -->
+        <div class="flex items-center gap-2">
+          <div class="h-1 w-6 rounded-full bg-brand"></div>
+          <div class="h-1.5 w-1.5 rounded-full bg-stone-200"></div>
+          <div class="h-1.5 w-1.5 rounded-full bg-stone-200"></div>
+        </div>
+        <!-- Skip button -->
+        <a href="home.html" class="font-semibold text-brand text-sm hover:underline">
+          Skip
+        </a>
+      </div>
+    </div>
+
+  </main>
+</body>
+</html>

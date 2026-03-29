@@ -14,24 +14,50 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
   unit = 'liều',
   outOfStock = false,
   active = false,
+  lowStock = false,
+  highlighted = false,
+  stockLabel,
   onPress,
   style,
 }) => {
   const theme = useTheme();
 
+  const accentColor = outOfStock
+    ? '#9BA0AD'
+    : lowStock
+    ? '#A86700'
+    : theme.colors.primary;
+  const backgroundColor = highlighted
+    ? 'rgba(0, 88, 188, 0.08)'
+    : outOfStock
+    ? '#E4E4EF'
+    : theme.colors.surfaceVariant;
+  const nameColor = outOfStock
+    ? theme.colors.onSurfaceVariant
+    : theme.colors.onSurface;
+  const detailColor = theme.colors.onSurfaceVariant;
+  const resolvedStockLabel =
+    stockLabel !== undefined
+      ? stockLabel
+      : remaining === undefined
+      ? null
+      : outOfStock
+      ? 'Out of stock'
+      : `${remaining} ${unit} remaining`;
+  const resolvedStockColor = outOfStock
+    ? '#9F1D1D'
+    : lowStock
+    ? '#A86700'
+    : detailColor;
+
   const content = (
     <Card
-      variant="elevated"
-      padding={0} // We'll handle internal layout for the accent bar
-      style={[styles.container, style]}
+      variant="flat"
+      padding={0}
+      style={[styles.container, { backgroundColor }, style]}
     >
       <View style={styles.innerContainer}>
-        {/* Leading Accent Bar for Active/Important Meds */}
-        {active && (
-          <View
-            style={[styles.accentBar, { backgroundColor: theme.colors.primary }]}
-          />
-        )}
+        <View style={[styles.accentBar, { backgroundColor: accentColor }]} />
 
         <View style={styles.contentWrapper}>
           <View style={styles.headerRow}>
@@ -39,14 +65,21 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
               variant="title-md"
               weight="bold"
               numberOfLines={2}
-              style={styles.name}
+              style={[styles.name, { color: nameColor, opacity: active ? 1 : 0.98 }]}
             >
               {name}
             </Typography>
             {outOfStock && (
-              <View style={[styles.badge, { backgroundColor: theme.colors.error + '1A' }]}>
-                <Typography variant="label-sm" color={theme.colors.error} weight="bold">
-                  HẾT THUỐC
+              <View style={[styles.badge, styles.badgeOut]}>
+                <Typography variant="label-sm" color="#9F1D1D" weight="bold">
+                  HẾT
+                </Typography>
+              </View>
+            )}
+            {!outOfStock && lowStock && (
+              <View style={[styles.badge, styles.badgeLow]}>
+                <Typography variant="label-sm" color="#7A4A00" weight="bold">
+                  SẮP HẾT
                 </Typography>
               </View>
             )}
@@ -55,24 +88,22 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
           <View style={styles.detailRow}>
             <View style={styles.detailItem}>
               <Icon name="pill" size="xs" variant="onSurfaceVariant" />
-              <Typography variant="body-sm" color={theme.colors.onSurfaceVariant} style={styles.detailText}>
+              <Typography variant="body-sm" color={detailColor} style={styles.detailText}>
                 {dosage}
               </Typography>
             </View>
             <View style={styles.detailItem}>
               <Icon name="clock-outline" size="xs" variant="onSurfaceVariant" />
-              <Typography variant="body-sm" color={theme.colors.onSurfaceVariant} style={styles.detailText}>
+              <Typography variant="body-sm" color={detailColor} style={styles.detailText}>
                 {schedule}
               </Typography>
             </View>
           </View>
 
-          {remaining !== undefined && !outOfStock && (
+          {resolvedStockLabel != null && (
             <View style={styles.stockRow}>
-              <Typography variant="label-sm" color={theme.colors.onSurfaceVariant}>
-                Còn lại: <Typography variant="label-sm" weight="bold" color={remaining <= 5 ? theme.colors.error : theme.colors.onSurface}>
-                  {remaining} {unit}
-                </Typography>
+              <Typography variant="label-sm" color={resolvedStockColor}>
+                {resolvedStockLabel}
               </Typography>
             </View>
           )}
@@ -95,7 +126,7 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginVertical: 6,
-    marginHorizontal: 2, // Slight offset for shadow breathability
+    marginHorizontal: 2,
   },
   innerContainer: {
     flexDirection: 'row',
@@ -123,7 +154,13 @@ const styles = StyleSheet.create({
   badge: {
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 4,
+    borderRadius: 999,
+  },
+  badgeLow: {
+    backgroundColor: 'rgba(168, 103, 0, 0.12)',
+  },
+  badgeOut: {
+    backgroundColor: 'rgba(159, 29, 29, 0.12)',
   },
   detailRow: {
     flexDirection: 'row',

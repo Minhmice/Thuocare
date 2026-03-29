@@ -5,6 +5,7 @@ import { AppButton } from "../ui/AppButton";
 import { AppText } from "../ui/AppText";
 import { AppTextField } from "../ui/AppTextField";
 import { readAuthStore } from "../../lib/auth/storage";
+import { useLanguage } from "../../lib/i18n/LanguageProvider";
 import { paperTheme } from "../../theme/paperTheme";
 
 type Props = {
@@ -33,6 +34,7 @@ function maskPhone(phone: string): string {
 }
 
 export function ForgotPasswordModal({ visible, onDismiss }: Props) {
+  const { t } = useLanguage();
   const [identifier, setIdentifier] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
@@ -65,12 +67,12 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
           : maskPhone(account.phone);
         setResult({
           success: true,
-          message: `Recovery instructions sent to ${destination}.`
+          message: t("forgotPassword_sent", { destination })
         });
       } else {
         setResult({
           success: false,
-          message: "We could not find an account with that phone or email."
+          message: t("forgotPassword_notFound")
         });
       }
     } finally {
@@ -105,7 +107,7 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
         >
           {/* Title */}
           <AppText variant="headlineSmall" style={{ marginBottom: 8, fontWeight: "600" }}>
-            Forgot Password
+            {t("forgotPassword_title")}
           </AppText>
 
           {result ? (
@@ -134,7 +136,7 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
               </View>
 
               <AppButton onPress={onDismiss}>
-                {result.success ? "Done" : "Close"}
+                {result.success ? t("forgotPassword_done") : t("forgotPassword_close")}
               </AppButton>
             </>
           ) : (
@@ -144,12 +146,12 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
                 variant="bodyMedium"
                 style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 20, lineHeight: 20 }}
               >
-                Enter your phone number or email and we’ll send you recovery instructions.
+                {t("forgotPassword_description")}
               </AppText>
 
               <AppTextField
-                label="Phone or email"
-                placeholder="e.g., 09123456789 or you@example.com"
+                label={t("forgotPassword_label")}
+                placeholder={t("forgotPassword_placeholder")}
                 autoCapitalize="none"
                 keyboardType="email-address"
                 value={identifier}
@@ -164,11 +166,11 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
                   loading={submitting}
                   onPress={handleSubmit}
                 >
-                  Send recovery instructions
+                  {t("forgotPassword_send")}
                 </AppButton>
 
                 <Button mode="text" onPress={onDismiss} disabled={submitting}>
-                  Cancel
+                  {t("common_cancel")}
                 </Button>
               </View>
             </>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medication Reminders — Mockups</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+          },
+          colors: {
+            brand: {
+              DEFAULT: "#4a65f6",
+              light: "#dde3ff",
+              dark: "#334acc",
+            },
+            surface: "#f8f9fa",
+            textMain: "#1a1a1a",
+            textMuted: "#8e8e93",
+            med: {
+              blueBg: "#eef2ff",
+              blueIcon: "#818cf8",
+              greenBg: "#f0fdf4",
+              greenIcon: "#86efac",
+              orangeBg: "#fff7ed",
+              orangeIcon: "#fdba74",
+            }
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-stone-100 font-sans text-textMain antialiased">
+  <main class="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center px-6 py-12">
+    <div class="mb-8">
+      <div class="h-16 w-16 rounded-2xl bg-brand text-white flex items-center justify-center shadow-lg mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+        </svg>
+      </div>
+    </div>
+    <h1 class="text-2xl font-bold text-center">Medication Reminders</h1>
+    <p class="mt-2 text-center text-sm text-stone-500 mb-10">Static HTML mockups — Tailwind CDN</p>
+    
+    <nav class="w-full max-w-sm flex flex-col gap-3" aria-label="Mockup screens">
+      
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mt-2 mb-1">Auth Flow</h2>
+      <a href="sign-in.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Sign In</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="sign-up.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Sign Up</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="auth-success.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Auth Success Transition</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="forgot-password.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Forgot Password</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mt-4 mb-1">Onboarding</h2>
+      <a href="onboarding.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Welcome (Illustration)</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="onboarding-survey.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Onboarding Survey</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mt-4 mb-1">Main App (Tabs)</h2>
+      <a href="home.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Today Reminders (Home)</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="meds.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Medicines List</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="me.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Me (Profile)</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mt-4 mb-1">Sub-flows</h2>
+      <a href="medication.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Medication Details</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="add-medication.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Add Medication</span>
+        <svg class="h-4 w-4 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+
+      <h2 class="text-xs font-bold text-stone-400 uppercase tracking-widest mt-4 mb-1">Cùng repo (folder khác)</h2>
+      <p class="text-[11px] leading-relaxed text-stone-500 px-1">Chạy <code class="rounded bg-stone-200 px-1">serve</code> từ <code class="rounded bg-stone-200 px-1">example/frontend</code> để các link ../ mở được.</p>
+      <a href="../screen_feature/pages/index.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">screen_feature/pages (hub đầy đủ)</span>
+        <svg class="h-4 w-4 shrink-0 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="../screen_feature/pages/welcome.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Welcome (pre-auth)</span>
+        <svg class="h-4 w-4 shrink-0 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="../screen_feature/pages/auth-success-done.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Onboarding xong → Home</span>
+        <svg class="h-4 w-4 shrink-0 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="../screen_feature/pages/notifications.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-brand/20">
+        <span class="font-semibold text-sm">Notifications</span>
+        <svg class="h-4 w-4 shrink-0 text-stone-400 group-hover:text-brand transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+      <a href="../drug-cabinet/index.html" class="group flex items-center justify-between rounded-xl bg-white p-4 shadow-sm transition-all hover:shadow-md hover:ring-2 hover:ring-amber-600/20">
+        <span class="font-semibold text-sm">Drug Cabinet (theme xanh/vàng)</span>
+        <svg class="h-4 w-4 shrink-0 text-stone-400 group-hover:text-amber-700 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+      </a>
+    </nav>
+  </main>
+</body>
+</html>

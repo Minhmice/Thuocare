@@ -41,6 +41,9 @@
   "pnpm": {
     "overrides": {
       "react-dom": "19.2.0"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "unrs-resolver"
+    ]
   }
 }

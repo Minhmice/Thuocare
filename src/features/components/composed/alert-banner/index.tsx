@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { Card } from '../../wrapper/card';
 import { Typography } from '../../wrapper/typography';
@@ -10,6 +10,7 @@ import { AlertBannerProps, AlertVariant } from './types';
 export const AlertBanner: React.FC<AlertBannerProps> = ({
   variant = 'info',
   title,
+  description,
   icon,
   actionLabel,
   onAction,
@@ -23,13 +24,15 @@ export const AlertBanner: React.FC<AlertBannerProps> = ({
         return {
           background: theme.colors.error,
           text: '#FFFFFF',
+          secondaryText: 'rgba(255, 255, 255, 0.82)',
           icon: '#FFFFFF',
           defaultIcon: 'alert-octagon',
         };
       case 'warning':
         return {
-          background: 'rgba(200, 79, 61, 0.15)', // theme.colors.tertiary at 15%
+          background: 'rgba(200, 79, 61, 0.15)',
           text: theme.colors.tertiary,
+          secondaryText: theme.colors.onSurfaceVariant,
           icon: theme.colors.tertiary,
           defaultIcon: 'alert-circle',
         };
@@ -38,6 +41,7 @@ export const AlertBanner: React.FC<AlertBannerProps> = ({
         return {
           background: theme.colors.surfaceVariant,
           text: theme.colors.onSurfaceVariant,
+          secondaryText: theme.colors.onSurfaceVariant,
           icon: theme.colors.onSurfaceVariant,
           defaultIcon: 'information',
         };
@@ -62,14 +66,25 @@ export const AlertBanner: React.FC<AlertBannerProps> = ({
           name={(icon || vStyles.defaultIcon) as any}
           size="sm"
           color={vStyles.icon}
+          style={styles.icon}
         />
-        <Typography
-          variant="label-lg"
-          weight="semi-bold"
-          style={[styles.title, { color: vStyles.text }]}
-        >
-          {title}
-        </Typography>
+        <View style={styles.textContent}>
+          <Typography
+            variant="label-lg"
+            weight="semi-bold"
+            style={[styles.title, { color: vStyles.text }]}
+          >
+            {title}
+          </Typography>
+          {description && (
+            <Typography
+              variant="body-sm"
+              style={[styles.description, { color: vStyles.secondaryText }]}
+            >
+              {description}
+            </Typography>
+          )}
+        </View>
       </View>
       {actionLabel && onAction && (
         <Button
@@ -94,17 +109,28 @@ const styles = StyleSheet.create({
   },
   content: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flex: 1,
   },
-  title: {
+  icon: {
+    marginTop: 2,
+  },
+  textContent: {
     marginLeft: 12,
+    flex: 1,
     flexShrink: 1,
+  },
+  title: {
+    flexShrink: 1,
+  },
+  description: {
+    marginTop: 4,
   },
   actionButton: {
     paddingHorizontal: 0,
     height: 'auto',
     marginLeft: 8,
+    alignSelf: 'center',
   },
   actionLabel: {
     fontSize: 14,

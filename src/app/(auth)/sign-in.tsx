@@ -10,11 +10,13 @@ import { AppText } from "../../components/ui/AppText";
 import { AppTextField } from "../../components/ui/AppTextField";
 import { GlassSurface } from "../../components/ui/GlassSurface";
 import { useAuth } from "../../lib/auth/AuthProvider";
+import { useLanguage } from "../../lib/i18n/LanguageProvider";
 import { paperTheme } from "../../theme/paperTheme";
 
 export default function SignInScreen() {
   const { signIn, status } = useAuth();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const [mode, setMode] = useState<"phone" | "email">("phone");
   const [identifier, setIdentifier] = useState("");
@@ -35,7 +37,7 @@ export default function SignInScreen() {
 
   async function handleSubmit() {
     if (!identifier.trim() || !password.trim()) {
-      setError("Please fill in all fields.");
+      setError(t("auth_fillAllFields"));
       return;
     }
 
@@ -44,7 +46,7 @@ export default function SignInScreen() {
       setError(null);
       await signIn({ identifier, password });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to sign in.");
+      setError(err instanceof Error ? err.message : t("auth_signInUnable"));
     } finally {
       setSubmitting(false);
     }
@@ -61,7 +63,7 @@ export default function SignInScreen() {
             Thuocare
           </AppText>
           <AppText variant="bodyLarge" style={{ color: paperTheme.colors.onSurfaceVariant }}>
-            A calmer medication routine for everyday personal care.
+            {t("auth_tagline")}
           </AppText>
         </View>
       </GlassSurface>
@@ -71,7 +73,7 @@ export default function SignInScreen() {
         <View style={{ gap: 16 }}>
           {/* Mode toggle */}
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-            <AppText variant="titleMedium">{mode === "phone" ? "Phone number" : "Email address"}</AppText>
+            <AppText variant="titleMedium">{mode === "phone" ? t("auth_phoneNumber") : t("auth_emailAddress")}</AppText>
             <Button
               mode="text"
               compact
@@ -82,15 +84,15 @@ export default function SignInScreen() {
               }}
               labelStyle={{ fontSize: 12 }}
             >
-              {mode === "phone" ? "Use email" : "Use phone"}
+              {mode === "phone" ? t("auth_useEmail") : t("auth_usePhone")}
             </Button>
           </View>
 
           {/* Identifier input */}
           {mode === "phone" ? (
             <AppTextField
-              label="Phone number"
-              placeholder="e.g., 09123456789"
+              label={t("auth_phoneNumber")}
+              placeholder={t("auth_phonePlaceholder")}
               keyboardType="phone-pad"
               autoComplete="tel"
               value={identifier}
@@ -99,8 +101,8 @@ export default function SignInScreen() {
             />
           ) : (
             <AppTextField
-              label="Email address"
-              placeholder="you@example.com"
+              label={t("auth_emailAddress")}
+              placeholder={t("auth_emailPlaceholder")}
               keyboardType="email-address"
               autoCapitalize="none"
               autoComplete="email"
@@ -113,7 +115,7 @@ export default function SignInScreen() {
           {/* Password input with visibility toggle */}
           <View style={{ position: "relative" }}>
             <AppTextField
-              label="Password"
+              label={t("auth_password")}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!passwordVisible}
@@ -134,7 +136,7 @@ export default function SignInScreen() {
                 compact
                 labelStyle={{ fontSize: 12 }}
               >
-                {passwordVisible ? "Hide" : "Show"}
+                {passwordVisible ? t("auth_hide") : t("auth_show")}
               </Button>
             </Pressable>
           </View>
@@ -152,7 +154,7 @@ export default function SignInScreen() {
             loading={submitting}
             onPress={handleSubmit}
           >
-            Sign in
+            {t("auth_signIn")}
           </AppButton>
 
           {/* Forgot password link */}
@@ -161,7 +163,7 @@ export default function SignInScreen() {
             style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
           >
             <AppText style={{ color: paperTheme.colors.primary, textAlign: "right", fontSize: 13 }}>
-              Forgot password?
+              {t("auth_forgotPassword")}
             </AppText>
           </Pressable>
         </View>
@@ -170,13 +172,13 @@ export default function SignInScreen() {
       {/* Create account block */}
       <GlassSurface style={{ borderRadius: 28, padding: 20 }}>
         <View style={{ gap: 10 }}>
-          <AppText variant="titleMedium">First time here?</AppText>
+          <AppText variant="titleMedium">{t("auth_firstTime")}</AppText>
           <Pressable
             onPress={() => router.push("/sign-up")}
             style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
           >
             <AppText style={{ color: paperTheme.colors.primary, fontSize: 14 }}>
-              Create a new prototype account →
+              {t("auth_createPrototypeAccount")}
             </AppText>
           </Pressable>
         </View>
@@ -188,13 +190,13 @@ export default function SignInScreen() {
           variant="bodySmall"
           style={{ color: paperTheme.colors.onSurfaceVariant, textAlign: "center", lineHeight: 18 }}
         >
-          By continuing you agree to our{" "}
+          {t("auth_legalAgreement")}
           <AppText
             variant="bodySmall"
             style={{ color: paperTheme.colors.primary, fontWeight: "600" }}
             onPress={() => setLegalVisible(true)}
           >
-            Terms and Privacy Policy
+            {t("auth_termsPrivacy")}
           </AppText>
         </AppText>
       </View>
@@ -223,29 +225,29 @@ export default function SignInScreen() {
             }}
           >
             <AppText variant="headlineSmall" style={{ marginBottom: 16 }}>
-              Terms & Privacy
+              {t("auth_legalTitle")}
             </AppText>
 
             <ScrollView style={{ maxHeight: 300, marginBottom: 20 }}>
               <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                This is a prototype application in development mode.
+                {t("auth_legalLine1")}
               </AppText>
               <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                All data is stored locally on your device using secure storage. No data is sent to servers in this prototype phase.
+                {t("auth_legalLine2")}
               </AppText>
               <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                By using this app, you acknowledge that:
+                {t("auth_legalLine3")}
               </AppText>
               <AppText variant="bodySmall" style={{ lineHeight: 20, marginLeft: 12, marginBottom: 12 }}>
-                • This is a prototype and may contain bugs{"\n"}• Your data is stored locally and not backed up{"\n"}• You can delete the app to remove all data
+                {t("auth_legalBullets")}
               </AppText>
               <AppText variant="bodySmall" style={{ lineHeight: 20 }}>
-                Future versions will include a full privacy policy and terms of service.
+                {t("auth_legalLine4")}
               </AppText>
             </ScrollView>
 
             <AppButton mode="contained" onPress={() => setLegalVisible(false)}>
-              I understand
+              {t("auth_understand")}
             </AppButton>
           </View>
         </View>

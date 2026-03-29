@@ -14,7 +14,10 @@ export type ScheduledDose = {
 export type NextDoseMedication = {
   id: string;
   name: string;
+  /** Benefit / category text shown below the name. E.g. "Cardiovascular support" */
   instruction: string;
+  /** Dosage note shown above the name. E.g. "1 viên · trước bữa ăn" */
+  note?: string;
 };
 
 export type NextDoseGroup = {

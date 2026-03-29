@@ -1,6 +1,15 @@
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { StyleProp, ViewStyle } from "react-native";
+
+export type SliderConfirmSize = "medium" | "large" | "md" | "lg";
 
 export interface SliderConfirmProps {
+  /**
+   * Visual size of the slider.
+   * - `medium` (default): standard slider
+   * - `large`: enlarged primary-action slider (~64px high track)
+   * Legacy aliases `md` and `lg` are supported for backward compatibility.
+   */
+  size?: SliderConfirmSize;
   /**
    * Called once when the thumb crosses the confirm threshold and the snap
    * animation completes. The parent is responsible for what happens next:

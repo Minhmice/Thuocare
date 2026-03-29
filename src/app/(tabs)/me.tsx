@@ -2,9 +2,13 @@ import { useRouter } from "expo-router";
 import React from 'react';
 import { Alert, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
+import { LoadingState } from "../../components/state/LoadingState";
 import { AppScreen } from "../../components/ui/AppScreen";
 import { useAuth } from "../../lib/auth/AuthProvider";
 import type { ReminderPreference, RoutineStage } from "../../lib/auth/storage";
+import type { AppLanguage } from "../../lib/i18n/storage";
+import { useLanguage } from "../../lib/i18n/LanguageProvider";
+import { MainTabBar } from "../../features/components/composed/main-tab-bar";
 
 // New component system
 import { ScreenHeader } from "../../features/components/composed/screen-header";
@@ -24,25 +28,13 @@ function getInitials(name: string): string {
   return (parts[0]?.slice(0, 2) ?? "?").toUpperCase();
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
+function formatDate(iso: string, locale: string): string {
+  return new Date(iso).toLocaleDateString(locale, {
     year: "numeric",
     month: "long",
     day: "numeric"
   });
 }
-
-const REMINDER_LABEL: Record<ReminderPreference, string> = {
-  quiet: "Gentle",
-  balanced: "Balanced",
-  firm: "Firm"
-};
-
-const ROUTINE_LABEL: Record<RoutineStage, string> = {
-  starting: "Short-term illness",
-  steady: "Ongoing condition",
-  resetting: "Not sure yet"
-};
 
 // ─── screen ─────────────────────────────────────────────────────────────────
 
@@ -50,31 +42,65 @@ export default function MeScreen() {
   const { record, signOut } = useAuth();
   const router = useRouter();
   const theme = useTheme();
+  const { language, locale, setLanguage, t } = useLanguage();
 
   // Should never be null here — tabs are protected — but guard gracefully
   if (!record) {
-    return (
-      <AppScreen>
-        <Typography color={theme.colors.onSurfaceVariant}>
-          Loading profile…
-        </Typography>
-      </AppScreen>
-    );
+    return <LoadingState />;
   }
 
+  const reminderLabelByPreference: Record<ReminderPreference, string> = {
+    quiet: t("reminder_gentle"),
+    balanced: t("reminder_balanced"),
+    firm: t("reminder_firm"),
+  };
+
+  const routineLabelByStage: Record<RoutineStage, string> = {
+    starting: t("routine_starting"),
+    steady: t("routine_steady"),
+    resetting: t("routine_resetting"),
+  };
+
   const reminderLabel = record.reminderPreference
-    ? REMINDER_LABEL[record.reminderPreference]
-    : "Not set";
+    ? reminderLabelByPreference[record.reminderPreference]
+    : t("settings_notSet");
 
   const routineLabel = record.routineStage
-    ? ROUTINE_LABEL[record.routineStage]
-    : "Not set";
+    ? routineLabelByStage[record.routineStage]
+    : t("settings_notSet");
+
+  const languageValue =
+    language === "vi"
+      ? t("settings_languageValueVietnamese")
+      : t("settings_languageValueEnglish");
+
+  async function chooseLanguage(nextLanguage: AppLanguage) {
+    await setLanguage(nextLanguage);
+  }
+
+  function handleLanguagePicker() {
+    Alert.alert(t("settings_languagePickerTitle"), undefined, [
+      {
+        text: t("settings_languageEnglish"),
+        onPress: () => {
+          void chooseLanguage("en");
+        },
+      },
+      {
+        text: t("settings_languageVietnamese"),
+        onPress: () => {
+          void chooseLanguage("vi");
+        },
+      },
+      { text: t("common_cancel"), style: "cancel" },
+    ]);
+  }
 
   function handleSignOut() {
-    Alert.alert("Sign out", "Are you sure you want to sign out?", [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert(t("settings_signOutTitle"), t("settings_signOutConfirm"), [
+      { text: t("common_cancel"), style: "cancel" },
       {
-        text: "Sign out",
+        text: t("settings_signOut"),
         style: "destructive",
         onPress: async () => {
           await signOut();
@@ -87,20 +113,20 @@ export default function MeScreen() {
   const accountItems = [
     { 
       id: 'phone', 
-      label: 'Phone', 
+      label: t("settings_phone"), 
       value: record.phone, 
-      onPress: () => Alert.alert("Coming soon", "Edit phone feature is in development.") 
+      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_phoneSoon")) 
     },
     { 
       id: 'email', 
-      label: 'Email', 
-      value: record.email ?? "Not added", 
-      onPress: () => Alert.alert("Coming soon", "Edit email feature is in development.") 
+      label: t("settings_email"), 
+      value: record.email ?? t("settings_notAdded"), 
+      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_emailSoon")) 
     },
     { 
       id: 'member_since', 
-      label: 'Member since', 
-      value: formatDate(record.createdAt), 
+      label: t("settings_memberSince"), 
+      value: formatDate(record.createdAt, locale), 
       onPress: () => {}, 
       showChevron: false 
     },
@@ -109,92 +135,100 @@ export default function MeScreen() {
   const reminderItems = [
     { 
       id: 'intensity', 
-      label: 'Reminder intensity', 
+      label: t("settings_reminderIntensity"), 
       value: reminderLabel, 
-      onPress: () => Alert.alert("Coming soon", "Notification settings are coming soon.") 
+      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_notificationSoon")) 
     },
     { 
       id: 'condition', 
-      label: 'Condition type', 
+      label: t("settings_conditionType"), 
       value: routineLabel, 
-      onPress: () => Alert.alert("Coming soon", "Routine settings are coming soon.") 
+      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_routineSoon")) 
     },
     { 
       id: 'notifications', 
-      label: 'Notifications', 
-      value: 'Coming soon', 
-      onPress: () => Alert.alert("Coming soon", "Push notification settings are coming soon.") 
+      label: t("settings_notifications"), 
+      value: t("common_comingSoon"), 
+      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_pushSoon")) 
+    },
+    {
+      id: "language",
+      label: t("settings_language"),
+      value: languageValue,
+      onPress: handleLanguagePicker,
     },
   ];
 
   return (
-    <AppScreen>
-      <ScreenHeader 
-        title="Tài khoản" 
-        subtitle="Quản lý thông tin cá nhân"
-        style={styles.header}
-      />
+    <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+      <AppScreen>
+        <ScreenHeader 
+          title={t("settings_title")} 
+          subtitle={t("settings_subtitle")}
+          style={styles.header}
+        />
 
-      {/* ── 1. Profile summary ─────────────────────────────────────────── */}
-      <Card variant="elevated" style={styles.profileCard}>
-        <View style={styles.profileContent}>
-          {/* Avatar — initials placeholder */}
-          <View
-            style={[
-              styles.avatar,
-              { backgroundColor: theme.colors.primary }
-            ]}
-          >
-            <Typography
-              variant="headline-sm"
-              weight="bold"
-              color="#FFFFFF"
+        {/* ── 1. Profile summary ─────────────────────────────────────────── */}
+        <Card variant="elevated" style={styles.profileCard}>
+          <View style={styles.profileContent}>
+            {/* Avatar — initials placeholder */}
+            <View
+              style={[
+                styles.avatar,
+                { backgroundColor: theme.colors.primary }
+              ]}
             >
-              {getInitials(record.fullName)}
-            </Typography>
-          </View>
-
-          {/* Identity */}
-          <View style={styles.identity}>
-            <Typography variant="title-lg" weight="bold">
-              {record.fullName}
-            </Typography>
-            <Typography variant="body-md" color={theme.colors.onSurfaceVariant}>
-              {record.phone}
-            </Typography>
-            {record.email ? (
-              <Typography variant="body-sm" color={theme.colors.onSurfaceVariant}>
-                {record.email}
+              <Typography
+                variant="headline-sm"
+                weight="bold"
+                color="#FFFFFF"
+              >
+                {getInitials(record.fullName)}
               </Typography>
-            ) : null}
+            </View>
+
+            {/* Identity */}
+            <View style={styles.identity}>
+              <Typography variant="title-lg" weight="bold">
+                {record.fullName}
+              </Typography>
+              <Typography variant="body-md" color={theme.colors.onSurfaceVariant}>
+                {record.phone}
+              </Typography>
+              {record.email ? (
+                <Typography variant="body-sm" color={theme.colors.onSurfaceVariant}>
+                  {record.email}
+                </Typography>
+              ) : null}
+            </View>
           </View>
-        </View>
-      </Card>
+        </Card>
 
-      {/* ── 2. Account details ─────────────────────────────────────────── */}
-      <SettingsSection title="Thông tin chung" items={accountItems} />
+        {/* ── 2. Account details ─────────────────────────────────────────── */}
+        <SettingsSection title={t("settings_section_account")} items={accountItems} />
 
-      {/* ── 3. Reminders & notifications ───────────────────────────────── */}
-      <SettingsSection title="Nhắc nhở & Thông báo" items={reminderItems} />
+        {/* ── 3. Reminders & notifications ───────────────────────────────── */}
+        <SettingsSection title={t("settings_section_reminders")} items={reminderItems} />
 
-      {/* ── 4. Support ─────────────────────────────────────────────────── */}
-      <SupportSection
-        title="Hỗ trợ & Trợ giúp"
-        description="Bạn cần hỗ trợ về thuốc hoặc ứng dụng? Đội ngũ của chúng tôi luôn sẵn sàng."
-        actionLabel="Nhận hỗ trợ"
-        onPress={() => Alert.alert("Hỗ trợ", "Tính năng hỗ trợ sẽ sớm ra mắt.")}
-      />
+        {/* ── 4. Support ─────────────────────────────────────────────────── */}
+        <SupportSection
+          title={t("settings_section_support")}
+          description={t("settings_supportDescription")}
+          actionLabel={t("settings_supportAction")}
+          onPress={() => Alert.alert(t("settings_supportSoonTitle"), t("settings_supportSoon"))}
+        />
 
-      {/* ── 5. Sign out ────────────────────────────────────────────────── */}
-      <Button
-        variant="text"
-        label="Đăng xuất"
-        onPress={handleSignOut}
-        labelStyle={{ color: theme.colors.error }}
-        style={styles.signOutButton}
-      />
-
-    </AppScreen>
+        {/* ── 5. Sign out ────────────────────────────────────────────────── */}
+        <Button
+          variant="text"
+          label={t("settings_signOut")}
+          onPress={handleSignOut}
+          labelStyle={{ color: theme.colors.error }}
+          style={styles.signOutButton}
+        />
+      </AppScreen>
+      <MainTabBar />
+    </View>
   );
 }
 
@@ -225,6 +259,6 @@ const styles = StyleSheet.create({
   },
   signOutButton: {
     marginTop: 8,
-    marginBottom: 40,
+    marginBottom: 120, // Space for internal tab bar
   },
 });

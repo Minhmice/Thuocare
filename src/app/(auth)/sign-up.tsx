@@ -10,11 +10,13 @@ import { AppText } from "../../components/ui/AppText";
 import { AppTextField } from "../../components/ui/AppTextField";
 import { GlassSurface } from "../../components/ui/GlassSurface";
 import { useAuth } from "../../lib/auth/AuthProvider";
+import { useLanguage } from "../../lib/i18n/LanguageProvider";
 import { paperTheme } from "../../theme/paperTheme";
 
 export default function SignUpScreen() {
   const { signUp, status } = useAuth();
   const router = useRouter();
+  const { t } = useLanguage();
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
@@ -49,22 +51,22 @@ export default function SignUpScreen() {
     setError(null);
 
     if (!fullName.trim() || !phone.trim() || !password.trim() || !confirmPassword.trim()) {
-      setError("Please fill in all required fields.");
+      setError(t("auth_requiredFields"));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError(t("auth_passwordsNoMatch"));
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+      setError(t("auth_passwordLength"));
       return;
     }
 
     if (!legalAccepted) {
-      setError("Please accept the Terms and Privacy Policy to continue.");
+      setError(t("auth_acceptTerms"));
       return;
     }
 
@@ -78,7 +80,7 @@ export default function SignUpScreen() {
       });
       // Status becomes "needsOnboarding" → Redirect above fires
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to create account.");
+      setError(err instanceof Error ? err.message : t("auth_createAccountUnable"));
     } finally {
       setSubmitting(false);
     }
@@ -91,7 +93,7 @@ export default function SignUpScreen() {
       {/* Back nav */}
       <View>
         <Button mode="text" icon="arrow-left" onPress={() => router.back()} compact>
-          Back to sign in
+          {t("auth_backToSignIn")}
         </Button>
       </View>
 
@@ -99,10 +101,10 @@ export default function SignUpScreen() {
       <GlassSurface style={{ borderRadius: 32, padding: 24 }}>
         <View style={{ gap: 8 }}>
           <AppText variant="headlineMedium" style={{ fontWeight: "600" }}>
-            Create Account
+            {t("auth_createAccountTitle")}
           </AppText>
           <AppText variant="bodyMedium" style={{ color: paperTheme.colors.onSurfaceVariant }}>
-            Set up your local prototype account. All data stays on your device.
+            {t("auth_createAccountSubtitle")}
           </AppText>
         </View>
       </GlassSurface>
@@ -113,8 +115,8 @@ export default function SignUpScreen() {
 
           {/* Full name */}
           <AppTextField
-            label="Full name"
-            placeholder="Your full name"
+            label={t("auth_fullName")}
+            placeholder={t("auth_fullNamePlaceholder")}
             autoCapitalize="words"
             autoComplete="name"
             value={fullName}
@@ -124,8 +126,8 @@ export default function SignUpScreen() {
 
           {/* Phone — required, primary identity */}
           <AppTextField
-            label="Phone number"
-            placeholder="e.g., 09123456789"
+            label={t("auth_phoneNumber")}
+            placeholder={t("auth_phonePlaceholder")}
             keyboardType="phone-pad"
             autoComplete="tel"
             value={phone}
@@ -135,8 +137,8 @@ export default function SignUpScreen() {
 
           {/* Email — optional */}
           <AppTextField
-            label="Email address (optional)"
-            placeholder="you@example.com"
+            label={t("auth_emailOptional")}
+            placeholder={t("auth_emailPlaceholder")}
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
@@ -148,7 +150,7 @@ export default function SignUpScreen() {
           {/* Password with show/hide */}
           <View style={{ position: "relative" }}>
             <AppTextField
-              label="Password"
+              label={t("auth_password")}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!passwordVisible}
@@ -160,7 +162,7 @@ export default function SignUpScreen() {
               style={{ position: "absolute", right: 12, top: 34, padding: 8 }}
             >
               <Button mode="text" compact labelStyle={{ fontSize: 12 }}>
-                {passwordVisible ? "Hide" : "Show"}
+                {passwordVisible ? t("auth_hide") : t("auth_show")}
               </Button>
             </Pressable>
           </View>
@@ -168,7 +170,7 @@ export default function SignUpScreen() {
           {/* Confirm password with show/hide */}
           <View style={{ position: "relative" }}>
             <AppTextField
-              label="Confirm password"
+              label={t("auth_confirmPassword")}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry={!confirmPasswordVisible}
@@ -180,7 +182,7 @@ export default function SignUpScreen() {
               style={{ position: "absolute", right: 12, top: 34, padding: 8 }}
             >
               <Button mode="text" compact labelStyle={{ fontSize: 12 }}>
-                {confirmPasswordVisible ? "Hide" : "Show"}
+                {confirmPasswordVisible ? t("auth_hide") : t("auth_show")}
               </Button>
             </Pressable>
           </View>
@@ -201,7 +203,7 @@ export default function SignUpScreen() {
             />
             <View style={{ flex: 1, paddingTop: 8 }}>
               <AppText variant="bodySmall" style={{ lineHeight: 18 }}>
-                I agree to the{" "}
+                {t("auth_agreePrefix")}
                 <AppText
                   variant="bodySmall"
                   style={{ color: paperTheme.colors.primary, fontWeight: "600" }}
@@ -210,7 +212,7 @@ export default function SignUpScreen() {
                     setLegalModalVisible(true);
                   }}
                 >
-                  Terms and Privacy Policy
+                  {t("auth_termsPrivacy")}
                 </AppText>
               </AppText>
             </View>
@@ -237,7 +239,7 @@ export default function SignUpScreen() {
                   <AppText
                     style={{ color: paperTheme.colors.primary, fontSize: 13, fontWeight: "600" }}
                   >
-                    Go to Forgot Password →
+                    {`${t("auth_forgotPassword")} →`}
                   </AppText>
                 </Pressable>
               ) : null}
@@ -246,7 +248,7 @@ export default function SignUpScreen() {
 
           {/* Submit */}
           <AppButton disabled={!canSubmit} loading={submitting} onPress={handleSubmit}>
-            Create account
+            {t("auth_createAccountButton")}
           </AppButton>
 
           {/* Sign-in link */}
@@ -256,7 +258,7 @@ export default function SignUpScreen() {
               style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
             >
               <AppText style={{ color: paperTheme.colors.primary, fontSize: 13 }}>
-                Already have an account? Sign in
+                {t("auth_haveAccount")}
               </AppText>
             </Pressable>
           </View>
@@ -295,25 +297,24 @@ export default function SignUpScreen() {
             }}
           >
             <AppText variant="headlineSmall" style={{ marginBottom: 16 }}>
-              Terms & Privacy
+              {t("auth_legalTitle")}
             </AppText>
 
             <ScrollView style={{ maxHeight: 300, marginBottom: 20 }}>
               <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                This is a prototype application in development mode.
+                {t("auth_legalLine1")}
               </AppText>
               <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                All data is stored locally on your device using secure storage. No data is sent
-                to servers in this prototype phase.
+                {t("auth_legalLine2")}
               </AppText>
               <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                By creating an account you acknowledge that:
+                {t("auth_legalCreateLine3")}
               </AppText>
               <AppText variant="bodySmall" style={{ lineHeight: 20, marginLeft: 12, marginBottom: 12 }}>
-                {"• This is a prototype and may contain bugs\n• Your data is stored locally and not backed up\n• You can delete the app to remove all data"}
+                {t("auth_legalBullets")}
               </AppText>
               <AppText variant="bodySmall" style={{ lineHeight: 20 }}>
-                Future versions will include a full privacy policy and terms of service.
+                {t("auth_legalLine4")}
               </AppText>
             </ScrollView>
 
@@ -323,7 +324,7 @@ export default function SignUpScreen() {
                 setLegalModalVisible(false);
               }}
             >
-              I understand and agree
+              {t("auth_understandAgree")}
             </AppButton>
           </View>
         </View>

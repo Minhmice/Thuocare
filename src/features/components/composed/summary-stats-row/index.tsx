@@ -6,6 +6,7 @@ import { SummaryStatsRowProps } from './types';
 
 export const SummaryStatsRow: React.FC<SummaryStatsRowProps> = ({
   items,
+  segmented = false,
   style,
 }) => {
   const theme = useTheme();
@@ -13,23 +14,42 @@ export const SummaryStatsRow: React.FC<SummaryStatsRowProps> = ({
   return (
     <View style={[styles.container, style]}>
       {items.map((item, index) => (
-        <View key={`${item.label}-${index}`} style={styles.item}>
-          <Typography
-            variant="headline-sm"
-            weight="bold"
-            color={item.color || theme.colors.onSurface}
-          >
-            {item.value}
-          </Typography>
-          <Typography
-            variant="label-sm"
-            weight="medium"
-            color={theme.colors.onSurfaceVariant}
-            style={styles.label}
-          >
-            {item.label.toUpperCase()}
-          </Typography>
-        </View>
+        <React.Fragment key={`${item.label}-${index}`}>
+          {index > 0 && segmented && (
+            <View
+              style={[
+                styles.divider,
+                { backgroundColor: 'rgba(0, 88, 188, 0.10)' },
+              ]}
+            />
+          )}
+          <View style={styles.item}>
+            <Typography
+              variant={item.emphasize ? 'headline-md' : 'headline-sm'}
+              weight="bold"
+              color={item.color || theme.colors.onSurface}
+            >
+              {item.value}
+            </Typography>
+            <Typography
+              variant="label-sm"
+              weight="medium"
+              color={theme.colors.onSurfaceVariant}
+              style={styles.label}
+            >
+              {item.label.toUpperCase()}
+            </Typography>
+            {item.helperText && (
+              <Typography
+                variant="body-sm"
+                color={theme.colors.onSurfaceVariant}
+                style={styles.helperText}
+              >
+                {item.helperText}
+              </Typography>
+            )}
+          </View>
+        </React.Fragment>
       ))}
     </View>
   );
@@ -48,8 +68,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  divider: {
+    width: 1,
+    alignSelf: 'stretch',
+    marginVertical: 4,
+  },
   label: {
     marginTop: 2,
     letterSpacing: 0.5,
+  },
+  helperText: {
+    marginTop: 2,
+    opacity: 0.75,
   },
 });

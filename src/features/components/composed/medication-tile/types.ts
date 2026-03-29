@@ -8,6 +8,9 @@ export interface MedicationTileProps {
   unit?: string;
   outOfStock?: boolean;
   active?: boolean;
+  lowStock?: boolean;
+  highlighted?: boolean;
+  stockLabel?: string | null;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }

@@ -5,9 +5,11 @@ export interface StatItem {
   value: string | number;
   color?: string;
   emphasize?: boolean;
+  helperText?: string;
 }
 
 export interface SummaryStatsRowProps {
   items: StatItem[];
   style?: StyleProp<ViewStyle>;
+  segmented?: boolean;
 }

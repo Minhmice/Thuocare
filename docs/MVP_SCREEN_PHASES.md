@@ -339,9 +339,13 @@ Use `Gemini 3` for:
 | Z-12 | meds UX definition (list-first + compact dashboard) | Meds | `Gemini 3` | done | captured in `docs/phase implement/gemini/meds.md` |
 | **Z-13** | **meds implementation** | **Meds** | **`Claude Sonnet`** | **done** | **compact dashboard + list tiles + low/out-of-stock styling + 1s post-add highlight + mock diversity** |
 | A-01 | theme and tab shell alignment | shell | `Claude Sonnet` | pending |
-| B-01 | shared state redesign | shared | `Claude Sonnet` | pending |
+| B-01 | shared state redesign | shared | `Gemini 3` | done | captured in `docs/screen_feature/shared-states.md` |
+| **B-02** | **shared state implementation** | **shared** | **`Claude Sonnet`** | **done** | **LoadingState: centered Spinner + fade-in; ErrorState: icon/Typography/Button + Vietnamese defaults; EmptyState: new composed component; Meds + Me updated** |
+| **G-01** | **Lab screen implementation** | **Lab** | **`Claude Sonnet`** | **done** | **primitives → wrappers → composed → snippets → toast; tabBarButton gate; inline state toggles** |
 | **C-00** | **home UX and flow definition** | **Home** | **`Gemini 3`** | **done** | **captured in `docs/phase implement/gemini/home.md`** |
 | **C-01** | **home implementation** | **Home** | **`Claude Sonnet`** | **done** | **greeting, missed-dose alert, stock warning, stats dashboard, next-dose hero, slider confirm, schedule, photo stub** |
+| **C-03** | **Home reminder experience definition** | **Home** | **`Gemini 3`** | **done** | **captured in `docs/screen_feature/home-reminder-experience.md`** |
+| **C-04** | **Home reminder experience implementation** | **Home** | **`Claude Sonnet`** | **done** | **PrimaryMedicationCard (note→name→benefit) + always-expanded ReminderSurface; stats hidden while reminder active; SliderConfirm gesture fixed (move-only, dx>dy); scroll-collapse removed to prevent layout jump** |
 | C-02 | home polish and animation | Home | `Claude Sonnet` | pending |
 | D-01 | meds list skeleton | Meds | `Claude Sonnet` | done |
 | D-02 | medication tile pattern | Meds | `Gemini 3` | done |

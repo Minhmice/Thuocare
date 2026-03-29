@@ -9,9 +9,9 @@ export const mockHomeData: HomeData = {
     scheduledAt: "09:00",
     minutesLate: 10,
     medications: [
-      { id: "next-1", name: "Aspirin 81mg", instruction: "Cardiovascular" },
-      { id: "next-2", name: "Vitamin C 500mg", instruction: "Immune support" },
-      { id: "next-3", name: "Omega 3", instruction: "Brain support" },
+      { id: "next-1", name: "Aspirin 81mg", instruction: "Cardiovascular", note: "1 viên · trước bữa ăn" },
+      { id: "next-2", name: "Vitamin C 500mg", instruction: "Immune support", note: "1 viên · sau bữa ăn" },
+      { id: "next-3", name: "Omega 3", instruction: "Brain & joint support", note: "1 viên · sau bữa ăn" },
     ],
   },
   schedule: [

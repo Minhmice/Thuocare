@@ -6,6 +6,7 @@ import { AppButton } from "../../components/ui/AppButton";
 import { AppScreen } from "../../components/ui/AppScreen";
 import { AppText } from "../../components/ui/AppText";
 import { useAuth } from "../../lib/auth/AuthProvider";
+import { useLanguage } from "../../lib/i18n/LanguageProvider";
 import { paperTheme } from "../../theme/paperTheme";
 
 type ReminderPreference = "quiet" | "balanced" | "firm";
@@ -65,6 +66,7 @@ function ChoiceButton({
 
 export default function OnboardingScreen() {
   const { completeOnboarding, status } = useAuth();
+  const { t } = useLanguage();
 
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedReminder, setSelectedReminder] = useState<ReminderPreference | null>(null);
@@ -82,7 +84,7 @@ export default function OnboardingScreen() {
 
   async function handleComplete() {
     if (!selectedReminder || !selectedRoutine) {
-      setError("Please answer all questions.");
+      setError(t("onboarding_answerAll"));
       return;
     }
 
@@ -95,7 +97,7 @@ export default function OnboardingScreen() {
       });
       // Status will change to "ready" and redirect above
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to complete onboarding.");
+      setError(err instanceof Error ? err.message : t("onboarding_unable"));
     } finally {
       setSubmitting(false);
     }
@@ -108,10 +110,10 @@ export default function OnboardingScreen() {
       {/* Header with step indicator */}
       <View style={{ marginBottom: 24 }}>
         <AppText variant="titleMedium" style={{ marginBottom: 8 }}>
-          Personalizing your experience
+          {t("onboarding_title")}
         </AppText>
         <AppText variant="labelMedium" style={{ color: paperTheme.colors.onSurfaceVariant }}>
-          Step {step} of 2
+          {t("onboarding_step", { step })}
         </AppText>
         {/* Simple progress bar */}
         <View style={{ height: 3, backgroundColor: "#F3F3F8", borderRadius: 2, marginTop: 8 }}>
@@ -131,27 +133,27 @@ export default function OnboardingScreen() {
           {/* Step 1: Reminder Preference */}
           <View style={{ marginBottom: 24 }}>
             <AppText variant="headlineSmall" style={{ marginBottom: 16, fontWeight: "600" }}>
-              How strong do you want reminders to feel?
+              {t("onboarding_reminderQuestion")}
             </AppText>
             <AppText
               variant="bodyMedium"
               style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 20 }}
             >
-              Choose the reminder intensity that works best for you.
+              {t("onboarding_reminderDescription")}
             </AppText>
 
             <ChoiceButton
-              label="Gentle — Soft, subtle notifications"
+              label={t("onboarding_reminderGentle")}
               selected={selectedReminder === "quiet"}
               onPress={() => setSelectedReminder("quiet")}
             />
             <ChoiceButton
-              label="Balanced — Clear but not intrusive"
+              label={t("onboarding_reminderBalanced")}
               selected={selectedReminder === "balanced"}
               onPress={() => setSelectedReminder("balanced")}
             />
             <ChoiceButton
-              label="Firm — Strong, attention-getting"
+              label={t("onboarding_reminderFirm")}
               selected={selectedReminder === "firm"}
               onPress={() => setSelectedReminder("firm")}
             />
@@ -160,27 +162,27 @@ export default function OnboardingScreen() {
           {/* Step 1: Illness Duration */}
           <View style={{ marginBottom: 32 }}>
             <AppText variant="headlineSmall" style={{ marginBottom: 16, fontWeight: "600" }}>
-              Is this a short illness or ongoing?
+              {t("onboarding_conditionQuestion")}
             </AppText>
             <AppText
               variant="bodyMedium"
               style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 20 }}
             >
-              This helps us tailor your medication routine.
+              {t("onboarding_conditionDescription")}
             </AppText>
 
             <ChoiceButton
-              label="A short-term illness"
+              label={t("onboarding_conditionShort")}
               selected={selectedRoutine === "starting"}
               onPress={() => setSelectedRoutine("starting")}
             />
             <ChoiceButton
-              label="An ongoing condition"
+              label={t("onboarding_conditionOngoing")}
               selected={selectedRoutine === "steady"}
               onPress={() => setSelectedRoutine("steady")}
             />
             <ChoiceButton
-              label="I'm not sure yet"
+              label={t("onboarding_conditionUnsure")}
               selected={selectedRoutine === "resetting"}
               onPress={() => setSelectedRoutine("resetting")}
             />
@@ -199,7 +201,7 @@ export default function OnboardingScreen() {
             loading={submitting}
             onPress={() => setStep(2)}
           >
-            Continue
+            {t("onboarding_continue")}
           </AppButton>
         </>
       ) : (
@@ -207,7 +209,7 @@ export default function OnboardingScreen() {
           {/* Step 2: Confirmation */}
           <View style={{ marginBottom: 32 }}>
             <AppText variant="headlineSmall" style={{ marginBottom: 20, fontWeight: "600" }}>
-              You’re all set!
+              {t("onboarding_readyTitle")}
             </AppText>
 
             {/* Summary */}
@@ -222,7 +224,7 @@ export default function OnboardingScreen() {
               }}
             >
               <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 8 }}>
-                REMINDER PREFERENCE
+                {t("onboarding_summaryReminder")}
               </AppText>
               <AppText
                 variant="bodyMedium"
@@ -232,11 +234,15 @@ export default function OnboardingScreen() {
                   textTransform: "capitalize"
                 }}
               >
-                {selectedReminder} reminders
+                {selectedReminder === "quiet"
+                  ? t("reminder_gentle")
+                  : selectedReminder === "balanced"
+                    ? t("reminder_balanced")
+                    : t("reminder_firm")}
               </AppText>
 
               <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 8 }}>
-                CONDITION TYPE
+                {t("onboarding_summaryCondition")}
               </AppText>
               <AppText
                 variant="bodyMedium"
@@ -246,10 +252,10 @@ export default function OnboardingScreen() {
                 }}
               >
                 {selectedRoutine === "starting"
-                  ? "Short-term illness"
+                  ? t("routine_starting")
                   : selectedRoutine === "steady"
-                    ? "Ongoing condition"
-                    : "Not sure yet"}
+                    ? t("routine_steady")
+                    : t("routine_resetting")}
               </AppText>
             </View>
 
@@ -257,7 +263,7 @@ export default function OnboardingScreen() {
               variant="bodyMedium"
               style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 24, lineHeight: 20 }}
             >
-              Your settings have been saved locally. You can adjust them anytime from your profile screen.
+              {t("onboarding_saved")}
             </AppText>
           </View>
 
@@ -275,14 +281,14 @@ export default function OnboardingScreen() {
               loading={submitting}
               onPress={handleComplete}
             >
-              Get started
+              {t("onboarding_getStarted")}
             </AppButton>
             <Button
               mode="outlined"
               onPress={() => setStep(1)}
               disabled={submitting}
             >
-              Back
+              {t("onboarding_back")}
             </Button>
           </View>
         </>

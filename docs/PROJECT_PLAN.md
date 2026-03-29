@@ -205,11 +205,12 @@ Lead model:
 - `Gemini 2.5` for scope reasoning
 - `Gemini 3` for screen/flow alternatives
 
-### Phase 3 - Mobile UX And Component Spec
+### Phase B - Shared State And Primitive Layer
 
 Deliverables:
 
 - state maps for loading, empty, error, and populated states
+- defined in `docs/screen_feature/shared-states.md`
 - component inventory
 - source component architecture in `src/features/components/ui`, `src/features/components/wrapper`, and `src/features/components/composed`
 - a small first batch of primitives and wrappers, not the full library at once
@@ -324,6 +325,12 @@ Constraint:
 | P3-14 | refactor Me screen to new component system | Phase 3 | `Claude Sonnet` | done | using ScreenHeader, SettingsSection, SupportSection |
 | P3-15 | define SliderConfirm composed component | Phase 3 | `Gemini 3` | done | captured in `docs/phase implement/gemini/slider-confirm.md` |
 | P3-16 | scaffold SliderConfirm composed component | Phase 3 | `Claude Sonnet` | done | horizontal swipe to confirm dose |
+| B-01 | define shared loading, empty, error states | Phase B | `Gemini 3` | done | captured in `docs/screen_feature/shared-states.md` |
+| **B-02** | **implement shared loading, empty, error states** | **Phase B** | **`Claude Sonnet`** | **done** | **LoadingState/ErrorState upgraded; EmptyState created; Meds + Me null guard updated** |
+| P3-17 | define Lab tab dev screen | Phase 3 | `Gemini 3` | done | captured in `docs/screen_feature/lab-tab.md` |
+| **P3-18** | **implement Lab tab** | **Phase 3** | **`Claude Sonnet`** | **done** | **dev-only long-scroll review screen; all component groups + snippets + toast preview; inline state toggles** |
+| C-03 | define Home reminder experience | Phase 3 | `Gemini 3` | done | captured in `docs/screen_feature/home-reminder-experience.md` |
+| **C-04** | **implement Home reminder experience** | **Phase 3** | **`Claude Sonnet`** | **done** | **Apple-alarm inspired blue surface with scroll-driven docking** |
 | P4-01 | refine null-data UX in screens | Phase 4 | `Claude Sonnet` | pending | current app is already null-safe at basic level |
 
 ## Open Questions
@@ -334,9 +341,8 @@ Constraint:
 ## Next Actions
 
 1. choose the next batch of `composed` components (e.g., PrimaryHeroCard, TodaySchedule)
-2. refactor Meds screen to use the new reusable components (MedicationTile, SummaryStatsRow)
-3. refactor Home screen to use the new reusable components (ScreenHeader, AlertBanner, SummaryStatsRow, SliderConfirm)
-4. keep onboarding split-slide note for future implementation prompt
+2. keep onboarding split-slide note for future implementation prompt
+3. apply Home-screen state polish once next-dose data contract is clearer
 
 ## Update Rules
 

@@ -210,6 +210,9 @@ Priority order:
 4. `MedicationTile`
 5. `SettingsSection`
 6. `SliderConfirm`
+7. `LoadingState`
+8. `EmptyState`
+9. `ErrorState`
 
 ## Deferred Work
 
