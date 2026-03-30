@@ -17,7 +17,14 @@
           "visibility": "visible"
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Thuocare needs photo access to attach a screenshot to your feedback.",
+          "cameraPermission": "Thuocare needs camera access if you take a photo for feedback."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

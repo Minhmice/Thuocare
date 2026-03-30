@@ -327,8 +327,8 @@ Constraint:
 | P3-16 | scaffold SliderConfirm composed component | Phase 3 | `Claude Sonnet` | done | horizontal swipe to confirm dose |
 | B-01 | define shared loading, empty, error states | Phase B | `Gemini 3` | done | captured in `docs/screen_feature/shared-states.md` |
 | **B-02** | **implement shared loading, empty, error states** | **Phase B** | **`Claude Sonnet`** | **done** | **LoadingState/ErrorState upgraded; EmptyState created; Meds + Me null guard updated** |
-| P3-17 | define Lab tab dev screen | Phase 3 | `Gemini 3` | done | captured in `docs/screen_feature/lab-tab.md` |
-| **P3-18** | **implement Lab tab** | **Phase 3** | **`Claude Sonnet`** | **done** | **dev-only long-scroll review screen; all component groups + snippets + toast preview; inline state toggles** |
+| P3-17 | define Lab tab dev screen | Phase 3 | `Gemini 3` | removed | spec archived in `docs/screen_feature/lab-tab.md` (Lab tab later removed from app) |
+| **P3-18** | **implement Lab tab** | **Phase 3** | **`Claude Sonnet`** | **removed** | **was: dev-only review screen; tab + route deleted — use Storybook / dev branch if needed** |
 | C-03 | define Home reminder experience | Phase 3 | `Gemini 3` | done | captured in `docs/screen_feature/home-reminder-experience.md` |
 | **C-04** | **implement Home reminder experience** | **Phase 3** | **`Claude Sonnet`** | **done** | **Apple-alarm inspired blue surface with scroll-driven docking** |
 | P4-01 | refine null-data UX in screens | Phase 4 | `Claude Sonnet` | pending | current app is already null-safe at basic level |

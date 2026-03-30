@@ -6,13 +6,21 @@ type AppCardProps = PropsWithChildren<{
   title?: string;
   subtitle?: string;
   style?: StyleProp<ViewStyle>;
+  /** Overrides default padding on `Card.Content` (e.g. `{ padding: 0 }`). */
+  contentStyle?: StyleProp<ViewStyle>;
 }>;
 
-export function AppCard({ title, subtitle, style, children }: AppCardProps) {
+export function AppCard({
+  title,
+  subtitle,
+  style,
+  contentStyle,
+  children,
+}: AppCardProps) {
   return (
     <Card mode="contained" style={[{ borderRadius: 28 }, style]}>
       {(title || subtitle) && <Card.Title title={title} subtitle={subtitle} />}
-      <Card.Content>{children}</Card.Content>
+      <Card.Content style={contentStyle}>{children}</Card.Content>
     </Card>
   );
 }

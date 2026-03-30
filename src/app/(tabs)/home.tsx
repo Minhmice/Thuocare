@@ -1,9 +1,8 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Tabs, useNavigation } from "expo-router";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
-  ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
@@ -262,16 +261,19 @@ export default function HomeScreen() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [data, setData] = useState<HomeData | null>(null);
   const [allSet, setAllSet] = useState(false);
+  const hasLoadedRef = useRef(false);
   const { height: viewportHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { homeScrollY, setHomeReminderActive } = useUIState();
 
-  // Load data
   const load = useCallback(async () => {
     try {
-      setLoading(true);
       setLoadError(null);
+      if (!hasLoadedRef.current) {
+        setLoading(true);
+      }
       const result = await getHomeData();
+      hasLoadedRef.current = true;
       setData(result);
       setAllSet(result.allSetToday);
     } catch (err) {
@@ -281,9 +283,11 @@ export default function HomeScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load])
+  );
 
 
   const showReminder = !allSet && data?.nextDose != null;
@@ -292,7 +296,7 @@ export default function HomeScreen() {
     setHomeReminderActive(showReminder);
   }, [showReminder, setHomeReminderActive]);
 
-  if (loading) return <LoadingState />;
+  if (loading && !hasLoadedRef.current) return <LoadingState />;
   if (loadError) return <ErrorState message={loadError} onRetry={load} />;
   if (!data) return <LoadingState />;
 

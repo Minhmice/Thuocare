@@ -1,12 +1,16 @@
+import * as Linking from "expo-linking";
 import { useEffect, useState } from "react";
-import { Modal, ScrollView, View } from "react-native";
+import { Modal, View } from "react-native";
 import { Button } from "react-native-paper";
+import { resolveAuthEmailFromIdentifier } from "../../lib/auth/authEmail";
+import { translateAuthError } from "../../lib/auth/authErrors";
+import { supabase } from "../../lib/supabase/client";
+import { useLanguage } from "../../lib/i18n/LanguageProvider";
+import { paperTheme } from "../../theme/paperTheme";
+import { AuthModalPanel } from "./AuthScreenPanel";
 import { AppButton } from "../ui/AppButton";
 import { AppText } from "../ui/AppText";
 import { AppTextField } from "../ui/AppTextField";
-import { readAuthStore } from "../../lib/auth/storage";
-import { useLanguage } from "../../lib/i18n/LanguageProvider";
-import { paperTheme } from "../../theme/paperTheme";
 
 type Props = {
   visible: boolean;
@@ -39,7 +43,6 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
 
-  // Reset state each time the modal opens
   useEffect(() => {
     if (!visible) return;
     setIdentifier("");
@@ -53,28 +56,30 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
 
     try {
       setSubmitting(true);
-      const store = await readAuthStore();
+      const email = resolveAuthEmailFromIdentifier(trimmed);
+      const redirectTo = Linking.createURL("/sign-in");
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo
+      });
 
-      const account = store.accounts.find((a) =>
-        isEmail
-          ? a.email && a.email.toLowerCase() === trimmed.toLowerCase()
-          : a.phone === trimmed
-      );
-
-      if (account) {
-        const destination = isEmail && account.email
-          ? maskEmail(account.email)
-          : maskPhone(account.phone);
-        setResult({
-          success: true,
-          message: t("forgotPassword_sent", { destination })
-        });
-      } else {
+      if (error) {
         setResult({
           success: false,
-          message: t("forgotPassword_notFound")
+          message: translateAuthError(error.message)
         });
+        return;
       }
+
+      const destination = isEmail ? maskEmail(email) : maskPhone(trimmed);
+      setResult({
+        success: true,
+        message: t("forgotPassword_sent", { destination })
+      });
+    } catch (err) {
+      setResult({
+        success: false,
+        message: err instanceof Error ? err.message : t("forgotPassword_notFound")
+      });
     } finally {
       setSubmitting(false);
     }
@@ -95,23 +100,12 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
           alignItems: "center"
         }}
       >
-        <View
-          style={{
-            backgroundColor: paperTheme.colors.surface,
-            borderRadius: 28,
-            padding: 24,
-            marginHorizontal: 20,
-            width: "100%",
-            maxWidth: 420
-          }}
-        >
-          {/* Title */}
+        <AuthModalPanel>
           <AppText variant="headlineSmall" style={{ marginBottom: 8, fontWeight: "600" }}>
             {t("forgotPassword_title")}
           </AppText>
 
           {result ? (
-            /* Result state */
             <>
               <View
                 style={{
@@ -140,7 +134,6 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
               </AppButton>
             </>
           ) : (
-            /* Input state */
             <>
               <AppText
                 variant="bodyMedium"
@@ -169,13 +162,18 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
                   {t("forgotPassword_send")}
                 </AppButton>
 
-                <Button mode="text" onPress={onDismiss} disabled={submitting}>
+                <Button
+                  mode="text"
+                  onPress={onDismiss}
+                  disabled={submitting}
+                  textColor={paperTheme.colors.primary}
+                >
                   {t("common_cancel")}
                 </Button>
               </View>
             </>
           )}
-        </View>
+        </AuthModalPanel>
       </View>
     </Modal>
   );

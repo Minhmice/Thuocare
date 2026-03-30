@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { IconButton, Menu, useTheme } from 'react-native-paper';
 import { Card } from '../../wrapper/card';
 import { Typography } from '../../wrapper/typography';
 import { Icon } from '../../wrapper/icon';
 import { MedicationTileProps } from './types';
+import { useLanguage } from '../../../../lib/i18n/LanguageProvider';
 
 export const MedicationTile: React.FC<MedicationTileProps> = ({
   name,
@@ -18,9 +19,14 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
   highlighted = false,
   stockLabel,
   onPress,
+  showMenu = false,
+  onEditPress,
+  onDeletePress,
   style,
 }) => {
   const theme = useTheme();
+  const { t } = useLanguage();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const accentColor = outOfStock
     ? '#9BA0AD'
@@ -69,20 +75,59 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
             >
               {name}
             </Typography>
-            {outOfStock && (
-              <View style={[styles.badge, styles.badgeOut]}>
-                <Typography variant="label-sm" color="#9F1D1D" weight="bold">
-                  HẾT
-                </Typography>
-              </View>
-            )}
-            {!outOfStock && lowStock && (
-              <View style={[styles.badge, styles.badgeLow]}>
-                <Typography variant="label-sm" color="#7A4A00" weight="bold">
-                  SẮP HẾT
-                </Typography>
-              </View>
-            )}
+            <View style={styles.headerTrailing}>
+              {outOfStock && (
+                <View style={[styles.badge, styles.badgeOut]}>
+                  <Typography variant="label-sm" color="#9F1D1D" weight="bold">
+                    HẾT
+                  </Typography>
+                </View>
+              )}
+              {!outOfStock && lowStock && (
+                <View style={[styles.badge, styles.badgeLow]}>
+                  <Typography variant="label-sm" color="#7A4A00" weight="bold">
+                    SẮP HẾT
+                  </Typography>
+                </View>
+              )}
+              {showMenu && (onEditPress || onDeletePress) ? (
+                <Menu
+                  visible={menuOpen}
+                  onDismiss={() => setMenuOpen(false)}
+                  contentStyle={styles.menuSurface}
+                  anchor={
+                    <IconButton
+                      icon="dots-vertical"
+                      size={20}
+                      onPress={() => setMenuOpen(true)}
+                      accessibilityLabel="Medication actions"
+                      style={styles.menuAnchor}
+                    />
+                  }
+                >
+                  {onEditPress ? (
+                    <Menu.Item
+                      onPress={() => {
+                        setMenuOpen(false);
+                        onEditPress();
+                      }}
+                      title={t("meds_tileEdit")}
+                      titleStyle={{ color: theme.colors.primary }}
+                    />
+                  ) : null}
+                  {onDeletePress ? (
+                    <Menu.Item
+                      onPress={() => {
+                        setMenuOpen(false);
+                        onDeletePress();
+                      }}
+                      title={t("meds_tileDelete")}
+                      titleStyle={{ color: theme.colors.error }}
+                    />
+                  ) : null}
+                </Menu>
+              ) : null}
+            </View>
           </View>
 
           <View style={styles.detailRow}>
@@ -146,10 +191,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 8,
+    gap: 4,
+  },
+  headerTrailing: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 0,
+    gap: 2,
+  },
+  menuAnchor: {
+    margin: 0,
+  },
+  /** Override MD3 elevation tint (primary-blended mauve surface). */
+  menuSurface: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(0, 88, 188, 0.14)"
   },
   name: {
     flex: 1,
-    marginRight: 8,
+    marginRight: 4,
+    minWidth: 0,
   },
   badge: {
     paddingHorizontal: 8,

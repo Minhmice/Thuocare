@@ -1,15 +1,19 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Redirect, Stack, useRouter } from "expo-router";
 import { useState } from "react";
-import { Modal, Pressable, ScrollView, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Button, Checkbox } from "react-native-paper";
+import { AuthModalPanel, AuthScreenPanel } from "../../components/auth/AuthScreenPanel";
 import { ForgotPasswordModal } from "../../components/auth/ForgotPasswordModal";
 import { AppButton } from "../../components/ui/AppButton";
-import { AppCard } from "../../components/ui/AppCard";
 import { AppScreen } from "../../components/ui/AppScreen";
 import { AppText } from "../../components/ui/AppText";
 import { AppTextField } from "../../components/ui/AppTextField";
-import { GlassSurface } from "../../components/ui/GlassSurface";
 import { useAuth } from "../../lib/auth/AuthProvider";
+import {
+  RedirectToSignInAfterSignUp,
+  shouldOfferPasswordRecoveryHint
+} from "../../lib/auth/authErrors";
 import { useLanguage } from "../../lib/i18n/LanguageProvider";
 import { paperTheme } from "../../theme/paperTheme";
 
@@ -31,7 +35,6 @@ export default function SignUpScreen() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Already authenticated — get out of sign-up
   if (status === "needsOnboarding") {
     return <Redirect href="/onboarding" />;
   }
@@ -78,8 +81,11 @@ export default function SignUpScreen() {
         email: email.trim() || undefined,
         password
       });
-      // Status becomes "needsOnboarding" → Redirect above fires
     } catch (err) {
+      if (err instanceof RedirectToSignInAfterSignUp) {
+        router.replace("/sign-in?afterSignup=1");
+        return;
+      }
       setError(err instanceof Error ? err.message : t("auth_createAccountUnable"));
     } finally {
       setSubmitting(false);
@@ -87,68 +93,64 @@ export default function SignUpScreen() {
   }
 
   return (
-    <AppScreen>
-      <Stack.Screen options={{ headerShown: false }} />
+    <View style={styles.screenRoot}>
+      <AppScreen>
+        <Stack.Screen options={{ headerShown: false }} />
 
-      {/* Back nav */}
-      <View>
-        <Button mode="text" icon="arrow-left" onPress={() => router.back()} compact>
-          {t("auth_backToSignIn")}
-        </Button>
-      </View>
+        <View style={styles.backRow}>
+          <Button
+            mode="text"
+            icon="arrow-left"
+            onPress={() => router.back()}
+            compact
+            textColor={paperTheme.colors.primary}
+          >
+            {t("auth_backToSignIn")}
+          </Button>
+        </View>
 
-      {/* Hero block */}
-      <GlassSurface style={{ borderRadius: 32, padding: 24 }}>
-        <View style={{ gap: 8 }}>
-          <AppText variant="headlineMedium" style={{ fontWeight: "600" }}>
+        <View style={styles.hero}>
+          <AppText variant="headlineMedium" style={styles.heroTitle}>
             {t("auth_createAccountTitle")}
           </AppText>
-          <AppText variant="bodyMedium" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+          <AppText variant="bodyMedium" style={styles.heroSubtitle}>
             {t("auth_createAccountSubtitle")}
           </AppText>
         </View>
-      </GlassSurface>
 
-      {/* Form card — field order per spec: name → phone → email → password → confirm */}
-      <AppCard>
-        <View style={{ gap: 16 }}>
+        <AuthScreenPanel>
+          <View style={styles.formInner}>
+            <AppTextField
+              label={t("auth_fullName")}
+              placeholder={t("auth_fullNamePlaceholder")}
+              autoCapitalize="words"
+              autoComplete="name"
+              value={fullName}
+              onChangeText={setFullName}
+              editable={!submitting}
+            />
 
-          {/* Full name */}
-          <AppTextField
-            label={t("auth_fullName")}
-            placeholder={t("auth_fullNamePlaceholder")}
-            autoCapitalize="words"
-            autoComplete="name"
-            value={fullName}
-            onChangeText={setFullName}
-            editable={!submitting}
-          />
+            <AppTextField
+              label={t("auth_phoneNumber")}
+              placeholder={t("auth_phonePlaceholder")}
+              keyboardType="phone-pad"
+              autoComplete="tel"
+              value={phone}
+              onChangeText={setPhone}
+              editable={!submitting}
+            />
 
-          {/* Phone — required, primary identity */}
-          <AppTextField
-            label={t("auth_phoneNumber")}
-            placeholder={t("auth_phonePlaceholder")}
-            keyboardType="phone-pad"
-            autoComplete="tel"
-            value={phone}
-            onChangeText={setPhone}
-            editable={!submitting}
-          />
+            <AppTextField
+              label={t("auth_emailOptional")}
+              placeholder={t("auth_emailPlaceholder")}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              value={email}
+              onChangeText={setEmail}
+              editable={!submitting}
+            />
 
-          {/* Email — optional */}
-          <AppTextField
-            label={t("auth_emailOptional")}
-            placeholder={t("auth_emailPlaceholder")}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-            value={email}
-            onChangeText={setEmail}
-            editable={!submitting}
-          />
-
-          {/* Password with show/hide */}
-          <View style={{ position: "relative" }}>
             <AppTextField
               label={t("auth_password")}
               value={password}
@@ -156,19 +158,22 @@ export default function SignUpScreen() {
               secureTextEntry={!passwordVisible}
               autoCapitalize="none"
               editable={!submitting}
+              rightAccessory={
+                <Pressable
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  hitSlop={12}
+                  accessibilityRole="button"
+                  accessibilityLabel={passwordVisible ? t("auth_hide") : t("auth_show")}
+                >
+                  <MaterialCommunityIcons
+                    name={passwordVisible ? "eye-off-outline" : "eye-outline"}
+                    size={22}
+                    color={paperTheme.colors.primary}
+                  />
+                </Pressable>
+              }
             />
-            <Pressable
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={{ position: "absolute", right: 12, top: 34, padding: 8 }}
-            >
-              <Button mode="text" compact labelStyle={{ fontSize: 12 }}>
-                {passwordVisible ? t("auth_hide") : t("auth_show")}
-              </Button>
-            </Pressable>
-          </View>
 
-          {/* Confirm password with show/hide */}
-          <View style={{ position: "relative" }}>
             <AppTextField
               label={t("auth_confirmPassword")}
               value={confirmPassword}
@@ -176,159 +181,224 @@ export default function SignUpScreen() {
               secureTextEntry={!confirmPasswordVisible}
               autoCapitalize="none"
               editable={!submitting}
-            />
-            <Pressable
-              onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-              style={{ position: "absolute", right: 12, top: 34, padding: 8 }}
-            >
-              <Button mode="text" compact labelStyle={{ fontSize: 12 }}>
-                {confirmPasswordVisible ? t("auth_hide") : t("auth_show")}
-              </Button>
-            </Pressable>
-          </View>
-
-          {/* Legal acceptance checkbox */}
-          <Pressable
-            onPress={() => setLegalAccepted(!legalAccepted)}
-            style={({ pressed }) => ({
-              flexDirection: "row",
-              alignItems: "flex-start",
-              gap: 4,
-              opacity: pressed ? 0.7 : 1
-            })}
-          >
-            <Checkbox
-              status={legalAccepted ? "checked" : "unchecked"}
-              onPress={() => setLegalAccepted(!legalAccepted)}
-            />
-            <View style={{ flex: 1, paddingTop: 8 }}>
-              <AppText variant="bodySmall" style={{ lineHeight: 18 }}>
-                {t("auth_agreePrefix")}
-                <AppText
-                  variant="bodySmall"
-                  style={{ color: paperTheme.colors.primary, fontWeight: "600" }}
-                  onPress={(e) => {
-                    e.stopPropagation?.();
-                    setLegalModalVisible(true);
-                  }}
-                >
-                  {t("auth_termsPrivacy")}
-                </AppText>
-              </AppText>
-            </View>
-          </Pressable>
-
-          {/* Error message */}
-          {error ? (
-            <View
-              style={{
-                backgroundColor: "rgba(196, 30, 30, 0.08)",
-                borderRadius: 12,
-                padding: 12
-              }}
-            >
-              <AppText style={{ color: "#9F1D1D", fontSize: 14, lineHeight: 20 }}>
-                {error}
-              </AppText>
-              {/* Surface the forgot-password link if duplicate phone error */}
-              {error.includes("Forgot Password") ? (
+              rightAccessory={
                 <Pressable
-                  onPress={() => setForgotPasswordVisible(true)}
-                  style={({ pressed }) => ({ marginTop: 8, opacity: pressed ? 0.6 : 1 })}
+                  onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+                  hitSlop={12}
+                  accessibilityRole="button"
+                  accessibilityLabel={confirmPasswordVisible ? t("auth_hide") : t("auth_show")}
                 >
-                  <AppText
-                    style={{ color: paperTheme.colors.primary, fontSize: 13, fontWeight: "600" }}
-                  >
-                    {`${t("auth_forgotPassword")} →`}
-                  </AppText>
+                  <MaterialCommunityIcons
+                    name={confirmPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                    size={22}
+                    color={paperTheme.colors.primary}
+                  />
                 </Pressable>
-              ) : null}
-            </View>
-          ) : null}
+              }
+            />
 
-          {/* Submit */}
-          <AppButton disabled={!canSubmit} loading={submitting} onPress={handleSubmit}>
-            {t("auth_createAccountButton")}
-          </AppButton>
-
-          {/* Sign-in link */}
-          <View style={{ alignItems: "center" }}>
             <Pressable
-              onPress={() => router.back()}
-              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              onPress={() => setLegalAccepted(!legalAccepted)}
+              style={({ pressed }) => ({
+                flexDirection: "row",
+                alignItems: "flex-start",
+                gap: 4,
+                opacity: pressed ? 0.7 : 1
+              })}
             >
-              <AppText style={{ color: paperTheme.colors.primary, fontSize: 13 }}>
-                {t("auth_haveAccount")}
-              </AppText>
+              <Checkbox
+                status={legalAccepted ? "checked" : "unchecked"}
+                onPress={() => setLegalAccepted(!legalAccepted)}
+                color={paperTheme.colors.primary}
+              />
+              <View style={styles.checkboxCopy}>
+                <AppText variant="bodySmall" style={styles.checkboxText}>
+                  {t("auth_agreePrefix")}
+                  <AppText
+                    variant="bodySmall"
+                    style={styles.inlineLink}
+                    onPress={(e) => {
+                      e.stopPropagation?.();
+                      setLegalModalVisible(true);
+                    }}
+                  >
+                    {t("auth_termsPrivacy")}
+                  </AppText>
+                </AppText>
+              </View>
             </Pressable>
-          </View>
 
-        </View>
-      </AppCard>
+            {error ? (
+              <View style={styles.errorBox}>
+                <AppText style={styles.errorText}>{error}</AppText>
+                {shouldOfferPasswordRecoveryHint(error) ? (
+                  <Pressable
+                    onPress={() => setForgotPasswordVisible(true)}
+                    style={({ pressed }) => ({ marginTop: 8, opacity: pressed ? 0.6 : 1 })}
+                  >
+                    <AppText style={styles.errorForgotLink}>
+                      {`${t("auth_forgotPassword")} →`}
+                    </AppText>
+                  </Pressable>
+                ) : null}
+              </View>
+            ) : null}
 
-      {/* Forgot password modal */}
-      <ForgotPasswordModal
-        visible={forgotPasswordVisible}
-        onDismiss={() => setForgotPasswordVisible(false)}
-      />
-
-      {/* Legal modal */}
-      <Modal
-        visible={legalModalVisible}
-        onRequestClose={() => setLegalModalVisible(false)}
-        animationType="fade"
-        transparent={true}
-      >
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: paperTheme.colors.surface,
-              borderRadius: 24,
-              padding: 24,
-              marginHorizontal: 20,
-              maxHeight: "80%"
-            }}
-          >
-            <AppText variant="headlineSmall" style={{ marginBottom: 16 }}>
-              {t("auth_legalTitle")}
-            </AppText>
-
-            <ScrollView style={{ maxHeight: 300, marginBottom: 20 }}>
-              <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                {t("auth_legalLine1")}
-              </AppText>
-              <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                {t("auth_legalLine2")}
-              </AppText>
-              <AppText variant="bodySmall" style={{ lineHeight: 20, marginBottom: 12 }}>
-                {t("auth_legalCreateLine3")}
-              </AppText>
-              <AppText variant="bodySmall" style={{ lineHeight: 20, marginLeft: 12, marginBottom: 12 }}>
-                {t("auth_legalBullets")}
-              </AppText>
-              <AppText variant="bodySmall" style={{ lineHeight: 20 }}>
-                {t("auth_legalLine4")}
-              </AppText>
-            </ScrollView>
-
-            <AppButton
-              onPress={() => {
-                setLegalAccepted(true);
-                setLegalModalVisible(false);
-              }}
-            >
-              {t("auth_understandAgree")}
+            <AppButton disabled={!canSubmit} loading={submitting} onPress={handleSubmit}>
+              {t("auth_createAccountButton")}
             </AppButton>
+
+            <View style={styles.signInRow}>
+              <Pressable
+                onPress={() => router.back()}
+                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+              >
+                <AppText style={styles.signInLink}>{t("auth_haveAccount")}</AppText>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </Modal>
-    </AppScreen>
+        </AuthScreenPanel>
+
+        <ForgotPasswordModal
+          visible={forgotPasswordVisible}
+          onDismiss={() => setForgotPasswordVisible(false)}
+        />
+
+        <Modal
+          visible={legalModalVisible}
+          onRequestClose={() => setLegalModalVisible(false)}
+          animationType="fade"
+          transparent={true}
+        >
+          <View style={styles.modalBackdrop}>
+            <AuthModalPanel style={styles.legalPanel}>
+              <AppText variant="headlineSmall" style={styles.modalTitle}>
+                {t("auth_legalTitle")}
+              </AppText>
+
+              <ScrollView style={styles.legalScroll} contentContainerStyle={styles.legalScrollContent}>
+                <AppText variant="bodySmall" style={styles.legalBody}>
+                  {t("auth_legalLine1")}
+                </AppText>
+                <AppText variant="bodySmall" style={styles.legalBody}>
+                  {t("auth_legalLine2")}
+                </AppText>
+                <AppText variant="bodySmall" style={styles.legalBody}>
+                  {t("auth_legalCreateLine3")}
+                </AppText>
+                <AppText variant="bodySmall" style={styles.legalBullets}>
+                  {t("auth_legalBullets")}
+                </AppText>
+                <AppText variant="bodySmall" style={styles.legalBodyLast}>
+                  {t("auth_legalLine4")}
+                </AppText>
+              </ScrollView>
+
+              <AppButton
+                onPress={() => {
+                  setLegalAccepted(true);
+                  setLegalModalVisible(false);
+                }}
+              >
+                {t("auth_understandAgree")}
+              </AppButton>
+            </AuthModalPanel>
+          </View>
+        </Modal>
+      </AppScreen>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  screenRoot: {
+    flex: 1,
+    backgroundColor: paperTheme.colors.background
+  },
+  backRow: {
+    marginLeft: -8
+  },
+  hero: {
+    gap: 8,
+    paddingTop: 4,
+    paddingBottom: 4
+  },
+  heroTitle: {
+    fontWeight: "600",
+    color: paperTheme.colors.onSurface
+  },
+  heroSubtitle: {
+    color: paperTheme.colors.onSurfaceVariant
+  },
+  formInner: {
+    gap: 16
+  },
+  checkboxCopy: {
+    flex: 1,
+    paddingTop: 8
+  },
+  checkboxText: {
+    lineHeight: 18,
+    color: paperTheme.colors.onSurface
+  },
+  inlineLink: {
+    color: paperTheme.colors.primary,
+    fontWeight: "600"
+  },
+  errorBox: {
+    backgroundColor: "rgba(196, 30, 30, 0.08)",
+    borderRadius: 12,
+    padding: 12
+  },
+  errorText: {
+    color: "#9F1D1D",
+    fontSize: 14,
+    lineHeight: 20
+  },
+  errorForgotLink: {
+    color: paperTheme.colors.primary,
+    fontSize: 13,
+    fontWeight: "600"
+  },
+  signInRow: {
+    alignItems: "center"
+  },
+  signInLink: {
+    color: paperTheme.colors.primary,
+    fontSize: 13
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  legalPanel: {
+    maxHeight: "80%"
+  },
+  modalTitle: {
+    marginBottom: 16
+  },
+  legalScroll: {
+    maxHeight: 300,
+    marginBottom: 20
+  },
+  legalScrollContent: {
+    paddingBottom: 4
+  },
+  legalBody: {
+    lineHeight: 20,
+    marginBottom: 12,
+    color: paperTheme.colors.onSurface
+  },
+  legalBullets: {
+    lineHeight: 20,
+    marginLeft: 12,
+    marginBottom: 12,
+    color: paperTheme.colors.onSurface
+  },
+  legalBodyLast: {
+    lineHeight: 20,
+    color: paperTheme.colors.onSurface
+  }
+});

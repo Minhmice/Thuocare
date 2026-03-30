@@ -1,9 +1,16 @@
-import { useRouter } from "expo-router";
-import React from 'react';
+import { useFocusEffect, useRouter, type Href } from "expo-router";
+import React, { useCallback, useRef, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
+import { ErrorState } from "../../components/state/ErrorState";
 import { LoadingState } from "../../components/state/LoadingState";
 import { AppScreen } from "../../components/ui/AppScreen";
+import { getProfile } from "../../features/me/repository";
+import {
+  normalizeVnPhoneForDisplay,
+  vnPhoneToNationalDisplay
+} from "../../lib/phone/vnDisplay";
+import { profileDisplayFromFullName } from "../../lib/profile/displayFromFullName";
 import { useAuth } from "../../lib/auth/AuthProvider";
 import type { ReminderPreference, RoutineStage } from "../../lib/auth/storage";
 import type { AppLanguage } from "../../lib/i18n/storage";
@@ -44,10 +51,72 @@ export default function MeScreen() {
   const theme = useTheme();
   const { language, locale, setLanguage, t } = useLanguage();
 
+  const profileLoadedRef = useRef(false);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [remoteProfile, setRemoteProfile] = useState<Awaited<
+    ReturnType<typeof getProfile>
+  > | null>(null);
+
+  const loadProfile = useCallback(async () => {
+    try {
+      setProfileError(null);
+      if (!profileLoadedRef.current) {
+        setProfileLoading(true);
+      }
+      const data = await getProfile();
+      profileLoadedRef.current = true;
+      setRemoteProfile(data);
+    } catch (err) {
+      setProfileError(
+        err instanceof Error ? err.message : "Failed to load profile"
+      );
+    } finally {
+      setProfileLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      void loadProfile();
+    }, [loadProfile])
+  );
+
   // Should never be null here — tabs are protected — but guard gracefully
   if (!record) {
     return <LoadingState />;
   }
+
+  if (profileLoading && !profileLoadedRef.current) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <LoadingState />
+        <MainTabBar />
+      </View>
+    );
+  }
+
+  if (profileError) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <ErrorState message={profileError} onRetry={loadProfile} />
+        <MainTabBar />
+      </View>
+    );
+  }
+
+  const fullNameSource = remoteProfile?.fullName ?? record.fullName;
+  const profileHeadline = profileDisplayFromFullName(fullNameSource);
+  const phoneE164 = normalizeVnPhoneForDisplay(
+    remoteProfile?.phone || record.phone
+  );
+  const phoneNational = vnPhoneToNationalDisplay(phoneE164);
+  const emailDisplay = [
+    remoteProfile?.email,
+    record.email
+  ].find((e) => (e ?? "").trim().length > 0) ?? "";
+
+  const memberSinceIso = remoteProfile?.joinedAt ?? record.createdAt;
 
   const reminderLabelByPreference: Record<ReminderPreference, string> = {
     quiet: t("reminder_gentle"),
@@ -76,6 +145,10 @@ export default function MeScreen() {
 
   async function chooseLanguage(nextLanguage: AppLanguage) {
     await setLanguage(nextLanguage);
+  }
+
+  function handleFeedbackPress() {
+    router.push("/feedback" as Href);
   }
 
   function handleLanguagePicker() {
@@ -114,19 +187,19 @@ export default function MeScreen() {
     { 
       id: 'phone', 
       label: t("settings_phone"), 
-      value: record.phone, 
+      value: phoneNational, 
       onPress: () => Alert.alert(t("common_comingSoon"), t("settings_phoneSoon")) 
     },
     { 
       id: 'email', 
       label: t("settings_email"), 
-      value: record.email ?? t("settings_notAdded"), 
+      value: emailDisplay.trim().length > 0 ? emailDisplay : t("settings_notAdded"), 
       onPress: () => Alert.alert(t("common_comingSoon"), t("settings_emailSoon")) 
     },
     { 
       id: 'member_since', 
       label: t("settings_memberSince"), 
-      value: formatDate(record.createdAt, locale), 
+      value: formatDate(memberSinceIso, locale), 
       onPress: () => {}, 
       showChevron: false 
     },
@@ -183,21 +256,21 @@ export default function MeScreen() {
                 weight="bold"
                 color="#FFFFFF"
               >
-                {getInitials(record.fullName)}
+                {getInitials(fullNameSource)}
               </Typography>
             </View>
 
-            {/* Identity */}
+            {/* Identity — display = last word of full name (+ repeat last char); data from Supabase or auth */}
             <View style={styles.identity}>
               <Typography variant="title-lg" weight="bold">
-                {record.fullName}
+                {profileHeadline}
               </Typography>
               <Typography variant="body-md" color={theme.colors.onSurfaceVariant}>
-                {record.phone}
+                {phoneNational}
               </Typography>
-              {record.email ? (
+              {emailDisplay.trim().length > 0 ? (
                 <Typography variant="body-sm" color={theme.colors.onSurfaceVariant}>
-                  {record.email}
+                  {emailDisplay}
                 </Typography>
               ) : null}
             </View>
@@ -215,7 +288,7 @@ export default function MeScreen() {
           title={t("settings_section_support")}
           description={t("settings_supportDescription")}
           actionLabel={t("settings_supportAction")}
-          onPress={() => Alert.alert(t("settings_supportSoonTitle"), t("settings_supportSoon"))}
+          onPress={handleFeedbackPress}
         />
 
         {/* ── 5. Sign out ────────────────────────────────────────────────── */}

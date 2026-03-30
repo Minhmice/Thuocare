@@ -67,7 +67,7 @@ This file tracks work explicitly deferred by product or implementation decisions
 ## UX And Design
 
 - implement glass treatment for Dialog and Sheet components as defined in component specs
-- implement future localization (Vietnamese) and visibility settings for Lab content
+- extend localization coverage (Vietnamese strings, copy review) where product needs it
 - refine Android parity for iPhone-first Expo patterns
 - tune motion and polish after auth flow implementation is stable
 - implement onboarding as multiple screens with slide animation when that phase starts

@@ -341,7 +341,7 @@ Use `Gemini 3` for:
 | A-01 | theme and tab shell alignment | shell | `Claude Sonnet` | pending |
 | B-01 | shared state redesign | shared | `Gemini 3` | done | captured in `docs/screen_feature/shared-states.md` |
 | **B-02** | **shared state implementation** | **shared** | **`Claude Sonnet`** | **done** | **LoadingState: centered Spinner + fade-in; ErrorState: icon/Typography/Button + Vietnamese defaults; EmptyState: new composed component; Meds + Me updated** |
-| **G-01** | **Lab screen implementation** | **Lab** | **`Claude Sonnet`** | **done** | **primitives → wrappers → composed → snippets → toast; tabBarButton gate; inline state toggles** |
+| **G-01** | **Lab screen** | **—** | **`Claude Sonnet`** | **removed** | **was implemented then removed; see `docs/screen_feature/lab-tab.md`** |
 | **C-00** | **home UX and flow definition** | **Home** | **`Gemini 3`** | **done** | **captured in `docs/phase implement/gemini/home.md`** |
 | **C-01** | **home implementation** | **Home** | **`Claude Sonnet`** | **done** | **greeting, missed-dose alert, stock warning, stats dashboard, next-dose hero, slider confirm, schedule, photo stub** |
 | **C-03** | **Home reminder experience definition** | **Home** | **`Gemini 3`** | **done** | **captured in `docs/screen_feature/home-reminder-experience.md`** |

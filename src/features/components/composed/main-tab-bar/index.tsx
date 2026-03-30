@@ -17,7 +17,6 @@ const ROUTES = [
   { name: "home", label: "Trang Chủ", icon: "home-variant" },
   { name: "meds", label: "Thuốc", icon: "pill" },
   { name: "me", label: "Tôi", icon: "account" },
-  { name: "lab", label: "Lab", icon: "flask", devOnly: true },
 ];
 
 export const MainTabBar: React.FC = () => {
@@ -39,9 +38,6 @@ export const MainTabBar: React.FC = () => {
     >
       <View style={styles.content}>
         {ROUTES.map((route) => {
-          // Skip 'lab' tab in production unless in dev mode
-          if (route.devOnly && !__DEV__) return null;
-
           const isFocused = currentTab === route.name;
 
           const onPress = () => {

@@ -1,29 +1,36 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useRef } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  interpolate,
+  interpolateColor,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+  Extrapolation,
+} from "react-native-reanimated";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
-  ActivityIndicator,
-  Animated,
-  PanResponder,
-  StyleSheet,
-  View,
-} from "react-native";
-import { useTheme } from "react-native-paper";
-import { Icon } from "../../wrapper/icon";
-import { Typography } from "../../wrapper/typography";
-import type { SliderConfirmProps } from "./types";
+  SIZE_CONFIG,
+  SPRING_BACK,
+  SPRING_COMPLETE,
+  SUCCESS_HOLD_MS,
+  THUMB_ACTIVE_SCALE,
+} from "./constants";
+import { useSliderHaptics } from "./use-haptics";
+import type { SliderConfirmProps, SliderConfirmSize } from "./types";
 
-// md/medium = standard compact; lg/large = primary-action (Apple-alarm inspired, visibly larger)
-const SIZE_CONFIG = {
-  medium: { thumb: 56, padding: 6 },
-  large: { thumb: 72, padding: 10 },
-} as const;
-
+// ── Size normalization ──────────────────────────────────────────────
 type NormalizedSize = keyof typeof SIZE_CONFIG;
 
-function normalizeSize(size: SliderConfirmProps["size"]): NormalizedSize {
+function normalizeSize(size: SliderConfirmSize | undefined): NormalizedSize {
   if (size === "lg" || size === "large") return "large";
   return "medium";
 }
 
+// ── Component ───────────────────────────────────────────────────────
 export const SliderConfirm: React.FC<SliderConfirmProps> = ({
   onConfirm,
   label = "Slide to confirm",
@@ -31,151 +38,248 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
   disabled = false,
   loading = false,
   size = "medium",
+  hapticEnabled = true,
+  variant = "dark",
   style,
 }) => {
-  const theme = useTheme();
-
   const sz = normalizeSize(size);
   const { thumb: THUMB_SIZE, padding: TRACK_PADDING } = SIZE_CONFIG[sz];
 
-  const trackWidthRef = useRef(0);
+  // Track width measured on layout
+  const trackWidth = useSharedValue(0);
+
+  // Maximum travel distance for the thumb
+  const maxTravel = useSharedValue(0);
+
+  // Current thumb X position (shared value for UI thread)
+  const thumbX = useSharedValue(0);
+
+  // Whether the thumb is being actively dragged
+  const isActive = useSharedValue(false);
+
+  // Whether confirmation has already been triggered (prevent double-fire)
+  const hasConfirmed = useSharedValue(false);
+
+  // Whether the threshold was crossed during this drag (for haptic gating)
+  const thresholdCrossed = useSharedValue(false);
+
+  // Stable ref for the callback
   const onConfirmRef = useRef(onConfirm);
-  const thresholdRef = useRef(threshold);
-  const blockedRef = useRef(disabled || loading);
+  onConfirmRef.current = onConfirm;
 
-  useEffect(() => { onConfirmRef.current = onConfirm; }, [onConfirm]);
-  useEffect(() => { thresholdRef.current = threshold; }, [threshold]);
-  useEffect(() => { blockedRef.current = disabled || loading; }, [disabled, loading]);
-
-  const thumbAnim = useRef(new Animated.Value(0)).current;
-
-  const maxX = () =>
-    Math.max(0, trackWidthRef.current - THUMB_SIZE - TRACK_PADDING * 2);
-
-  const springBack = () => {
-    Animated.spring(thumbAnim, {
-      toValue: 0,
-      useNativeDriver: false,
-      tension: 80,
-      friction: 8,
-    }).start();
-  };
-
-  const panResponder = useRef(
-    PanResponder.create({
-      // Do not claim on touch-start: let ScrollView's responder run first.
-      // This preserves vertical scroll when the user touches the slider area.
-      onStartShouldSetPanResponder: () => false,
-
-      // Only claim once movement is clearly horizontal (dx > dy, with a small
-      // dead zone of 3px to avoid accidental claims on near-diagonal drags).
-      onMoveShouldSetPanResponder: (_, gs) => {
-        if (blockedRef.current) return false;
-        return Math.abs(gs.dx) > Math.abs(gs.dy) && Math.abs(gs.dx) > 3;
-      },
-
-      onPanResponderGrant: () => {
-        thumbAnim.stopAnimation();
-      },
-      onPanResponderMove: (_, gs) => {
-        thumbAnim.setValue(Math.max(0, Math.min(gs.dx, maxX())));
-      },
-      onPanResponderRelease: (_, gs) => {
-        if (gs.dx >= maxX() * thresholdRef.current) {
-          Animated.timing(thumbAnim, {
-            toValue: maxX(),
-            duration: 120,
-            useNativeDriver: false,
-          }).start(() => {
-            onConfirmRef.current();
-          });
-        } else {
-          springBack();
-        }
-      },
-      onPanResponderTerminate: () => {
-        springBack();
-      },
-    })
-  ).current;
-
-  // Label fades out as the thumb moves right.
-  const labelOpacity = thumbAnim.interpolate({
-    inputRange: [0, 80],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
+  const haptics = useSliderHaptics(hapticEnabled);
 
   const isBlocked = disabled || loading;
+
+  // ── JS callbacks (called from worklets via runOnJS) ─────────────
+  const fireConfirm = useCallback(() => {
+    haptics.onComplete();
+    setTimeout(() => {
+      onConfirmRef.current();
+    }, SUCCESS_HOLD_MS);
+  }, [haptics]);
+
+  const fireThresholdHaptic = useCallback(() => {
+    haptics.onThreshold();
+  }, [haptics]);
+
+  const fireStartHaptic = useCallback(() => {
+    haptics.onStart();
+  }, [haptics]);
+
+  // ── Gesture ─────────────────────────────────────────────────────
+  const panGesture = Gesture.Pan()
+    .enabled(!isBlocked)
+    .activeOffsetX(8) // Only activate after 8px horizontal movement
+    .failOffsetY([-12, 12]) // Fail (let ScrollView win) if vertical > 12px
+    .onStart(() => {
+      "worklet";
+      if (hasConfirmed.value) return;
+      isActive.value = true;
+      thresholdCrossed.value = false;
+      runOnJS(fireStartHaptic)();
+    })
+    .onUpdate((e) => {
+      "worklet";
+      if (hasConfirmed.value) return;
+      const clamped = Math.max(0, Math.min(e.translationX, maxTravel.value));
+      thumbX.value = clamped;
+
+      // Threshold crossing detection (one-shot per drag)
+      const progress = maxTravel.value > 0 ? clamped / maxTravel.value : 0;
+      if (progress >= threshold && !thresholdCrossed.value) {
+        thresholdCrossed.value = true;
+        runOnJS(fireThresholdHaptic)();
+      } else if (progress < threshold && thresholdCrossed.value) {
+        thresholdCrossed.value = false;
+      }
+    })
+    .onEnd(() => {
+      "worklet";
+      if (hasConfirmed.value) return;
+      isActive.value = false;
+
+      const progress = maxTravel.value > 0 ? thumbX.value / maxTravel.value : 0;
+
+      if (progress >= threshold) {
+        // Success: snap to end
+        hasConfirmed.value = true;
+        thumbX.value = withSpring(maxTravel.value, SPRING_COMPLETE);
+        runOnJS(fireConfirm)();
+      } else {
+        // Fail: spring back
+        thumbX.value = withSpring(0, SPRING_BACK);
+      }
+    })
+    .onFinalize(() => {
+      "worklet";
+      isActive.value = false;
+    });
+
+  // ── Animated Styles ─────────────────────────────────────────────
+  const thumbAnimatedStyle = useAnimatedStyle(() => {
+    const scale = isActive.value
+      ? withSpring(THUMB_ACTIVE_SCALE, { damping: 15, stiffness: 200 })
+      : withSpring(1, { damping: 15, stiffness: 200 });
+
+    return {
+      transform: [{ translateX: thumbX.value }, { scale }],
+    };
+  });
+
+  const fillAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      width: thumbX.value + THUMB_SIZE / 2 + TRACK_PADDING,
+    };
+  });
+
+  const labelAnimatedStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      thumbX.value,
+      [0, 60],
+      [1, 0],
+      Extrapolation.CLAMP
+    );
+    return { opacity };
+  });
+
+  // Visual tokens based on variant
+  const isDark = variant === "dark";
+  const trackBg = isDark ? "rgba(0, 0, 0, 0.15)" : "rgba(0, 0, 0, 0.06)";
+  const fillBg = isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 88, 188, 0.08)";
+  const labelColor = isDark ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.45)";
+  const thumbBg = "#FFFFFF";
+  const iconColor = isDark ? "#0058BC" : "#0058BC";
 
   return (
     <View
       style={[
         styles.track,
-        { height: THUMB_SIZE + TRACK_PADDING * 2, padding: TRACK_PADDING },
+        {
+          height: THUMB_SIZE + TRACK_PADDING * 2,
+          padding: TRACK_PADDING,
+          backgroundColor: trackBg,
+        },
         disabled && !loading && styles.trackDisabled,
         style,
       ]}
       onLayout={(e) => {
-        trackWidthRef.current = e.nativeEvent.layout.width;
+        const w = e.nativeEvent.layout.width;
+        trackWidth.value = w;
+        maxTravel.value = Math.max(0, w - THUMB_SIZE - TRACK_PADDING * 2);
       }}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: isBlocked }}
+      accessibilityHint="Slide right to confirm"
     >
+      {/* Track fill */}
+      <Animated.View
+        style={[
+          styles.fill,
+          fillAnimatedStyle,
+          {
+            backgroundColor: fillBg,
+            borderRadius: 9999,
+            height: THUMB_SIZE,
+          },
+        ]}
+        pointerEvents="none"
+      />
+
+      {/* Label */}
       {!loading && (
         <Animated.View
-          style={[styles.overlay, { opacity: labelOpacity }]}
+          style={[styles.overlay, labelAnimatedStyle]}
           pointerEvents="none"
         >
-          <Typography
-            variant={sz === "large" ? "label-md" : "label-sm"}
-            weight="bold"
-            style={styles.labelText}
+          <Animated.Text
+            style={[
+              styles.labelText,
+              {
+                color: labelColor,
+                fontSize: sz === "large" ? 13 : 11,
+              },
+            ]}
           >
             {label.toUpperCase()}
-          </Typography>
+          </Animated.Text>
         </Animated.View>
       )}
 
+      {/* Loading spinner overlay */}
       {loading && (
         <View style={styles.overlay} pointerEvents="none">
           <ActivityIndicator size="small" color="rgba(255,255,255,0.6)" />
         </View>
       )}
 
-      <Animated.View
-        style={[
-          styles.thumb,
-          {
-            width: THUMB_SIZE,
-            height: THUMB_SIZE,
-            borderRadius: THUMB_SIZE / 2,
-            transform: [{ translateX: thumbAnim }],
-          },
-        ]}
-        {...(!isBlocked ? panResponder.panHandlers : {})}
-      >
-        {loading ? (
-          <ActivityIndicator size="small" color={theme.colors.primary} />
-        ) : (
-          <Icon
-            name="chevron-right"
-            size={sz === "large" ? 36 : 28}
-            color={disabled ? theme.colors.onSurfaceVariant : theme.colors.primary}
-          />
-        )}
-      </Animated.View>
+      {/* Thumb */}
+      <GestureDetector gesture={panGesture}>
+        <Animated.View
+          style={[
+            styles.thumb,
+            thumbAnimatedStyle,
+            {
+              width: THUMB_SIZE,
+              height: THUMB_SIZE,
+              borderRadius: THUMB_SIZE / 2,
+              backgroundColor: thumbBg,
+            },
+          ]}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color={iconColor} />
+          ) : (
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={sz === "large" ? 36 : 28}
+              color={disabled ? "#9CA3AF" : iconColor}
+            />
+          )}
+        </Animated.View>
+      </GestureDetector>
     </View>
   );
 };
 
+// ── Styles ────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   track: {
-    backgroundColor: "rgba(0, 0, 0, 0.15)",
     borderRadius: 9999,
     flexDirection: "row",
     alignItems: "center",
+    overflow: "hidden",
   },
   trackDisabled: {
     opacity: 0.45,
+  },
+  fill: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
   },
   overlay: {
     position: "absolute",
@@ -187,13 +291,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   labelText: {
-    color: "rgba(255, 255, 255, 0.9)",
+    fontWeight: "700",
     letterSpacing: 2.5,
+    textTransform: "uppercase",
   },
   thumb: {
-    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1,
+    // Subtle shadow for depth
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 4,
   },
 });

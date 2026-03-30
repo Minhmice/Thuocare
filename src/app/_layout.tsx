@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "../lib/auth/AuthProvider";
@@ -9,16 +10,18 @@ import { paperTheme } from "../theme/paperTheme";
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <LanguageProvider>
-        <AuthProvider>
-          <PaperProvider theme={paperTheme}>
-            <StatusBar style="dark" />
-            <AndroidNavigationBar />
-            <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: paperTheme.colors.surface } }} />
-          </PaperProvider>
-        </AuthProvider>
-      </LanguageProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <PaperProvider theme={paperTheme}>
+              <StatusBar style="dark" />
+              <AndroidNavigationBar />
+              <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: paperTheme.colors.surface } }} />
+            </PaperProvider>
+          </AuthProvider>
+        </LanguageProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

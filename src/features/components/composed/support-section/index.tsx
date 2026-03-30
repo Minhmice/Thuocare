@@ -7,10 +7,12 @@ import { Icon } from '../../wrapper/icon';
 import { Button } from '../../wrapper/button';
 import { SupportSectionProps } from './types';
 
+const SUPPORT_CARD_BG = '#F0F0F7';
+
 export const SupportSection: React.FC<SupportSectionProps> = ({
   title,
   description,
-  icon = 'help-circle-outline',
+  icon = 'help',
   actionLabel,
   onPress,
   style,
@@ -18,10 +20,22 @@ export const SupportSection: React.FC<SupportSectionProps> = ({
   const theme = useTheme();
 
   return (
-    <Card variant="flat" style={[styles.container, style]}>
+    <Card
+      variant="flat"
+      style={[
+        styles.container,
+        { backgroundColor: SUPPORT_CARD_BG },
+        style,
+      ]}
+    >
       <View style={styles.content}>
-        <View style={styles.iconContainer}>
-          <Icon name={icon} size="md" variant="primary" />
+        <View
+          style={[
+            styles.iconCircle,
+            { borderColor: theme.colors.primary },
+          ]}
+        >
+          <Icon name={icon} size="lg" variant="primary" />
         </View>
         <View style={styles.textContainer}>
           <Typography variant="title-md" weight="bold">
@@ -42,7 +56,14 @@ export const SupportSection: React.FC<SupportSectionProps> = ({
         variant="secondary"
         label={actionLabel}
         onPress={onPress}
-        style={[styles.button, { backgroundColor: theme.colors.surface }]}
+        style={[
+          styles.button,
+          {
+            backgroundColor: '#FFFFFF',
+            borderRadius: 16,
+          },
+        ]}
+        labelStyle={{ color: theme.colors.primary }}
       />
     </Card>
   );
@@ -56,17 +77,25 @@ const styles = StyleSheet.create({
   content: {
     flexDirection: 'row',
     marginBottom: 16,
+    alignItems: 'flex-start',
   },
-  iconContainer: {
+  iconCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    borderWidth: 2,
     marginRight: 16,
+    alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   },
   textContainer: {
     flex: 1,
+    paddingTop: 2,
   },
   description: {
-    marginTop: 4,
-    lineHeight: 18,
+    marginTop: 6,
+    lineHeight: 20,
   },
   button: {
     width: '100%',

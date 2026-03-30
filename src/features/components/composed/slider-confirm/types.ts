@@ -6,10 +6,11 @@ export interface SliderConfirmProps {
   /**
    * Visual size of the slider.
    * - `medium` (default): standard slider
-   * - `large`: enlarged primary-action slider (~64px high track)
+   * - `large`: enlarged primary-action slider (~72px thumb)
    * Legacy aliases `md` and `lg` are supported for backward compatibility.
    */
   size?: SliderConfirmSize;
+
   /**
    * Called once when the thumb crosses the confirm threshold and the snap
    * animation completes. The parent is responsible for what happens next:
@@ -41,6 +42,20 @@ export interface SliderConfirmProps {
    * The center label is hidden while loading is true.
    */
   loading?: boolean;
+
+  /**
+   * Enable haptic feedback during interaction.
+   * @default true
+   */
+  hapticEnabled?: boolean;
+
+  /**
+   * Visual variant for different background contexts.
+   * - `dark`: white text on semi-transparent dark track (for use on colored backgrounds)
+   * - `light`: dark text on semi-transparent light track (for use on white backgrounds)
+   * @default "dark"
+   */
+  variant?: "dark" | "light";
 
   /** Applied to the outer track container. */
   style?: StyleProp<ViewStyle>;
