@@ -1,48 +1,37 @@
-name: Build iOS unsigned IPA (Flutter)
+name: Build iOS dev client (EAS)
 
 on:
   workflow_dispatch:
     inputs:
-      release_tag:
-        description: "Git tag to create/upload release asset to (e.g., v1.0.0)"
+      profile:
+        description: "EAS build profile to use from eas.json"
         required: false
-        default: "v1.0.0"
-      release_name:
-        description: "GitHub Release name"
-        required: false
-        default: "iOS unsigned IPA"
+        default: "development"
       create_release:
         description: "If true, create/update a GitHub Release and upload the .ipa asset"
         required: false
         type: boolean
-        default: true
-      flutter_channel:
-        description: "Flutter channel"
-        required: false
-        default: "stable"
-      ipa_basename:
-        description: "Base filename for the exported IPA (without extension)"
-        required: false
-        default: "FlutterIpaExport"
-      pod_repo_update:
-        description: "If true, run CocoaPods repo update (slower, but can fix spec resolution issues)"
-        required: false
-        type: boolean
         default: false
+      release_tag:
+        description: "Git tag to create/upload release asset to (e.g., dev-client)"
+        required: false
+        default: "dev-client"
+      release_name:
+        description: "GitHub Release name"
+        required: false
+        default: "iOS dev client"
 
 permissions:
   contents: read
+  actions: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
-  build-ipa:
-    name: 🎉 iOS Build (unsigned IPA)
-    runs-on: macos-14
-    env:
-      FLUTTER_CHANNEL: ${{ inputs.flutter_channel }}
-      IPA_BASENAME: ${{ inputs.ipa_basename }}
+  build-dev-client:
+    name: iOS EAS build (dev client)
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -50,105 +39,92 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          channel: ${{ env.FLUTTER_CHANNEL }}
-          cache: true
+          node-version: 24
+          cache: pnpm
 
-      - name: Cache CocoaPods
-        uses: actions/cache@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          path: |
-            ios/Pods
-            $HOME/Library/Caches/CocoaPods
-            $HOME/.cocoapods
-          key: ${{ runner.os }}-cocoapods-${{ hashFiles('ios/Podfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cocoapods-
+          version: latest
+          run_install: false
 
-      - name: Tooling diagnostics
-        run: |
-          flutter --version
-          flutter doctor -v
-          xcodebuild -version
-          xcode-select -p
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Flutter pub get
-        run: flutter pub get
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: hs1Z5X-54oOkptcsRaJl07dGg9c7wwHUT2qURe2K
 
-      - name: Pod install (iOS)
-        working-directory: ios
+      - name: Ensure jq is available
         shell: bash
         run: |
-          pod --version
-          if [[ "${{ inputs.pod_repo_update }}" == "true" ]]; then
-            pod install --repo-update
-          else
-            pod install
+          set -euo pipefail
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y jq
           fi
+          jq --version
 
-      - name: Build iOS (no codesign)
-        run: flutter build ios --release --no-codesign
-
-      - name: Package .app into unsigned .ipa
+      - name: Run EAS build (wait)
+        id: eas_build
         shell: bash
         run: |
           set -euo pipefail
 
-          APP1="build/ios/iphoneos/Runner.app"
-          APP2="build/ios/Release-iphoneos/Runner.app"
+          PROFILE="${{ inputs.profile }}"
+          echo "Using EAS profile: $PROFILE"
 
-          if [[ -d "$APP1" ]]; then
-            RUNNER_APP="$APP1"
-          elif [[ -d "$APP2" ]]; then
-            RUNNER_APP="$APP2"
-          else
-            echo "Runner.app not found. Looked for:"
-            echo " - $APP1"
-            echo " - $APP2"
-            echo "Directory listing of build/ios:"
-            ls -la build/ios || true
-            echo "Searching for Runner.app under build/ios:"
-            find build/ios -maxdepth 4 -type d -name Runner.app -print || true
+          eas build --platform ios --profile "$PROFILE" --non-interactive --wait --json | tee eas-build.json
+
+          BUILD_ID="$(jq -r '.[0].id // .id // empty' eas-build.json)"
+          if [[ -z "$BUILD_ID" || "$BUILD_ID" == "null" ]]; then
+            echo "Failed to parse build id from eas-build.json"
+            cat eas-build.json
             exit 1
           fi
 
-          EXPORT_DIR="ipa_export"
-          PAYLOAD_DIR="$EXPORT_DIR/Payload"
-          IPA_PATH="$EXPORT_DIR/${IPA_BASENAME}.ipa"
+          echo "build_id=$BUILD_ID" >> "$GITHUB_OUTPUT"
 
-          rm -rf "$EXPORT_DIR"
-          mkdir -p "$PAYLOAD_DIR"
+      - name: Download .ipa from EAS
+        id: eas_download
+        shell: bash
+        run: |
+          set -euo pipefail
 
-          echo "Using Runner.app at: $RUNNER_APP"
-          cp -R "$RUNNER_APP" "$PAYLOAD_DIR/Runner.app"
+          mkdir -p dist
+          IPA_PATH="dist/thuocare-dev-client-${{ inputs.profile }}.ipa"
 
-          ditto -c -k --sequesterRsrc --keepParent "$PAYLOAD_DIR" "$IPA_PATH"
+          eas build:download --platform ios --id "${{ steps.eas_build.outputs.build_id }}" --path "$IPA_PATH" --non-interactive
 
-          echo "IPA created at: $IPA_PATH"
-          ls -la "$EXPORT_DIR"
+          echo "ipa_path=$IPA_PATH" >> "$GITHUB_OUTPUT"
+          ls -la dist
 
-      - name: Upload IPA artifact
+      - name: Upload .ipa artifact
         uses: actions/upload-artifact@v4
         with:
-          name: unsigned-ipa
-          path: ipa_export/${{ inputs.ipa_basename }}.ipa
+          name: ios-dev-client-ipa
+          path: ${{ steps.eas_download.outputs.ipa_path }}
           if-no-files-found: error
 
   release:
-    name: Upload binaries to release
-    needs: build-ipa
+    name: Release .ipa asset
+    needs: build-dev-client
     runs-on: ubuntu-latest
     if: ${{ inputs.create_release }}
     permissions:
       contents: write
+      actions: read
 
     steps:
-      - name: Download IPA artifact
+      - name: Download .ipa artifact
         uses: actions/download-artifact@v4
         with:
-          name: unsigned-ipa
+          name: ios-dev-client-ipa
           path: dist
 
       - name: Create/Update Release and upload asset
@@ -156,6 +132,6 @@ jobs:
         with:
           tag_name: ${{ inputs.release_tag }}
           name: ${{ inputs.release_name }}
-          files: dist/${{ inputs.ipa_basename }}.ipa
+          files: dist/*.ipa
           fail_on_unmatched_files: true
 
