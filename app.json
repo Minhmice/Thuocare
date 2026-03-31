@@ -31,11 +31,29 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.thuocare-mobile"
+      "bundleIdentifier": "com.anonymous.thuocare-mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
-    "android": {},
+    "android": {
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
     "web": {
       "bundler": "metro"
+    },
+    "extra": {
+      "router": {},
+      "expo-navigation-bar": {
+        "enforceContrast": false,
+        "barStyle": "dark",
+        "visibility": "visible"
+      },
+      "eas": {
+        "projectId": "536a7a2a-64ac-44fc-8143-90a150e59bc0"
+      }
     }
   }
 }

@@ -1,0 +1,161 @@
+name: Build iOS unsigned IPA (Flutter)
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Git tag to create/upload release asset to (e.g., v1.0.0)"
+        required: false
+        default: "v1.0.0"
+      release_name:
+        description: "GitHub Release name"
+        required: false
+        default: "iOS unsigned IPA"
+      create_release:
+        description: "If true, create/update a GitHub Release and upload the .ipa asset"
+        required: false
+        type: boolean
+        default: true
+      flutter_channel:
+        description: "Flutter channel"
+        required: false
+        default: "stable"
+      ipa_basename:
+        description: "Base filename for the exported IPA (without extension)"
+        required: false
+        default: "FlutterIpaExport"
+      pod_repo_update:
+        description: "If true, run CocoaPods repo update (slower, but can fix spec resolution issues)"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  build-ipa:
+    name: 🎉 iOS Build (unsigned IPA)
+    runs-on: macos-14
+    env:
+      FLUTTER_CHANNEL: ${{ inputs.flutter_channel }}
+      IPA_BASENAME: ${{ inputs.ipa_basename }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ios/Pods
+            $HOME/Library/Caches/CocoaPods
+            $HOME/.cocoapods
+          key: ${{ runner.os }}-cocoapods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cocoapods-
+
+      - name: Tooling diagnostics
+        run: |
+          flutter --version
+          flutter doctor -v
+          xcodebuild -version
+          xcode-select -p
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Pod install (iOS)
+        working-directory: ios
+        shell: bash
+        run: |
+          pod --version
+          if [[ "${{ inputs.pod_repo_update }}" == "true" ]]; then
+            pod install --repo-update
+          else
+            pod install
+          fi
+
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Package .app into unsigned .ipa
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          APP1="build/ios/iphoneos/Runner.app"
+          APP2="build/ios/Release-iphoneos/Runner.app"
+
+          if [[ -d "$APP1" ]]; then
+            RUNNER_APP="$APP1"
+          elif [[ -d "$APP2" ]]; then
+            RUNNER_APP="$APP2"
+          else
+            echo "Runner.app not found. Looked for:"
+            echo " - $APP1"
+            echo " - $APP2"
+            echo "Directory listing of build/ios:"
+            ls -la build/ios || true
+            echo "Searching for Runner.app under build/ios:"
+            find build/ios -maxdepth 4 -type d -name Runner.app -print || true
+            exit 1
+          fi
+
+          EXPORT_DIR="ipa_export"
+          PAYLOAD_DIR="$EXPORT_DIR/Payload"
+          IPA_PATH="$EXPORT_DIR/${IPA_BASENAME}.ipa"
+
+          rm -rf "$EXPORT_DIR"
+          mkdir -p "$PAYLOAD_DIR"
+
+          echo "Using Runner.app at: $RUNNER_APP"
+          cp -R "$RUNNER_APP" "$PAYLOAD_DIR/Runner.app"
+
+          ditto -c -k --sequesterRsrc --keepParent "$PAYLOAD_DIR" "$IPA_PATH"
+
+          echo "IPA created at: $IPA_PATH"
+          ls -la "$EXPORT_DIR"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-ipa
+          path: ipa_export/${{ inputs.ipa_basename }}.ipa
+          if-no-files-found: error
+
+  release:
+    name: Upload binaries to release
+    needs: build-ipa
+    runs-on: ubuntu-latest
+    if: ${{ inputs.create_release }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download IPA artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: unsigned-ipa
+          path: dist
+
+      - name: Create/Update Release and upload asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.release_tag }}
+          name: ${{ inputs.release_name }}
+          files: dist/${{ inputs.ipa_basename }}.ipa
+          fail_on_unmatched_files: true
+
