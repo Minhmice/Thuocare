@@ -1,15 +1,15 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { Card } from '../../wrapper/card';
-import { Typography } from '../../wrapper/typography';
-import { Icon } from '../../wrapper/icon';
-import { SettingsSectionProps, SettingsItem } from './types';
+import React from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useTheme } from "react-native-paper";
+import { Card } from "../../wrapper/card";
+import { Typography } from "../../wrapper/typography";
+import { Icon } from "../../wrapper/icon";
+import { SettingsSectionProps, SettingsItem } from "./types";
 
 export const SettingsSection: React.FC<SettingsSectionProps> = ({
   title,
   items,
-  style,
+  style
 }) => {
   const theme = useTheme();
 
@@ -38,14 +38,18 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
                   <Icon
                     name={item.icon}
                     size="sm"
-                    variant={item.destructive ? 'error' : 'onSurfaceVariant'}
+                    variant={item.destructive ? "error" : "onSurfaceVariant"}
                     style={styles.icon}
                   />
                 )}
                 <Typography
                   variant="body-md"
                   weight="medium"
-                  color={item.destructive ? theme.colors.error : theme.colors.onSurface}
+                  color={
+                    item.destructive
+                      ? theme.colors.error
+                      : theme.colors.onSurface
+                  }
                 >
                   {item.label}
                 </Typography>
@@ -71,7 +75,12 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
               </View>
             </TouchableOpacity>
             {index < items.length - 1 && (
-              <View style={[styles.divider, { backgroundColor: theme.colors.surfaceVariant }]} />
+              <View
+                style={[
+                  styles.divider,
+                  { backgroundColor: theme.colors.surfaceVariant }
+                ]}
+              />
             )}
           </React.Fragment>
         ))}
@@ -83,38 +92,38 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 24,
-    width: '100%',
+    width: "100%"
   },
   title: {
     marginBottom: 8,
     marginLeft: 16,
-    letterSpacing: 0.5,
+    letterSpacing: 0.5
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 16,
     paddingHorizontal: 16,
-    minHeight: 56,
+    minHeight: 56
   },
   leftContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1
   },
   icon: {
-    marginRight: 12,
+    marginRight: 12
   },
   rightContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center"
   },
   value: {
-    marginRight: 8,
+    marginRight: 8
   },
   divider: {
     height: 1,
-    marginLeft: 52, // icon width (24) + margin (12) + start padding (16)
-  },
+    marginLeft: 52 // icon width (24) + margin (12) + start padding (16)
+  }
 });

@@ -16,12 +16,12 @@ import { useMedicationsData } from "../../lib/meds/MedicationsProvider";
 import {
   isLocalMedicationId,
   removeLocalMedication,
-  takePendingHighlightId,
+  takePendingHighlightId
 } from "../../lib/meds/localMedsStore";
 import {
   deleteMedicationRemote,
   markRemoteDeletePending,
-  clearRemoteDeletePending,
+  clearRemoteDeletePending
 } from "../../features/meds/repository";
 import { paperTheme } from "../../theme/paperTheme";
 import type { Medication } from "../../types/medication";
@@ -49,7 +49,9 @@ export default function MedsScreen() {
   const router = useRouter();
   const { t } = useLanguage();
   const { items, loading, error, refresh } = useMedicationsData();
-  const [activeHighlightId, setActiveHighlightId] = useState<string | null>(null);
+  const [activeHighlightId, setActiveHighlightId] = useState<string | null>(
+    null
+  );
   const [medDialog, setMedDialog] = useState<MedsDialog>(null);
   const listRef = useRef<FlatList<Medication> | null>(null);
   const itemsRef = useRef<Medication[]>(items);
@@ -74,7 +76,11 @@ export default function MedsScreen() {
       scrollTimer = setTimeout(() => {
         const index = itemsRef.current.findIndex((m) => m.id === highlightId);
         if (index >= 0) {
-          listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.1 });
+          listRef.current?.scrollToIndex({
+            index,
+            animated: true,
+            viewPosition: 0.1
+          });
         }
       }, 150);
 
@@ -93,7 +99,11 @@ export default function MedsScreen() {
     const timer = setTimeout(() => {
       const index = itemsRef.current.findIndex((m) => m.id === id);
       if (index >= 0) {
-        listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.1 });
+        listRef.current?.scrollToIndex({
+          index,
+          animated: true,
+          viewPosition: 0.1
+        });
       }
     }, 150);
     return () => clearTimeout(timer);
@@ -104,7 +114,8 @@ export default function MedsScreen() {
   }, [refresh]);
 
   if (loading && items.length === 0) return <LoadingState />;
-  if (error && items.length === 0) return <ErrorState message={error} onRetry={onRetry} />;
+  if (error && items.length === 0)
+    return <ErrorState message={error} onRetry={onRetry} />;
 
   const dashboard = {
     total: items.length,
@@ -115,7 +126,7 @@ export default function MedsScreen() {
     needRefill: items.filter((m) => {
       const stock = m.remainingDoses;
       return stock != null && stock <= LOW_STOCK_THRESHOLD;
-    }).length,
+    }).length
   };
 
   return (
@@ -140,13 +151,20 @@ export default function MedsScreen() {
 
             <SummaryStatsCard
               items={[
-                { label: t("meds_total"), value: dashboard.total, emphasize: true },
+                {
+                  label: t("meds_total"),
+                  value: dashboard.total,
+                  emphasize: true
+                },
                 { label: t("meds_activeToday"), value: dashboard.activeToday },
                 {
                   label: t("meds_needRefill"),
                   value: dashboard.needRefill,
-                  color: dashboard.needRefill > 0 ? "#A86700" : paperTheme.colors.onSurface,
-                },
+                  color:
+                    dashboard.needRefill > 0
+                      ? "#A86700"
+                      : paperTheme.colors.onSurface
+                }
               ]}
             />
 
@@ -156,7 +174,7 @@ export default function MedsScreen() {
               accessibilityLabel={t("meds_addRow")}
               style={({ pressed }) => [
                 styles.addMedicationBar,
-                pressed && styles.addMedicationBarPressed,
+                pressed && styles.addMedicationBarPressed
               ]}
             >
               <MaterialCommunityIcons
@@ -190,20 +208,22 @@ export default function MedsScreen() {
               item.remainingDoses > 0 &&
               item.remainingDoses <= LOW_STOCK_THRESHOLD
             }
-            outOfStock={item.remainingDoses != null && item.remainingDoses === 0}
+            outOfStock={
+              item.remainingDoses != null && item.remainingDoses === 0
+            }
             highlighted={activeHighlightId === item.id}
             stockLabel={
               item.remainingDoses == null
                 ? null
                 : item.remainingDoses === 0
-                ? t("meds_outOfStock")
-                : t("meds_remaining", { count: item.remainingDoses })
+                  ? t("meds_outOfStock")
+                  : t("meds_remaining", { count: item.remainingDoses })
             }
             showMenu
             onEditPress={() =>
               router.push({
                 pathname: "/meds/add",
-                params: { editId: item.id },
+                params: { editId: item.id }
               } as never)
             }
             onDeletePress={() => {
@@ -213,7 +233,11 @@ export default function MedsScreen() {
         )}
         onScrollToIndexFailed={({ index }) => {
           setTimeout(() => {
-            listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.1 });
+            listRef.current?.scrollToIndex({
+              index,
+              animated: true,
+              viewPosition: 0.1
+            });
           }, 250);
         }}
       />
@@ -263,7 +287,7 @@ export default function MedsScreen() {
                           message:
                             err instanceof Error
                               ? err.message
-                              : "Failed to delete medication",
+                              : "Failed to delete medication"
                         });
                       });
                   }}
@@ -306,15 +330,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 40,
     paddingBottom: 128,
-    gap: 12,
+    gap: 12
   },
   header: {
     gap: 12,
-    paddingBottom: 4,
+    paddingBottom: 4
   },
   screenHeader: {
     paddingHorizontal: 0,
-    paddingVertical: 0,
+    paddingVertical: 0
   },
   addMedicationBar: {
     flexDirection: "row",
@@ -328,15 +352,15 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: paperTheme.colors.outline,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF"
   },
   addMedicationBarPressed: {
-    opacity: 0.88,
+    opacity: 0.88
   },
   addMedicationLabel: {
     fontSize: 15,
     fontWeight: "600",
-    color: paperTheme.colors.primary,
+    color: paperTheme.colors.primary
   },
   medDialog: {
     borderRadius: 16,
@@ -344,20 +368,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 28,
     maxWidth: 400,
     alignSelf: "center",
-    width: "100%",
+    width: "100%"
   },
   medDialogContent: {
     paddingTop: 20,
-    paddingBottom: 4,
+    paddingBottom: 4
   },
   medDialogTitle: {
     color: paperTheme.colors.onSurface,
     fontWeight: "600",
-    marginBottom: 8,
+    marginBottom: 8
   },
   medDialogSubtitle: {
     color: paperTheme.colors.onSurfaceVariant,
-    lineHeight: 22,
+    lineHeight: 22
   },
   medDialogActions: {
     flexDirection: "row",
@@ -365,6 +389,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 0,
     paddingHorizontal: 8,
-    paddingBottom: 8,
-  },
+    paddingBottom: 8
+  }
 });

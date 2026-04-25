@@ -78,7 +78,8 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
     } catch (err) {
       setResult({
         success: false,
-        message: err instanceof Error ? err.message : t("forgotPassword_notFound")
+        message:
+          err instanceof Error ? err.message : t("forgotPassword_notFound")
       });
     } finally {
       setSubmitting(false);
@@ -101,7 +102,10 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
         }}
       >
         <AuthModalPanel>
-          <AppText variant="headlineSmall" style={{ marginBottom: 8, fontWeight: "600" }}>
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 8, fontWeight: "600" }}
+          >
             {t("forgotPassword_title")}
           </AppText>
 
@@ -121,7 +125,9 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
                 <AppText
                   variant="bodyMedium"
                   style={{
-                    color: result.success ? paperTheme.colors.primary : "#9F1D1D",
+                    color: result.success
+                      ? paperTheme.colors.primary
+                      : "#9F1D1D",
                     lineHeight: 20
                   }}
                 >
@@ -130,14 +136,20 @@ export function ForgotPasswordModal({ visible, onDismiss }: Props) {
               </View>
 
               <AppButton onPress={onDismiss}>
-                {result.success ? t("forgotPassword_done") : t("forgotPassword_close")}
+                {result.success
+                  ? t("forgotPassword_done")
+                  : t("forgotPassword_close")}
               </AppButton>
             </>
           ) : (
             <>
               <AppText
                 variant="bodyMedium"
-                style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 20, lineHeight: 20 }}
+                style={{
+                  color: paperTheme.colors.onSurfaceVariant,
+                  marginBottom: 20,
+                  lineHeight: 20
+                }}
               >
                 {t("forgotPassword_description")}
               </AppText>

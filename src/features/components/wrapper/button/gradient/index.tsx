@@ -1,14 +1,14 @@
-import React from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Button as ButtonPrimitive } from '../../../ui/button';
-import { ButtonProps } from '../../../ui/button/types';
+import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { Button as ButtonPrimitive } from "../../../ui/button";
+import { ButtonProps } from "../../../ui/button/types";
 
-export interface GradientButtonProps extends Omit<ButtonProps, 'variant'> {
+export interface GradientButtonProps extends Omit<ButtonProps, "variant"> {
   colors?: readonly [string, string, ...string[]];
 }
 
 export const GradientButton: React.FC<GradientButtonProps> = ({
-  colors = ['#0058BC', '#003A7A'],
+  colors = ["#0058BC", "#003A7A"],
   style,
   ...props
 }) => {
@@ -20,9 +20,9 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
       style={[
         {
           borderRadius: 9999,
-          overflow: 'hidden',
+          overflow: "hidden"
         },
-        style,
+        style
       ]}
     >
       <ButtonPrimitive
@@ -30,14 +30,14 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
         variant="text" // Uses transparent background
         style={{
           paddingHorizontal: 24,
-          backgroundColor: 'transparent',
+          backgroundColor: "transparent"
         }}
         labelStyle={[
           {
-            fontWeight: '600',
-            color: '#FFFFFF',
+            fontWeight: "600",
+            color: "#FFFFFF"
           },
-          props.labelStyle,
+          props.labelStyle
         ]}
       />
     </LinearGradient>

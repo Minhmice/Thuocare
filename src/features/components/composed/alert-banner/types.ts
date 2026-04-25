@@ -1,6 +1,6 @@
-import { StyleProp, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from "react-native";
 
-export type AlertVariant = 'info' | 'warning' | 'critical';
+export type AlertVariant = "info" | "warning" | "critical";
 
 export interface AlertBannerProps {
   variant?: AlertVariant;

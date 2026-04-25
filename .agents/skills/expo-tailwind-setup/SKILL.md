@@ -57,7 +57,7 @@ module.exports = withNativewind(config, {
   // inline variables break PlatformColor in CSS variables
   inlineVariables: false,
   // We add className support manually
-  globalClassNamePolyfill: false,
+  globalClassNamePolyfill: false
 });
 ```
 
@@ -69,8 +69,8 @@ Create `postcss.config.mjs`:
 // postcss.config.mjs
 export default {
   plugins: {
-    "@tailwindcss/postcss": {},
-  },
+    "@tailwindcss/postcss": {}
+  }
 };
 ```
 
@@ -130,7 +130,7 @@ Since react-native-css requires explicit CSS element wrapping, create reusable c
 ```tsx
 import {
   useCssElement,
-  useNativeVariable as useFunctionalVariable,
+  useNativeVariable as useFunctionalVariable
 } from "react-native-css";
 
 import { Link as RouterLink } from "expo-router";
@@ -143,7 +143,7 @@ import {
   ScrollView as RNScrollView,
   TouchableHighlight as RNTouchableHighlight,
   TextInput as RNTextInput,
-  StyleSheet,
+  StyleSheet
 } from "react-native";
 
 // CSS-enabled Link
@@ -191,7 +191,7 @@ export const ScrollView = (
 ) => {
   return useCssElement(RNScrollView, props, {
     className: "style",
-    contentContainerClassName: "contentContainerStyle",
+    contentContainerClassName: "contentContainerStyle"
   });
 };
 ScrollView.displayName = "CSS(ScrollView)";
@@ -223,7 +223,7 @@ export const AnimatedScrollView = (
   return useCssElement(Animated.ScrollView, props, {
     className: "style",
     contentClassName: "contentContainerStyle",
-    contentContainerClassName: "contentContainerStyle",
+    contentContainerClassName: "contentContainerStyle"
   });
 };
 
@@ -298,7 +298,7 @@ import RNAnimated from "react-native-reanimated";
 
 export const Animated = {
   ...RNAnimated,
-  View: RNAnimated.createAnimatedComponent(TW.View),
+  View: RNAnimated.createAnimatedComponent(TW.View)
 };
 ```
 

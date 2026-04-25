@@ -1,4 +1,4 @@
-import { ViewProps, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { ViewProps, StyleProp, ViewStyle, TextStyle } from "react-native";
 
 export interface FieldProps extends ViewProps {
   label?: string;

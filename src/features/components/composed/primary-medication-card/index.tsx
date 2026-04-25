@@ -8,7 +8,7 @@ export const PrimaryMedicationCard: React.FC<PrimaryMedicationCardProps> = ({
   name,
   dosageNote,
   benefitText,
-  imagePlaceholder,
+  imagePlaceholder
 }) => (
   <View style={styles.card}>
     <View style={styles.body}>
@@ -17,7 +17,12 @@ export const PrimaryMedicationCard: React.FC<PrimaryMedicationCardProps> = ({
           {dosageNote}
         </Typography>
       ) : null}
-      <Typography variant="title-lg" weight="bold" style={styles.name} numberOfLines={2}>
+      <Typography
+        variant="title-lg"
+        weight="bold"
+        style={styles.name}
+        numberOfLines={2}
+      >
         {name}
       </Typography>
       {benefitText ? (
@@ -27,7 +32,9 @@ export const PrimaryMedicationCard: React.FC<PrimaryMedicationCardProps> = ({
       ) : null}
     </View>
     <View style={styles.imageSlot}>
-      {imagePlaceholder ?? <Icon name="pill" size={32} color="rgba(0, 88, 188, 0.30)" />}
+      {imagePlaceholder ?? (
+        <Icon name="pill" size={32} color="rgba(0, 88, 188, 0.30)" />
+      )}
     </View>
   </View>
 );
@@ -46,23 +53,23 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 12,
-    elevation: 3,
+    elevation: 3
   },
   body: {
     flex: 1,
     gap: 4,
-    marginRight: 16,
+    marginRight: 16
   },
   note: {
     color: "rgba(0, 88, 188, 0.70)",
-    letterSpacing: 0.2,
+    letterSpacing: 0.2
   },
   name: {
     color: "#1A1C1F",
-    letterSpacing: -0.3,
+    letterSpacing: -0.3
   },
   benefit: {
-    color: "#5F6673",
+    color: "#5F6673"
   },
   imageSlot: {
     width: 80,
@@ -73,6 +80,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "#E5EDF6",
-    flexShrink: 0,
-  },
+    flexShrink: 0
+  }
 });

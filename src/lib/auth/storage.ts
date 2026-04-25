@@ -1,4 +1,7 @@
-import type { OnboardingSurveyAnswers, RoutineSegment } from "../../types/onboarding-survey";
+import type {
+  OnboardingSurveyAnswers,
+  RoutineSegment
+} from "../../types/onboarding-survey";
 
 export type ReminderPreference = "quiet" | "balanced" | "firm";
 export type RoutineStage = "starting" | "steady" | "resetting";

@@ -1,9 +1,11 @@
-import React from 'react';
-import { useTheme } from 'react-native-paper';
-import { Button as ButtonPrimitive } from '../../../ui/button';
-import { ButtonProps } from '../../../ui/button/types';
+import React from "react";
+import { useTheme } from "react-native-paper";
+import { Button as ButtonPrimitive } from "../../../ui/button";
+import { ButtonProps } from "../../../ui/button/types";
 
-export const PrimaryButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => {
+export const PrimaryButton: React.FC<Omit<ButtonProps, "variant">> = (
+  props
+) => {
   const theme = useTheme();
 
   return (
@@ -14,15 +16,15 @@ export const PrimaryButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => 
         {
           borderRadius: 9999,
           paddingHorizontal: 24,
-          backgroundColor: theme.colors.primary,
+          backgroundColor: theme.colors.primary
         },
-        props.style,
+        props.style
       ]}
       labelStyle={[
         {
-          fontWeight: '600',
+          fontWeight: "600"
         },
-        props.labelStyle,
+        props.labelStyle
       ]}
     />
   );

@@ -11,7 +11,7 @@ import {
   Icon,
   Label,
   Badge,
-  VectorIcon,
+  VectorIcon
 } from "expo-router/unstable-native-tabs";
 
 // SDK 55+
@@ -64,7 +64,7 @@ import {
   NativeTabs,
   Icon,
   Label,
-  Badge,
+  Badge
 } from "expo-router/unstable-native-tabs";
 
 export default function TabLayout() {

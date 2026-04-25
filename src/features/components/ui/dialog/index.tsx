@@ -1,5 +1,12 @@
-import React from 'react';
-import { View, StyleSheet, Modal, TouchableWithoutFeedback, StyleProp, ViewStyle } from 'react-native';
+import React from "react";
+import {
+  View,
+  StyleSheet,
+  Modal,
+  TouchableWithoutFeedback,
+  StyleProp,
+  ViewStyle
+} from "react-native";
 
 export interface DialogProps {
   visible: boolean;
@@ -16,7 +23,7 @@ export const Dialog: React.FC<DialogProps> = ({
   children,
   containerStyle,
   contentStyle,
-  dismissable = true,
+  dismissable = true
 }) => {
   return (
     <Modal
@@ -28,9 +35,7 @@ export const Dialog: React.FC<DialogProps> = ({
       <TouchableWithoutFeedback onPress={dismissable ? onDismiss : undefined}>
         <View style={[styles.overlay, containerStyle]}>
           <TouchableWithoutFeedback>
-            <View style={[styles.content, contentStyle]}>
-              {children}
-            </View>
+            <View style={[styles.content, contentStyle]}>{children}</View>
           </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
@@ -41,22 +46,22 @@ export const Dialog: React.FC<DialogProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24
   },
   content: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
-    width: '100%',
+    width: "100%",
     maxWidth: 400,
     padding: 20,
     // Standard shadow
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
-  },
+    elevation: 5
+  }
 });

@@ -15,7 +15,7 @@ export function AppCard({
   subtitle,
   style,
   contentStyle,
-  children,
+  children
 }: AppCardProps) {
   return (
     <Card mode="contained" style={[{ borderRadius: 28 }, style]}>

@@ -5,6 +5,7 @@ export type ScheduledDose = {
   medicationName: string;
   dosage: string;
   instruction: string;
+  scheduledDate: string; // "YYYY-MM-DD"
   scheduledAt: string; // "HH:mm"
   period: DosePeriod;
   status: "taken" | "missed" | "upcoming";
@@ -21,6 +22,7 @@ export type NextDoseMedication = {
 };
 
 export type NextDoseGroup = {
+  scheduledDate: string; // "YYYY-MM-DD"
   scheduledAt: string; // "HH:mm"
   minutesLate: number; // 0 = on time, >0 = overdue
   medications: NextDoseMedication[];

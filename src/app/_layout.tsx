@@ -19,7 +19,20 @@ export default function RootLayout() {
               <MedicationsProvider>
                 <StatusBar style="dark" />
                 <AndroidNavigationBar />
-                <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: paperTheme.colors.surface } }} />
+                <Stack
+                  screenOptions={{
+                    headerShown: false,
+                    contentStyle: { backgroundColor: paperTheme.colors.surface }
+                  }}
+                >
+                  <Stack.Screen
+                    name="reminder/[doseId]"
+                    options={{
+                      headerShown: false,
+                      presentation: "fullScreenModal"
+                    }}
+                  />
+                </Stack>
               </MedicationsProvider>
             </PaperProvider>
           </AuthProvider>

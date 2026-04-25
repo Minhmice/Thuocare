@@ -26,16 +26,17 @@ import { GradientButton } from 'src/features/components/wrapper/button/gradient'
 <DangerButton label="Delete Account" onPress={handlePress} />
 
 // Gradient Usage (defaults to primary blue gradient, but accepts `colors` prop)
-<GradientButton 
-  label="Upgrade to Premium" 
-  colors={['#FF7A00', '#FF004D']} 
-  onPress={handlePress} 
+<GradientButton
+  label="Upgrade to Premium"
+  colors={['#FF7A00', '#FF004D']}
+  onPress={handlePress}
 />
 ```
 
 ## Props
 
 All buttons inherit standard props from `TouchableOpacity` plus:
+
 - `label`: string
 - `loading`: boolean
 - `disabled`: boolean

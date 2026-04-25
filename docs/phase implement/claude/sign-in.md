@@ -9,12 +9,14 @@
 ### 1. **Authentication Infrastructure**
 
 #### `src/lib/auth/storage.ts`
+
 - Extended `StoredAuthRecord` to support both phone and email
   - Added `phone: string | null`
   - Made `email: string | null` (was `string`)
 - Signature unchanged; secure storage via expo-secure-store
 
 #### `src/lib/auth/AuthProvider.tsx`
+
 - Updated `SignInInput` type to use `identifier: string` (accepts phone or email)
 - Updated `SignUpInput` type to include `identifierType: "phone" | "email"`
 - Refactored `signIn()` to check against either phone or email in stored record
@@ -25,6 +27,7 @@
 ### 2. **Sign In Screen** (`src/app/(auth)/sign-in.tsx`)
 
 **Features implemented:**
+
 - **Phone-first mode**: Primary input for phone number with `keyboardType="phone-pad"`
 - **Email toggle**: "Use email" / "Use phone" button above identifier field to switch modes
 - **Password visibility toggle**: Eye icon to show/hide password (from TextInput.Icon)
@@ -41,6 +44,7 @@
 ### 3. **Sign Up Screen** (`src/app/(auth)/sign-up.tsx`)
 
 **Features implemented (minimal but functional):**
+
 - **Identifier type toggle**: Phone-first with email fallback (same pattern as Sign In)
 - **Full name field**: Required for account creation
 - **Password fields**: Password + Confirm password with visibility toggles
@@ -55,6 +59,7 @@
 ### 4. **Onboarding Flow** (`src/app/(auth)/onboarding.tsx`)
 
 **Step 1 (What was collected):**
+
 - **Reminder Preference** (Q5 from spec)
   - Gentle → `"quiet"`
   - Balanced → `"balanced"`
@@ -65,11 +70,13 @@
   - Not sure → `"resetting"`
 
 **Step 2 (Summary & completion):**
+
 - Display summary of selected answers
 - Call `completeOnboarding()` to finalize onboarding
 - Auto-redirect to `/(tabs)/home` when status becomes `"ready"`
 
 **Design features:**
+
 - Step indicator with progress bar (1/2, 2/2)
 - Choice buttons with visual selection state (radio-style)
 - Large tap targets (16px padding on buttons)
@@ -79,6 +86,7 @@
 ### 5. **Forgot Password Screen** (`src/app/(auth)/forgot-password.tsx`)
 
 **Current state (MVP placeholder):**
+
 - Simple explanatory screen
 - Message: "Password recovery is coming in a future update"
 - Options: Create new account or back to sign in
@@ -100,17 +108,20 @@
 ## Files Changed
 
 ### Created
+
 - `src/app/(auth)/sign-up.tsx`
 - `src/app/(auth)/onboarding.tsx`
 - `src/app/(auth)/forgot-password.tsx`
 - `docs/phase implement/claude/sign-in.md` (this file)
 
 ### Modified
+
 - `src/lib/auth/storage.ts` - Added phone field, made email nullable
 - `src/lib/auth/AuthProvider.tsx` - Updated types and logic for phone+email auth
 - `src/app/(auth)/sign-in.tsx` - Complete rewrite with phone-first UX
 
 ### Unchanged (working as-is)
+
 - `src/app/_layout.tsx` - Root layout with AuthProvider
 - `src/app/index.tsx` - Routing logic correctly handles all auth states
 - `src/app/(auth)/_layout.tsx` - Stack navigation for auth routes
@@ -118,6 +129,7 @@
 ## Testing the Flow
 
 **Successful path:**
+
 1. Launch app → redirects to `/sign-in`
 2. Click "Create a new prototype account"
 3. On Sign Up:
@@ -137,6 +149,7 @@
 7. Successful sign-in + onboarding complete ✓
 
 **Error cases tested:**
+
 - Empty fields → validation message
 - Passwords don't match → error message
 - Password < 6 chars → error message
@@ -147,6 +160,7 @@
 ## Design Alignment
 
 ✓ **DESIGN_STYLE.md compliance:**
+
 - Surface-container color hierarchy used
 - No 1px borders (GlassSurface has subtle white border as per spec)
 - Button radius: `borderRadius: 32` (close to "full")
@@ -155,6 +169,7 @@
 - Error styling: 8% opacity background with dark text (soft but legible)
 
 ✓ **UX per sign-in.md:**
+
 - Phone-first with email alternative ✓
 - Password visibility toggle ✓
 - Forgot password entry point ✓
@@ -165,6 +180,7 @@
 - Redirects correctly to onboarding ✓
 
 ✓ **Onboarding per onboarding-survey.md:**
+
 - Short 2-step flow ✓
 - Multiple-choice answers with large tap targets ✓
 - Collects reminde preference and condition type ✓
@@ -192,6 +208,7 @@
 **Sign In Implementation: COMPLETE FOR MVP**
 
 All requirements from `docs/screen_feature/sign-in.md` are implemented:
+
 - ✓ Phone-first sign in
 - ✓ Email as alternative
 - ✓ Password required

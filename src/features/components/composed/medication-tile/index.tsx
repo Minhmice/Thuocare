@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { IconButton, Menu, useTheme } from 'react-native-paper';
-import { Card } from '../../wrapper/card';
-import { Typography } from '../../wrapper/typography';
-import { Icon } from '../../wrapper/icon';
-import { MedicationTileProps } from './types';
-import { useLanguage } from '../../../../lib/i18n/LanguageProvider';
+import React, { useState } from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { IconButton, Menu, useTheme } from "react-native-paper";
+import { Card } from "../../wrapper/card";
+import { Typography } from "../../wrapper/typography";
+import { Icon } from "../../wrapper/icon";
+import { MedicationTileProps } from "./types";
+import { useLanguage } from "../../../../lib/i18n/LanguageProvider";
 
 export const MedicationTile: React.FC<MedicationTileProps> = ({
   name,
   dosage,
   schedule,
   remaining,
-  unit = 'liều',
+  unit = "liều",
   outOfStock = false,
   active = false,
   lowStock = false,
@@ -22,22 +22,22 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
   showMenu = false,
   onEditPress,
   onDeletePress,
-  style,
+  style
 }) => {
   const theme = useTheme();
   const { t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const accentColor = outOfStock
-    ? '#9BA0AD'
+    ? "#9BA0AD"
     : lowStock
-    ? '#A86700'
-    : theme.colors.primary;
+      ? "#A86700"
+      : theme.colors.primary;
   const backgroundColor = highlighted
-    ? 'rgba(0, 88, 188, 0.08)'
+    ? "rgba(0, 88, 188, 0.08)"
     : outOfStock
-    ? '#E4E4EF'
-    : theme.colors.surfaceVariant;
+      ? "#E4E4EF"
+      : theme.colors.surfaceVariant;
   const nameColor = outOfStock
     ? theme.colors.onSurfaceVariant
     : theme.colors.onSurface;
@@ -46,15 +46,15 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
     stockLabel !== undefined
       ? stockLabel
       : remaining === undefined
-      ? null
-      : outOfStock
-      ? 'Out of stock'
-      : `${remaining} ${unit} remaining`;
+        ? null
+        : outOfStock
+          ? "Out of stock"
+          : `${remaining} ${unit} remaining`;
   const resolvedStockColor = outOfStock
-    ? '#9F1D1D'
+    ? "#9F1D1D"
     : lowStock
-    ? '#A86700'
-    : detailColor;
+      ? "#A86700"
+      : detailColor;
 
   const content = (
     <Card
@@ -71,7 +71,10 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
               variant="title-md"
               weight="bold"
               numberOfLines={2}
-              style={[styles.name, { color: nameColor, opacity: active ? 1 : 0.98 }]}
+              style={[
+                styles.name,
+                { color: nameColor, opacity: active ? 1 : 0.98 }
+              ]}
             >
               {name}
             </Typography>
@@ -133,13 +136,21 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
           <View style={styles.detailRow}>
             <View style={styles.detailItem}>
               <Icon name="pill" size="xs" variant="onSurfaceVariant" />
-              <Typography variant="body-sm" color={detailColor} style={styles.detailText}>
+              <Typography
+                variant="body-sm"
+                color={detailColor}
+                style={styles.detailText}
+              >
                 {dosage}
               </Typography>
             </View>
             <View style={styles.detailItem}>
               <Icon name="clock-outline" size="xs" variant="onSurfaceVariant" />
-              <Typography variant="body-sm" color={detailColor} style={styles.detailText}>
+              <Typography
+                variant="body-sm"
+                color={detailColor}
+                style={styles.detailText}
+              >
                 {schedule}
               </Typography>
             </View>
@@ -171,36 +182,36 @@ export const MedicationTile: React.FC<MedicationTileProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginVertical: 6,
-    marginHorizontal: 2,
+    marginHorizontal: 2
   },
   innerContainer: {
-    flexDirection: 'row',
-    minHeight: 80,
+    flexDirection: "row",
+    minHeight: 80
   },
   accentBar: {
     width: 4,
-    height: '100%',
+    height: "100%"
   },
   contentWrapper: {
     flex: 1,
     padding: 16,
-    justifyContent: 'center',
+    justifyContent: "center"
   },
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 8,
-    gap: 4,
+    gap: 4
   },
   headerTrailing: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flexShrink: 0,
-    gap: 2,
+    gap: 2
   },
   menuAnchor: {
-    margin: 0,
+    margin: 0
   },
   /** Override MD3 elevation tint (primary-blended mauve surface). */
   menuSurface: {
@@ -212,36 +223,36 @@ const styles = StyleSheet.create({
   name: {
     flex: 1,
     marginRight: 4,
-    minWidth: 0,
+    minWidth: 0
   },
   badge: {
     paddingHorizontal: 8,
     paddingVertical: 2,
-    borderRadius: 999,
+    borderRadius: 999
   },
   badgeLow: {
-    backgroundColor: 'rgba(168, 103, 0, 0.12)',
+    backgroundColor: "rgba(168, 103, 0, 0.12)"
   },
   badgeOut: {
-    backgroundColor: 'rgba(159, 29, 29, 0.12)',
+    backgroundColor: "rgba(159, 29, 29, 0.12)"
   },
   detailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 12
   },
   detailItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center"
   },
   detailText: {
-    marginLeft: 4,
+    marginLeft: 4
   },
   stockRow: {
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: '#F3F3F8',
-  },
+    borderTopColor: "#F3F3F8"
+  }
 });

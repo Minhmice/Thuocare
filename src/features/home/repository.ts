@@ -16,15 +16,19 @@ export async function getHomeData(): Promise<HomeData> {
 
   const [profile, medications] = await Promise.all([
     getProfile(),
-    getMedications(),
+    getMedications()
   ]);
 
-  const userName = profile
-    ? profileDisplayFromFullName(profile.fullName)
-    : "—";
+  const userName = profile ? profileDisplayFromFullName(profile.fullName) : "—";
 
-  const { schedule, stats, missedDoseAlert, stockWarning, nextDose, allSetToday } =
-    computeDailySummary(medications ?? [], todayKey);
+  const {
+    schedule,
+    stats,
+    missedDoseAlert,
+    stockWarning,
+    nextDose,
+    allSetToday
+  } = computeDailySummary(medications ?? [], todayKey);
 
   return {
     userName,
@@ -33,6 +37,6 @@ export async function getHomeData(): Promise<HomeData> {
     stockWarning,
     nextDose,
     schedule,
-    allSetToday,
+    allSetToday
   };
 }

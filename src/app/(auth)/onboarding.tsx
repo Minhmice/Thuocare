@@ -37,7 +37,9 @@ export default function OnboardingScreen() {
         >
           {t("onboarding_welcomeBody")}
         </AppText>
-        <AppButton onPress={() => router.push("/survey")}>{t("onboarding_welcomeStart")}</AppButton>
+        <AppButton onPress={() => router.push("/survey")}>
+          {t("onboarding_welcomeStart")}
+        </AppButton>
       </View>
     </AppScreen>
   );

@@ -19,6 +19,7 @@ Replaced the previous mock-repository-based Me screen with a direct-auth-store i
 Five vertical sections separated by `SectionLabel` headings:
 
 **1. Profile Summary (`GlassSurface`)**
+
 - Initials avatar: 64px circle, `primary` background, white `titleLarge` text
 - `getInitials()` helper: two-part names use first+last initials; single-part names use first two chars
 - Full name (`titleLarge`, weight 600)
@@ -26,19 +27,23 @@ Five vertical sections separated by `SectionLabel` headings:
 - Email (`bodySmall`, `onSurfaceVariant`) — conditionally rendered, omitted when null
 
 **2. Account Details (`AppCard`)**
+
 - Phone row
 - Email row (shows "Not added" in muted color when null)
 - Member since row — `formatDate()` helper formats ISO string to `month day year` locale string
 
 **3. Reminders & Notifications (`AppCard`)**
+
 - Reminder intensity — reads `REMINDER_LABEL` map: `quiet → "Gentle"`, `balanced → "Balanced"`, `firm → "Firm"`; shows "Not set" when null
 - Condition type — reads `ROUTINE_LABEL` map: `starting → "Short-term illness"`, `steady → "Ongoing condition"`, `resetting → "Not sure yet"`; shows "Not set" when null
 - Notifications placeholder row — disabled `Switch` (value=false, disabled=true) with "Coming soon" label; shaped for future Expo notifications SDK integration
 
 **4. Support (`AppCard`)**
+
 - Help & Support row with "Coming soon" value
 
 **5. Sign Out (`AppButton`)**
+
 - `mode="outlined"`, `textColor=error`
 - `Alert.alert` confirmation: "Are you sure you want to sign out?" with Cancel (cancel style) and Sign out (destructive style)
 - On confirm: `await signOut()` then `router.replace("/sign-in")`
@@ -48,19 +53,23 @@ Five vertical sections separated by `SectionLabel` headings:
 ### Inner Helpers
 
 **`getInitials(name: string): string`**
+
 - Splits on whitespace
 - 2+ parts: first char of first + first char of last, uppercased
 - 1 part: first two chars, uppercased; fallback `"?"` if empty
 
 **`formatDate(iso: string): string`**
+
 - `new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })`
 - Uses locale default — renders as "March 27, 2026" on en-US devices
 
 **`SectionLabel`**
+
 - `labelSmall` variant, `onSurfaceVariant` color, uppercase, `letterSpacing: 0.8`
 - `marginTop: 8` for visual breathing room between sections
 
 **`Row`**
+
 - Shared row primitive used across all three card sections
 - Props: `label`, `value?`, `valueColor?`, `onPress?`, `right?`, `last?`
 - `last` prop removes the bottom divider (0.5px `rgba(0, 88, 188, 0.10)` border)
@@ -102,8 +111,8 @@ Tracked in `docs/TODO_LATER.md`.
 
 ## Changed Files
 
-| File | Change |
-| --- | --- |
+| File                    | Change                                                                   |
+| ----------------------- | ------------------------------------------------------------------------ |
 | `src/app/(tabs)/me.tsx` | Full rewrite — replaced mock-repository impl with direct auth-store impl |
 
 ---

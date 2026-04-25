@@ -7,7 +7,11 @@ type AppTextProps = PropsWithChildren<
   }
 >;
 
-export function AppText({ children, variant = "bodyMedium", ...rest }: AppTextProps) {
+export function AppText({
+  children,
+  variant = "bodyMedium",
+  ...rest
+}: AppTextProps) {
   return (
     <Text variant={variant} {...rest}>
       {children}

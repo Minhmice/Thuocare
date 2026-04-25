@@ -5,11 +5,11 @@ Base card component for Thuocare.
 ## Usage
 
 ```tsx
-import { Card } from './card';
+import { Card } from "./card";
 
 <Card variant="elevated">
   <Text>Card Content</Text>
-</Card>
+</Card>;
 ```
 
 ## Props

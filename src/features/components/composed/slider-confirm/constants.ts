@@ -2,21 +2,21 @@
 
 export const SIZE_CONFIG = {
   medium: { thumb: 52, padding: 6 },
-  large: { thumb: 64, padding: 8 },
+  large: { thumb: 64, padding: 8 }
 } as const;
 
 // Spring config for the thumb returning to start after a failed drag.
 export const SPRING_BACK = {
   damping: 20,
   stiffness: 180,
-  mass: 0.8,
+  mass: 0.8
 } as const;
 
 // Spring config for the thumb snapping to the end on success.
 export const SPRING_COMPLETE = {
   damping: 28,
   stiffness: 260,
-  mass: 0.6,
+  mass: 0.6
 } as const;
 
 // Thumb scale when actively dragging.

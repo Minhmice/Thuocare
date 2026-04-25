@@ -1,9 +1,11 @@
 # Thuocare - Gemini Project Context
 
 ## Project Overview
+
 Thuocare is a healthcare-focused mobile application for medication management, built with **Expo (React Native)** and **Supabase**. The project is currently in a "Fresh Root Build" state, with UI-driven development using mock data while the backend infrastructure (Supabase) is being established.
 
 ### Core Stack
+
 - **Framework:** Expo (SDK 55) with Expo Router (File-based routing)
 - **Language:** TypeScript
 - **UI Library:** React Native Paper (Material Design)
@@ -12,7 +14,9 @@ Thuocare is a healthcare-focused mobile application for medication management, b
 - **Package Manager:** pnpm
 
 ### Architecture
+
 The project follows a feature-based organization:
+
 - `src/app/`: Expo Router application structure (Tabs, Layouts).
 - `src/features/`: Domain-specific logic (e.g., `home`, `meds`, `me`).
 - `src/components/`: Reusable UI (`ui/`) and stateful (`state/`) components.
@@ -24,11 +28,13 @@ The project follows a feature-based organization:
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js & pnpm
 - Expo Go (for development)
 - Supabase project (for backend integration)
 
 ### Setup
+
 1.  **Install dependencies:**
     ```bash
     pnpm install
@@ -47,6 +53,7 @@ The project follows a feature-based organization:
     ```
 
 ### Quality Commands
+
 - **Type Checking:** `pnpm typecheck`
 - **Linting:** `pnpm lint`
 - **Formatting:** `pnpm format`
@@ -54,21 +61,27 @@ The project follows a feature-based organization:
 ## Development Conventions
 
 ### Feature Pattern
-Each feature folder in `src/features/` should contain its own components and a `repository.ts` file. 
-- **Repositories:** Use an async repository pattern to fetch data. Currently, these resolve `mockData` from `src/mocks/`. 
+
+Each feature folder in `src/features/` should contain its own components and a `repository.ts` file.
+
+- **Repositories:** Use an async repository pattern to fetch data. Currently, these resolve `mockData` from `src/mocks/`.
 - **Backend Migration:** To move from mock to real data, update the repository implementation to use the `supabase` client from `src/lib/supabase/client.ts`.
 
 ### UI Components
+
 - **Atomic UI:** Generic UI elements go into `src/components/ui/`.
 - **Stateful Components:** Components that manage complex local state or connect to repositories go into `src/components/state/`.
 
 ### Database & Schema
+
 - The `supabase/` directory is the source of truth for the database schema.
 - `supabase/medication-schema.json` contains a detailed data model for medication, ingredients, and interaction rules.
 - RLS (Row Level Security) is heavily used in Supabase migrations (`supabase/migrations/`).
 
 ## AI-Assisted Development
+
 This project includes an `.agents/` and `.cursor/` setup, indicating it is optimized for AI-driven workflows (Gemini CLI, Cursor, etc.).
+
 - Custom skills are located in `.agents/skills/`.
 - Cursor-specific rules are in `.cursor/rules/`.
 - Task-to-agent mapping and orchestrator logic are in `.cursor/agents/orchestrator/`.

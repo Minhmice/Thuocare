@@ -3,7 +3,7 @@ import type {
   DosePeriod,
   HomeStats,
   NextDoseGroup,
-  ScheduledDose,
+  ScheduledDose
 } from "../../types/home";
 
 export type DailySummaryResult = {
@@ -24,15 +24,21 @@ function timeToMinutes(t: string): number {
   return (Number.isFinite(h) ? h : 0) * 60 + (Number.isFinite(m) ? m : 0);
 }
 
-function medicationToScheduledDose(med: Medication): ScheduledDose {
+function medicationToScheduledDose(
+  med: Medication,
+  scheduledDate: string
+): ScheduledDose {
+  const inferredStatus: ScheduledDose["status"] = (med.doseStatus ??
+    (med.takenAt ? "taken" : "upcoming")) as ScheduledDose["status"];
   const dose: ScheduledDose = {
     id: med.id,
     medicationName: med.name,
     dosage: med.dosage,
     instruction: med.instruction ?? "",
+    scheduledDate: med.scheduledDate ?? scheduledDate,
     scheduledAt: med.scheduledAt ?? "08:00",
     period: (med.period ?? "morning") as DosePeriod,
-    status: (med.doseStatus ?? "upcoming") as ScheduledDose["status"],
+    status: inferredStatus
   };
   if (med.takenAt) {
     dose.takenAt = med.takenAt;
@@ -40,7 +46,10 @@ function medicationToScheduledDose(med: Medication): ScheduledDose {
   return dose;
 }
 
-function buildNextDoseGroup(schedule: ScheduledDose[]): NextDoseGroup | null {
+function buildNextDoseGroup(
+  schedule: ScheduledDose[],
+  scheduledDate: string
+): NextDoseGroup | null {
   const upcoming = schedule.filter((s) => s.status === "upcoming");
   if (upcoming.length === 0) return null;
   upcoming.sort(
@@ -54,14 +63,15 @@ function buildNextDoseGroup(schedule: ScheduledDose[]): NextDoseGroup | null {
   const minutesLate = Math.max(0, nowM - slotM);
   const sameSlot = upcoming.filter((u) => u.scheduledAt === slot);
   return {
+    scheduledDate,
     scheduledAt: slot,
     minutesLate,
     medications: sameSlot.map((d) => ({
-      id: `next-${d.id}`,
+      id: d.id,
       name: d.medicationName,
       instruction: d.instruction,
-      note: d.dosage,
-    })),
+      note: d.dosage
+    }))
   };
 }
 
@@ -71,7 +81,11 @@ function computeStockWarning(
   // Deduplicate by name, keep the minimum remainingDoses per medication name.
   const stockByName = new Map<string, number>();
   for (const m of medications) {
-    if (m.remainingDoses != null && m.remainingDoses > 0 && m.remainingDoses <= 5) {
+    if (
+      m.remainingDoses != null &&
+      m.remainingDoses > 0 &&
+      m.remainingDoses <= 5
+    ) {
       const existing = stockByName.get(m.name);
       if (existing === undefined || m.remainingDoses < existing) {
         stockByName.set(m.name, m.remainingDoses);
@@ -104,6 +118,7 @@ export function computeDailySummary(
 
   // Fallback: if no rows for today, use the most-recent available date.
   let effective = todayMeds;
+  let effectiveDate = effective.length > 0 ? todayKey : "";
   if (effective.length === 0) {
     const dates = medications
       .map((m) => m.scheduledDate)
@@ -111,17 +126,21 @@ export function computeDailySummary(
     if (dates.length > 0) {
       const latest = dates.reduce((a, b) => (a > b ? a : b));
       effective = medications.filter((m) => m.scheduledDate === latest);
+      effectiveDate = latest;
     }
   }
 
-  const schedule = effective
-    .slice()
-    .sort(
-      (a, b) =>
-        timeToMinutes(a.scheduledAt ?? "08:00") -
-        timeToMinutes(b.scheduledAt ?? "08:00")
-    )
-    .map(medicationToScheduledDose);
+  const schedule =
+    effective.length > 0 && effectiveDate
+      ? effective
+          .slice()
+          .sort(
+            (a, b) =>
+              timeToMinutes(a.scheduledAt ?? "08:00") -
+              timeToMinutes(b.scheduledAt ?? "08:00")
+          )
+          .map((m) => medicationToScheduledDose(m, effectiveDate))
+      : [];
 
   const taken = schedule.filter((s) => s.status === "taken").length;
   const missed = schedule.filter((s) => s.status === "missed").length;
@@ -133,7 +152,10 @@ export function computeDailySummary(
     : null;
 
   const stockWarning = computeStockWarning(medications);
-  const nextDose = buildNextDoseGroup(schedule);
+  const nextDose =
+    effectiveDate && schedule.length > 0
+      ? buildNextDoseGroup(schedule, effectiveDate)
+      : null;
   const allSetToday =
     schedule.length > 0 && schedule.every((s) => s.status === "taken");
 
@@ -143,6 +165,6 @@ export function computeDailySummary(
     missedDoseAlert,
     stockWarning,
     nextDose,
-    allSetToday,
+    allSetToday
   };
 }

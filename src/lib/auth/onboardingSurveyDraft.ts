@@ -4,14 +4,17 @@ import { emptySurveyAnswers } from "../../types/onboarding-survey";
 
 export const SURVEY_LAST_STEP = 8;
 
-const draftKey = (accountId: string) => `thuocare.onboarding-survey-draft.v1.${accountId}`;
+const draftKey = (accountId: string) =>
+  `thuocare.onboarding-survey-draft.v1.${accountId}`;
 
 export type OnboardingSurveyDraft = {
   stepIndex: number;
   answers: OnboardingSurveyAnswers;
 };
 
-export async function readOnboardingSurveyDraft(accountId: string): Promise<OnboardingSurveyDraft | null> {
+export async function readOnboardingSurveyDraft(
+  accountId: string
+): Promise<OnboardingSurveyDraft | null> {
   const raw = await SecureStore.getItemAsync(draftKey(accountId));
   if (!raw) {
     return null;
@@ -41,6 +44,8 @@ export async function writeOnboardingSurveyDraft(
   await SecureStore.setItemAsync(draftKey(accountId), JSON.stringify(safe));
 }
 
-export async function clearOnboardingSurveyDraft(accountId: string): Promise<void> {
+export async function clearOnboardingSurveyDraft(
+  accountId: string
+): Promise<void> {
   await SecureStore.deleteItemAsync(draftKey(accountId));
 }

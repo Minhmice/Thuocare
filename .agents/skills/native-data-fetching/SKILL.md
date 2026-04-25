@@ -61,9 +61,9 @@ const createUser = async (userData: UserData) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify(userData),
+    body: JSON.stringify(userData)
   });
 
   if (!response.ok) {
@@ -89,9 +89,9 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 2,
-    },
-  },
+      retry: 2
+    }
+  }
 });
 
 export default function RootLayout() {
@@ -111,7 +111,7 @@ import { useQuery } from "@tanstack/react-query";
 function UserProfile({ userId }: { userId: string }) {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["user", userId],
-    queryFn: () => fetchUser(userId),
+    queryFn: () => fetchUser(userId)
   });
 
   if (isLoading) return <Loading />;
@@ -134,7 +134,7 @@ function CreateUserForm() {
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
+    }
   });
 
   const handleSubmit = (data: UserData) => {
@@ -153,7 +153,11 @@ function CreateUserForm() {
 
 ```tsx
 class ApiError extends Error {
-  constructor(message: string, public status: number, public code?: string) {
+  constructor(
+    message: string,
+    public status: number,
+    public code?: string
+  ) {
     super(message);
     this.name = "ApiError";
   }
@@ -217,7 +221,7 @@ const TOKEN_KEY = "auth_token";
 export const auth = {
   getToken: () => SecureStore.getItemAsync(TOKEN_KEY),
   setToken: (token: string) => SecureStore.setItemAsync(TOKEN_KEY, token),
-  removeToken: () => SecureStore.deleteItemAsync(TOKEN_KEY),
+  removeToken: () => SecureStore.deleteItemAsync(TOKEN_KEY)
 };
 
 // Authenticated fetch wrapper
@@ -228,8 +232,8 @@ const authFetch = async (url: string, options: RequestInit = {}) => {
     ...options,
     headers: {
       ...options.headers,
-      Authorization: token ? `Bearer ${token}` : "",
-    },
+      Authorization: token ? `Bearer ${token}` : ""
+    }
   });
 };
 ```
@@ -350,11 +354,11 @@ export const apiClient = {
     const response = await fetch(`${BASE_URL}${path}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return response.json();
-  },
+  }
 };
 ```
 

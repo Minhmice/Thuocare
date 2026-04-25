@@ -48,11 +48,11 @@ The model guidance below is based on official vendor positioning and adapted to 
 
 ### Claude
 
-| Task type | Recommended model | Why |
-| --- | --- | --- |
-| rename, copy polish, tiny edit, quick grep/summarize | `Haiku` | fastest and cheapest for low-risk work |
-| normal coding task, repository change, screen implementation, TypeScript fix, Expo wiring | `Sonnet` | best default balance of reasoning, speed, and coding quality |
-| architecture review, complex refactor, auth and permissions, hard debugging, high-stakes system prompt | `Opus` | strongest deep reasoning when mistakes are expensive |
+| Task type                                                                                              | Recommended model | Why                                                          |
+| ------------------------------------------------------------------------------------------------------ | ----------------- | ------------------------------------------------------------ |
+| rename, copy polish, tiny edit, quick grep/summarize                                                   | `Haiku`           | fastest and cheapest for low-risk work                       |
+| normal coding task, repository change, screen implementation, TypeScript fix, Expo wiring              | `Sonnet`          | best default balance of reasoning, speed, and coding quality |
+| architecture review, complex refactor, auth and permissions, hard debugging, high-stakes system prompt | `Opus`            | strongest deep reasoning when mistakes are expensive         |
 
 Default rule:
 
@@ -64,10 +64,10 @@ Assumption:
 
 - you are choosing between the `Gemini 2.5` family and the `Gemini 3` family, not every sub-variant individually
 
-| Task type | Recommended model | Why |
-| --- | --- | --- |
-| screen concepts, UX alternatives, IA, onboarding flows, prompt ideation, visual critique | `Gemini 3` | strongest for broad ideation, multimodal reasoning, and agentic build/plan workflows |
-| long-form reasoning on specs, README synthesis, research-backed comparisons, conservative prompt drafting | `Gemini 2.5` | strong thinking model family for careful document and codebase reasoning |
+| Task type                                                                                                 | Recommended model | Why                                                                                  |
+| --------------------------------------------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------ |
+| screen concepts, UX alternatives, IA, onboarding flows, prompt ideation, visual critique                  | `Gemini 3`        | strongest for broad ideation, multimodal reasoning, and agentic build/plan workflows |
+| long-form reasoning on specs, README synthesis, research-backed comparisons, conservative prompt drafting | `Gemini 2.5`      | strong thinking model family for careful document and codebase reasoning             |
 
 Default rule:
 
@@ -76,19 +76,19 @@ Default rule:
 
 ## Task To Model Map
 
-| Task | Lead model | Secondary model |
-| --- | --- | --- |
-| product scope clarification | `Gemini 2.5` | `Claude Sonnet` |
-| tab flow and screen map | `Gemini 3` | `Claude Sonnet` |
-| empty/loading/error UX states | `Gemini 3` | `Claude Sonnet` |
-| component API design | `Claude Sonnet` | `Gemini 3` |
-| Expo Router implementation | `Claude Sonnet` | `Claude Haiku` |
-| repository contracts | `Claude Sonnet` | `Claude Opus` |
-| backend architecture without SQL implementation | `Claude Opus` | `Claude Sonnet` |
-| prompt generation for UI tasks | `Gemini 3` | `Gemini 2.5` |
-| prompt generation for backend tasks | `Claude Sonnet` | `Claude Opus` |
-| fast task slicing and checklists | `Claude Haiku` | `Gemini 2.5` |
-| final cross-check before execution | `Claude Sonnet` | `Claude Opus` |
+| Task                                            | Lead model      | Secondary model |
+| ----------------------------------------------- | --------------- | --------------- |
+| product scope clarification                     | `Gemini 2.5`    | `Claude Sonnet` |
+| tab flow and screen map                         | `Gemini 3`      | `Claude Sonnet` |
+| empty/loading/error UX states                   | `Gemini 3`      | `Claude Sonnet` |
+| component API design                            | `Claude Sonnet` | `Gemini 3`      |
+| Expo Router implementation                      | `Claude Sonnet` | `Claude Haiku`  |
+| repository contracts                            | `Claude Sonnet` | `Claude Opus`   |
+| backend architecture without SQL implementation | `Claude Opus`   | `Claude Sonnet` |
+| prompt generation for UI tasks                  | `Gemini 3`      | `Gemini 2.5`    |
+| prompt generation for backend tasks             | `Claude Sonnet` | `Claude Opus`   |
+| fast task slicing and checklists                | `Claude Haiku`  | `Gemini 2.5`    |
+| final cross-check before execution              | `Claude Sonnet` | `Claude Opus`   |
 
 ## Prompt Intake Protocol
 
@@ -284,54 +284,54 @@ Constraint:
 
 ## Active Tasks
 
-| ID | Task | Phase | Lead model | Status | Notes |
-| --- | --- | --- | --- | --- | --- |
-| P0-01 | create orchestration plan file | Phase 0 | `Claude Sonnet` | done | initial version created |
-| P0-02 | define model routing rules | Phase 0 | `Claude Sonnet` | done | based on official vendor positioning |
-| P0-03 | define prompt intake questions | Phase 0 | `Claude Sonnet` | done | web check first for unstable topics |
-| P1-01 | define sign-in UX and flow | Phase 1 | `Gemini 2.5` | done | captured in `docs/phase implement/gemini/sign-in.md` |
-| P1-02 | define sign-up UX and flow | Phase 1 | `Gemini 2.5` | done | captured in `docs/phase implement/gemini/sign-up.md` |
-| P1-03 | define onboarding question flow | Phase 1 | `Gemini 2.5` | done | captured in `docs/screen_feature/onboarding-survey.md` |
-| P1-04 | define forgot-password UX and flow | Phase 1 | `Gemini 2.5` | done | captured in `docs/phase implement/gemini/forgot-password.md` |
-| P1-05 | define auth-success transition | Phase 1 | `Gemini 2.5` | done | captured in `docs/screen_feature/auth-success-transition.md` |
-| **P1-06** | **implement sign-in flow** | **Phase 1** | **`Claude Sonnet`** | **done** | **phone-first, password visibility, forgot password, legal modal** |
-| **P1-07** | **implement onboarding flow** | **Phase 1** | **`Claude Sonnet`** | **done** | **2-step flow (reminder preference + condition type)** |
-| **P1-08** | **implement sign-up screen** | **Phase 1** | **`Claude Sonnet`** | **done** | **full spec: name-first, phone required, email optional, legal checkbox, multi-account storage** |
-| **P1-09** | **refactor storage to multi-account** | **Phase 1** | **`Claude Sonnet`** | **done** | **AuthStore v2: accounts list + activeAccountId** |
-| P2-01 | define MVP screen inventory | Phase 2 | `Gemini 2.5` | done | `Home`, `Meds`, `Me` only for personal lane |
-| P2-02 | split MVP screens into execution waves | Phase 2 | `Claude Sonnet` | in_progress | implementation-facing breakdown in docs |
-| P2-03 | define Me screen UX and flow | Phase 2 | `Gemini 2.5` | done | captured in `docs/phase implement/gemini/me.md` |
-| **P2-04** | **implement Me screen** | **Phase 2** | **`Claude Sonnet`** | **done** | **profile summary, account, reminders placeholder, support, sign out** |
-| P2-05 | define Meds screen spec | Phase 2 | `Gemini 2.5` | done | captured in `docs/phase implement/gemini/meds.md` |
-| P2-10 | define Meds MVP UX and IA | Phase 2 | `Gemini 3` | done | compact dashboard + list hierarchy + return-from-add flow in `docs/phase implement/gemini/meds.md` |
-| **P2-11** | **implement Meds screen** | **Phase 2** | **`Claude Sonnet`** | **done** | **compact dashboard + list tiles + low/out-of-stock styling + 1s post-add highlight + mock diversity** |
-| P2-06 | define Add medication UX and flow | Phase 2 | `Gemini 2.5` | done | captured in `docs/phase implement/gemini/add-medication.md` |
-| **P2-09** | **implement Add medication flow** | **Phase 2** | **`Claude Sonnet`** | **done** | **5-step flow, return-to-Meds highlight; no backend assumptions** |
-| P2-07 | define Home screen UX and flow | Phase 2 | `Gemini 3` | done | captured in `docs/phase implement/gemini/home.md` |
-| **P2-08** | **implement Home screen** | **Phase 2** | **`Claude Sonnet`** | **done** | **greeting, alerts, stats dashboard, next-dose hero, slider confirm, schedule, photo stub** |
-| P3-01 | define mobile UX direction | Phase 3 | `Gemini 3` | done | visual and interaction rules in `docs/DESIGN_STYLE.md` |
-| P3-02 | lock source component architecture | Phase 3 | `Claude Sonnet` | done | `src/features/components/` with `ui`, `wrapper`, `composed`; colocated English READMEs allowed |
-| P3-03 | choose first small component batch | Phase 3 | `Claude Sonnet` | done | small batch first; wrappers should expose the same conceptual names as primitives |
-| P3-04 | define first reusable component batch | Phase 3 | `Gemini 3` | done | captured in `docs/phase implement/gemini/components-batch-01.md` |
-| P3-05 | scaffold first component batch (ui/wrapper) | Phase 3 | `Claude Sonnet` | done | button, input, checkbox, card, typography, field |
-| P3-06 | define second reusable component batch | Phase 3 | `Gemini 3` | done | captured in `docs/phase implement/gemini/components-batch-02.md` |
-| P3-07 | scaffold second component batch (ui/wrapper) | Phase 3 | `Claude Sonnet` | done | icon, dialog, sheet, toast, separator, spinner |
-| P3-08 | define first composed component batch | Phase 3 | `Gemini 3` | done | captured in `docs/phase implement/gemini/composed-batch-01.md` |
-| P3-09 | scaffold first composed component batch | Phase 3 | `Claude Sonnet` | done | screen-header, alert-banner, summary-stats-row |
-| P3-10 | define MedicationTile composed component | Phase 3 | `Gemini 3` | done | captured in `docs/phase implement/gemini/medication-tile.md` |
-| P3-11 | scaffold MedicationTile composed component | Phase 3 | `Claude Sonnet` | done | supporting active and out-of-stock states |
-| P3-12 | define second composed component batch | Phase 3 | `Gemini 3` | done | captured in `docs/phase implement/gemini/composed-batch-02.md` |
-| P3-13 | scaffold second composed component batch | Phase 3 | `Claude Sonnet` | done | settings-section, support-section |
-| P3-14 | refactor Me screen to new component system | Phase 3 | `Claude Sonnet` | done | using ScreenHeader, SettingsSection, SupportSection |
-| P3-15 | define SliderConfirm composed component | Phase 3 | `Gemini 3` | done | captured in `docs/phase implement/gemini/slider-confirm.md` |
-| P3-16 | scaffold SliderConfirm composed component | Phase 3 | `Claude Sonnet` | done | horizontal swipe to confirm dose |
-| B-01 | define shared loading, empty, error states | Phase B | `Gemini 3` | done | captured in `docs/screen_feature/shared-states.md` |
-| **B-02** | **implement shared loading, empty, error states** | **Phase B** | **`Claude Sonnet`** | **done** | **LoadingState/ErrorState upgraded; EmptyState created; Meds + Me null guard updated** |
-| P3-17 | define Lab tab dev screen | Phase 3 | `Gemini 3` | removed | spec archived in `docs/screen_feature/lab-tab.md` (Lab tab later removed from app) |
-| **P3-18** | **implement Lab tab** | **Phase 3** | **`Claude Sonnet`** | **removed** | **was: dev-only review screen; tab + route deleted — use Storybook / dev branch if needed** |
-| C-03 | define Home reminder experience | Phase 3 | `Gemini 3` | done | captured in `docs/screen_feature/home-reminder-experience.md` |
-| **C-04** | **implement Home reminder experience** | **Phase 3** | **`Claude Sonnet`** | **done** | **Apple-alarm inspired blue surface with scroll-driven docking** |
-| P4-01 | refine null-data UX in screens | Phase 4 | `Claude Sonnet` | pending | current app is already null-safe at basic level |
+| ID        | Task                                              | Phase       | Lead model          | Status      | Notes                                                                                                  |
+| --------- | ------------------------------------------------- | ----------- | ------------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
+| P0-01     | create orchestration plan file                    | Phase 0     | `Claude Sonnet`     | done        | initial version created                                                                                |
+| P0-02     | define model routing rules                        | Phase 0     | `Claude Sonnet`     | done        | based on official vendor positioning                                                                   |
+| P0-03     | define prompt intake questions                    | Phase 0     | `Claude Sonnet`     | done        | web check first for unstable topics                                                                    |
+| P1-01     | define sign-in UX and flow                        | Phase 1     | `Gemini 2.5`        | done        | captured in `docs/phase implement/gemini/sign-in.md`                                                   |
+| P1-02     | define sign-up UX and flow                        | Phase 1     | `Gemini 2.5`        | done        | captured in `docs/phase implement/gemini/sign-up.md`                                                   |
+| P1-03     | define onboarding question flow                   | Phase 1     | `Gemini 2.5`        | done        | captured in `docs/screen_feature/onboarding-survey.md`                                                 |
+| P1-04     | define forgot-password UX and flow                | Phase 1     | `Gemini 2.5`        | done        | captured in `docs/phase implement/gemini/forgot-password.md`                                           |
+| P1-05     | define auth-success transition                    | Phase 1     | `Gemini 2.5`        | done        | captured in `docs/screen_feature/auth-success-transition.md`                                           |
+| **P1-06** | **implement sign-in flow**                        | **Phase 1** | **`Claude Sonnet`** | **done**    | **phone-first, password visibility, forgot password, legal modal**                                     |
+| **P1-07** | **implement onboarding flow**                     | **Phase 1** | **`Claude Sonnet`** | **done**    | **2-step flow (reminder preference + condition type)**                                                 |
+| **P1-08** | **implement sign-up screen**                      | **Phase 1** | **`Claude Sonnet`** | **done**    | **full spec: name-first, phone required, email optional, legal checkbox, multi-account storage**       |
+| **P1-09** | **refactor storage to multi-account**             | **Phase 1** | **`Claude Sonnet`** | **done**    | **AuthStore v2: accounts list + activeAccountId**                                                      |
+| P2-01     | define MVP screen inventory                       | Phase 2     | `Gemini 2.5`        | done        | `Home`, `Meds`, `Me` only for personal lane                                                            |
+| P2-02     | split MVP screens into execution waves            | Phase 2     | `Claude Sonnet`     | in_progress | implementation-facing breakdown in docs                                                                |
+| P2-03     | define Me screen UX and flow                      | Phase 2     | `Gemini 2.5`        | done        | captured in `docs/phase implement/gemini/me.md`                                                        |
+| **P2-04** | **implement Me screen**                           | **Phase 2** | **`Claude Sonnet`** | **done**    | **profile summary, account, reminders placeholder, support, sign out**                                 |
+| P2-05     | define Meds screen spec                           | Phase 2     | `Gemini 2.5`        | done        | captured in `docs/phase implement/gemini/meds.md`                                                      |
+| P2-10     | define Meds MVP UX and IA                         | Phase 2     | `Gemini 3`          | done        | compact dashboard + list hierarchy + return-from-add flow in `docs/phase implement/gemini/meds.md`     |
+| **P2-11** | **implement Meds screen**                         | **Phase 2** | **`Claude Sonnet`** | **done**    | **compact dashboard + list tiles + low/out-of-stock styling + 1s post-add highlight + mock diversity** |
+| P2-06     | define Add medication UX and flow                 | Phase 2     | `Gemini 2.5`        | done        | captured in `docs/phase implement/gemini/add-medication.md`                                            |
+| **P2-09** | **implement Add medication flow**                 | **Phase 2** | **`Claude Sonnet`** | **done**    | **5-step flow, return-to-Meds highlight; no backend assumptions**                                      |
+| P2-07     | define Home screen UX and flow                    | Phase 2     | `Gemini 3`          | done        | captured in `docs/phase implement/gemini/home.md`                                                      |
+| **P2-08** | **implement Home screen**                         | **Phase 2** | **`Claude Sonnet`** | **done**    | **greeting, alerts, stats dashboard, next-dose hero, slider confirm, schedule, photo stub**            |
+| P3-01     | define mobile UX direction                        | Phase 3     | `Gemini 3`          | done        | visual and interaction rules in `docs/DESIGN_STYLE.md`                                                 |
+| P3-02     | lock source component architecture                | Phase 3     | `Claude Sonnet`     | done        | `src/features/components/` with `ui`, `wrapper`, `composed`; colocated English READMEs allowed         |
+| P3-03     | choose first small component batch                | Phase 3     | `Claude Sonnet`     | done        | small batch first; wrappers should expose the same conceptual names as primitives                      |
+| P3-04     | define first reusable component batch             | Phase 3     | `Gemini 3`          | done        | captured in `docs/phase implement/gemini/components-batch-01.md`                                       |
+| P3-05     | scaffold first component batch (ui/wrapper)       | Phase 3     | `Claude Sonnet`     | done        | button, input, checkbox, card, typography, field                                                       |
+| P3-06     | define second reusable component batch            | Phase 3     | `Gemini 3`          | done        | captured in `docs/phase implement/gemini/components-batch-02.md`                                       |
+| P3-07     | scaffold second component batch (ui/wrapper)      | Phase 3     | `Claude Sonnet`     | done        | icon, dialog, sheet, toast, separator, spinner                                                         |
+| P3-08     | define first composed component batch             | Phase 3     | `Gemini 3`          | done        | captured in `docs/phase implement/gemini/composed-batch-01.md`                                         |
+| P3-09     | scaffold first composed component batch           | Phase 3     | `Claude Sonnet`     | done        | screen-header, alert-banner, summary-stats-row                                                         |
+| P3-10     | define MedicationTile composed component          | Phase 3     | `Gemini 3`          | done        | captured in `docs/phase implement/gemini/medication-tile.md`                                           |
+| P3-11     | scaffold MedicationTile composed component        | Phase 3     | `Claude Sonnet`     | done        | supporting active and out-of-stock states                                                              |
+| P3-12     | define second composed component batch            | Phase 3     | `Gemini 3`          | done        | captured in `docs/phase implement/gemini/composed-batch-02.md`                                         |
+| P3-13     | scaffold second composed component batch          | Phase 3     | `Claude Sonnet`     | done        | settings-section, support-section                                                                      |
+| P3-14     | refactor Me screen to new component system        | Phase 3     | `Claude Sonnet`     | done        | using ScreenHeader, SettingsSection, SupportSection                                                    |
+| P3-15     | define SliderConfirm composed component           | Phase 3     | `Gemini 3`          | done        | captured in `docs/phase implement/gemini/slider-confirm.md`                                            |
+| P3-16     | scaffold SliderConfirm composed component         | Phase 3     | `Claude Sonnet`     | done        | horizontal swipe to confirm dose                                                                       |
+| B-01      | define shared loading, empty, error states        | Phase B     | `Gemini 3`          | done        | captured in `docs/screen_feature/shared-states.md`                                                     |
+| **B-02**  | **implement shared loading, empty, error states** | **Phase B** | **`Claude Sonnet`** | **done**    | **LoadingState/ErrorState upgraded; EmptyState created; Meds + Me null guard updated**                 |
+| P3-17     | define Lab tab dev screen                         | Phase 3     | `Gemini 3`          | removed     | spec archived in `docs/screen_feature/lab-tab.md` (Lab tab later removed from app)                     |
+| **P3-18** | **implement Lab tab**                             | **Phase 3** | **`Claude Sonnet`** | **removed** | **was: dev-only review screen; tab + route deleted — use Storybook / dev branch if needed**            |
+| C-03      | define Home reminder experience                   | Phase 3     | `Gemini 3`          | done        | captured in `docs/screen_feature/home-reminder-experience.md`                                          |
+| **C-04**  | **implement Home reminder experience**            | **Phase 3** | **`Claude Sonnet`** | **done**    | **Apple-alarm inspired blue surface with scroll-driven docking**                                       |
+| P4-01     | refine null-data UX in screens                    | Phase 4     | `Claude Sonnet`     | pending     | current app is already null-safe at basic level                                                        |
 
 ## Open Questions
 

@@ -8,7 +8,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  Extrapolation,
+  Extrapolation
 } from "react-native-reanimated";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { GlassView } from "expo-glass-effect";
@@ -16,7 +16,7 @@ import {
   SPRING_BACK,
   SPRING_COMPLETE,
   SUCCESS_HOLD_MS,
-  THUMB_ACTIVE_SCALE,
+  THUMB_ACTIVE_SCALE
 } from "./constants";
 import { useSliderHaptics } from "./use-haptics";
 import type { SliderConfirmProps } from "./types";
@@ -31,7 +31,7 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
   size = "medium",
   hapticEnabled = true,
   variant = "dark",
-  style,
+  style
 }) => {
   const isIOS = Platform.OS === "ios";
 
@@ -154,13 +154,13 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
       : withSpring(1, { damping: 15, stiffness: 200 });
 
     return {
-      transform: [{ translateX: thumbX.value }, { scale }],
+      transform: [{ translateX: thumbX.value }, { scale }]
     };
   });
 
   const fillAnimatedStyle = useAnimatedStyle(() => {
     return {
-      width: thumbX.value + THUMB_SIZE / 2,
+      width: thumbX.value + THUMB_SIZE / 2
     };
   });
 
@@ -181,9 +181,7 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
     const trackBg = isDark
       ? "rgba(180, 220, 255, 0.18)"
       : "rgba(0, 88, 188, 0.10)";
-    const fillBg = isDark
-      ? "rgba(0, 88, 188, 0.26)"
-      : "rgba(0, 88, 188, 0.18)";
+    const fillBg = isDark ? "rgba(0, 88, 188, 0.26)" : "rgba(0, 88, 188, 0.18)";
     const androidOuterStrokeColor = "rgba(255, 255, 255, 0.5)";
     const thumbBg = "#FFFFFF";
     const iconColor = "#0058BC";
@@ -198,9 +196,9 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
             borderRadius: TRACK_RADIUS,
             borderWidth: 1,
             borderColor: androidOuterStrokeColor,
-            elevation: 1,
+            elevation: 1
           },
-          style,
+          style
         ]}
         onLayout={(e) => {
           const w = e.nativeEvent.layout.width;
@@ -213,11 +211,17 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
         accessibilityState={{ disabled: isBlocked }}
         accessibilityHint="Slide right to confirm"
       >
-        <View style={[StyleSheet.absoluteFill, styles.glassWrapper, { borderRadius: TRACK_RADIUS }]}>
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            styles.glassWrapper,
+            { borderRadius: TRACK_RADIUS }
+          ]}
+        >
           <View
             style={[
               StyleSheet.absoluteFill,
-              { backgroundColor: trackBg, borderRadius: TRACK_RADIUS },
+              { backgroundColor: trackBg, borderRadius: TRACK_RADIUS }
             ]}
           />
         </View>
@@ -232,8 +236,8 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
             {
               padding: TRACK_PADDING,
               borderRadius: TRACK_RADIUS,
-              overflow: "hidden",
-            },
+              overflow: "hidden"
+            }
           ]}
         >
           <Animated.View
@@ -245,8 +249,8 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
                 borderRadius: THUMB_RADIUS,
                 height: THUMB_SIZE,
                 left: 0,
-                top: 0,
-              },
+                top: 0
+              }
             ]}
             pointerEvents="none"
           />
@@ -261,10 +265,7 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
               pointerEvents="none"
             >
               <Animated.Text
-                style={[
-                  styles.labelText,
-                  { color: labelColor, fontSize: 13 },
-                ]}
+                style={[styles.labelText, { color: labelColor, fontSize: 13 }]}
               >
                 {label}
               </Animated.Text>
@@ -282,8 +283,8 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
                   width: THUMB_SIZE,
                   height: THUMB_SIZE,
                   borderRadius: THUMB_RADIUS,
-                  backgroundColor: thumbBg,
-                },
+                  backgroundColor: thumbBg
+                }
               ]}
             >
               {loading ? (
@@ -307,7 +308,7 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
     const trackTint = "rgba(120, 190, 255, 0.22)";
     const fillBg = "rgba(0, 88, 188, 0.26)"; // soft blue liquid fill
     const strokeColor = "rgba(255, 255, 255, 0.50)";
-    
+
     // Glassy thumb
     const thumbBg = "rgba(255, 255, 255, 0.85)";
     const thumbStrokeColor = "rgba(255, 255, 255, 0.9)";
@@ -320,9 +321,9 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
           styles.trackContainerIOS,
           {
             height: TRACK_HEIGHT,
-            borderRadius: TRACK_RADIUS,
+            borderRadius: TRACK_RADIUS
           },
-          style,
+          style
         ]}
         onLayout={(e) => {
           const w = e.nativeEvent.layout.width;
@@ -335,15 +336,17 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
         accessibilityState={{ disabled: isBlocked }}
         accessibilityHint="Slide right to confirm"
       >
-        <View style={[StyleSheet.absoluteFill, { borderRadius: TRACK_RADIUS, overflow: "hidden" }]}>
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            { borderRadius: TRACK_RADIUS, overflow: "hidden" }
+          ]}
+        >
           <GlassView
             style={[StyleSheet.absoluteFill, { borderRadius: TRACK_RADIUS }]}
           />
           <View
-            style={[
-              StyleSheet.absoluteFill,
-              { backgroundColor: trackTint },
-            ]}
+            style={[StyleSheet.absoluteFill, { backgroundColor: trackTint }]}
           />
         </View>
 
@@ -353,8 +356,8 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
             {
               borderRadius: TRACK_RADIUS,
               borderWidth: 1.5,
-              borderColor: strokeColor,
-            },
+              borderColor: strokeColor
+            }
           ]}
           pointerEvents="none"
         />
@@ -369,8 +372,8 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
             {
               padding: TRACK_PADDING,
               borderRadius: TRACK_RADIUS,
-              overflow: "hidden",
-            },
+              overflow: "hidden"
+            }
           ]}
         >
           <Animated.View
@@ -382,8 +385,8 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
                 borderRadius: THUMB_RADIUS,
                 height: THUMB_SIZE,
                 left: 0,
-                top: 0,
-              },
+                top: 0
+              }
             ]}
             pointerEvents="none"
           />
@@ -397,11 +400,7 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
               ]}
               pointerEvents="none"
             >
-              <Animated.Text
-                style={[
-                  styles.labelTextIOS,
-                ]}
-              >
+              <Animated.Text style={[styles.labelTextIOS]}>
                 {label}
               </Animated.Text>
             </Animated.View>
@@ -420,8 +419,8 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
                   borderRadius: THUMB_RADIUS,
                   backgroundColor: thumbBg,
                   borderColor: thumbStrokeColor,
-                  borderWidth: 1,
-                },
+                  borderWidth: 1
+                }
               ]}
             >
               {loading ? (
@@ -452,7 +451,7 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
-    shadowRadius: 6,
+    shadowRadius: 6
   },
   trackContainerIOS: {
     width: "100%",
@@ -461,21 +460,21 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.12,
     shadowRadius: 20,
-    elevation: 0,
+    elevation: 0
   },
   glassWrapper: {
-    overflow: "hidden",
+    overflow: "hidden"
   },
   disabledOverlay: {
     backgroundColor: "rgba(255, 255, 255, 0.3)",
-    zIndex: 1,
+    zIndex: 1
   },
   disabledOverlayIOS: {
     backgroundColor: "rgba(255, 255, 255, 0.2)",
-    zIndex: 1,
+    zIndex: 1
   },
   fill: {
-    position: "absolute",
+    position: "absolute"
   },
   overlay: {
     position: "absolute",
@@ -484,22 +483,22 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   labelText: {
     fontWeight: "600",
-    letterSpacing: 0.3,
+    letterSpacing: 0.3
   },
   labelTextIOS: {
     fontWeight: "600",
     letterSpacing: 0.2,
     color: "rgba(255, 255, 255, 0.95)",
-    fontSize: 14,
+    fontSize: 14
   },
   thumb: {
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 2,
+    zIndex: 2
   },
   thumbIOS: {
     alignItems: "center",
@@ -508,6 +507,6 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
-    shadowRadius: 4,
-  },
+    shadowRadius: 4
+  }
 });

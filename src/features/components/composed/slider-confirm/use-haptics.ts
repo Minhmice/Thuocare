@@ -30,7 +30,9 @@ export function useSliderHaptics(enabled: boolean) {
   }, [throttled]);
 
   const onComplete = useCallback(() => {
-    throttled(() => Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success));
+    throttled(() =>
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    );
   }, [throttled]);
 
   return { onStart, onThreshold, onComplete };

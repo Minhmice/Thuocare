@@ -1,7 +1,7 @@
-import React from 'react';
-import { useTheme } from 'react-native-paper';
-import { Field as FieldPrimitive } from '../../ui/field';
-import { FieldProps } from '../../ui/field/types';
+import React from "react";
+import { useTheme } from "react-native-paper";
+import { Field as FieldPrimitive } from "../../ui/field";
+import { FieldProps } from "../../ui/field/types";
 
 export const Field: React.FC<FieldProps> = (props) => {
   const theme = useTheme();
@@ -13,15 +13,15 @@ export const Field: React.FC<FieldProps> = (props) => {
         {
           color: theme.colors.onSurface,
           fontSize: 14,
-          fontWeight: '600',
+          fontWeight: "600"
         },
-        props.labelStyle,
+        props.labelStyle
       ]}
       errorStyle={[
         {
-          color: theme.colors.error,
+          color: theme.colors.error
         },
-        props.errorStyle,
+        props.errorStyle
       ]}
     />
   );

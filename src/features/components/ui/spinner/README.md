@@ -5,7 +5,7 @@ Basic loading indicator using `ActivityIndicator`.
 ## Usage
 
 ```tsx
-import { Spinner } from './spinner';
+import { Spinner } from "./spinner";
 
-<Spinner size="large" color="#0058BC" />
+<Spinner size="large" color="#0058BC" />;
 ```

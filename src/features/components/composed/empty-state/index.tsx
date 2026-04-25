@@ -19,7 +19,7 @@ export function EmptyState({
   title,
   description,
   actionLabel,
-  onAction,
+  onAction
 }: EmptyStateProps) {
   const theme = useTheme();
   const opacity = useRef(new Animated.Value(0)).current;
@@ -28,7 +28,7 @@ export function EmptyState({
     Animated.timing(opacity, {
       toValue: 1,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   }, [opacity]);
 
@@ -37,7 +37,7 @@ export function EmptyState({
       <View
         style={[
           styles.iconWrap,
-          { backgroundColor: `${theme.colors.primary}1A` },
+          { backgroundColor: `${theme.colors.primary}1A` }
         ]}
       >
         <Icon name={icon} size="xl" variant="primary" />
@@ -75,25 +75,25 @@ const styles = StyleSheet.create({
     paddingTop: 64,
     paddingHorizontal: 32,
     alignItems: "center",
-    gap: 24,
+    gap: 24
   },
   iconWrap: {
     width: 80,
     height: 80,
     borderRadius: 40,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   textWrap: {
     gap: 8,
-    alignItems: "center",
+    alignItems: "center"
   },
   description: {
-    lineHeight: 22,
+    lineHeight: 22
   },
   actionButton: {
     marginTop: 8,
     minWidth: 180,
-    borderRadius: 9999,
-  },
+    borderRadius: 9999
+  }
 });

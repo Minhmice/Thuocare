@@ -9,7 +9,7 @@ export const COLLAPSE_END = 300;
 
 // ── ReminderBadge ───────────────────────────────────────────────────
 export function ReminderBadge({
-  minutesLate,
+  minutesLate
 }: {
   readonly minutesLate: number;
 }) {
@@ -27,7 +27,7 @@ export function ReminderBadge({
 // ── ReminderTime ────────────────────────────────────────────────────
 export function ReminderTime({
   scheduledAt,
-  variant,
+  variant
 }: {
   readonly scheduledAt: string;
   readonly variant: "expanded" | "collapsed";
@@ -35,7 +35,9 @@ export function ReminderTime({
   return (
     <AppText
       variant="displayLarge"
-      style={variant === "expanded" ? styles.expandedTime : styles.collapsedTime}
+      style={
+        variant === "expanded" ? styles.expandedTime : styles.collapsedTime
+      }
     >
       {scheduledAt}
     </AppText>
@@ -49,20 +51,20 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.20)",
     borderRadius: 9999,
     paddingHorizontal: 12,
-    paddingVertical: 4,
+    paddingVertical: 4
   },
   badgeText: {
     color: "rgba(255, 255, 255, 0.95)",
     textTransform: "uppercase",
     letterSpacing: 1.1,
-    fontWeight: "700",
+    fontWeight: "700"
   },
   expandedTime: {
     color: "#FFFFFF",
     fontWeight: "800",
     letterSpacing: -1.6,
     lineHeight: 68,
-    marginTop: -4,
+    marginTop: -4
   },
   collapsedTime: {
     color: "#FFFFFF",
@@ -70,6 +72,6 @@ const styles = StyleSheet.create({
     letterSpacing: -1.4,
     lineHeight: 68,
     marginTop: 8,
-    marginBottom: 16,
-  },
+    marginBottom: 16
+  }
 });

@@ -8,7 +8,7 @@
 
 ## Critical (must fix before completion)
 
-*None.* The earlier risk that `explorerContext` might not reach `VaultActionsDropdown` is addressed in the current code: `VaultHeader` declares `explorerContext` in its props and passes it to `VaultActionsDropdown`, and `VaultClient` passes `explorerContext` into `VaultHeader`. The dropdown uses `effectiveExplorerContext` for null safety. No critical open items.
+_None._ The earlier risk that `explorerContext` might not reach `VaultActionsDropdown` is addressed in the current code: `VaultHeader` declares `explorerContext` in its props and passes it to `VaultActionsDropdown`, and `VaultClient` passes `explorerContext` into `VaultHeader`. The dropdown uses `effectiveExplorerContext` for null safety. No critical open items.
 
 ---
 
@@ -65,10 +65,10 @@
 ## Summary
 
 | Severity | Count |
-|----------|--------|
-| Critical | 0 |
-| Major    | 2 |
-| Minor    | 3 |
+| -------- | ----- |
+| Critical | 0     |
+| Major    | 2     |
+| Minor    | 3     |
 
 **Correctness**: Default-write and overflow ordering in dispatch, split-upload flow, stream 403 for split/download_only, and concatenated download for split files are implemented correctly. `explorerContext` is wired from VaultClient → VaultHeader → VaultActionsDropdown with null-safe use in the dropdown.
 

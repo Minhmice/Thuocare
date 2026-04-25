@@ -1,11 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
 import React from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Typography } from "../../wrapper/typography";
 
@@ -16,7 +12,7 @@ const GRAY = "#505863";
 const ROUTES = [
   { name: "home", label: "Trang Chủ", icon: "home-variant" },
   { name: "meds", label: "Thuốc", icon: "pill" },
-  { name: "me", label: "Tôi", icon: "account" },
+  { name: "me", label: "Tôi", icon: "account" }
 ];
 
 export const MainTabBar: React.FC = () => {
@@ -32,8 +28,8 @@ export const MainTabBar: React.FC = () => {
       style={[
         styles.container,
         {
-          paddingBottom: Math.max(28, insets.bottom + 8),
-        },
+          paddingBottom: Math.max(28, insets.bottom + 8)
+        }
       ]}
     >
       <View style={styles.content}>
@@ -88,21 +84,21 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    zIndex: 100, // High zIndex for default visibility
+    zIndex: 100 // High zIndex for default visibility
   },
   content: {
     flexDirection: "row",
     height: 60,
-    alignItems: "center",
+    alignItems: "center"
   },
   tab: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    gap: 4
   },
   label: {
     fontSize: 11,
-    textTransform: "capitalize",
-  },
+    textTransform: "capitalize"
+  }
 });

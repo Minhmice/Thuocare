@@ -30,7 +30,9 @@ import { Typography } from "../../features/components/wrapper/typography";
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length >= 2) {
-    return ((parts[0]?.[0] ?? "") + (parts[parts.length - 1]?.[0] ?? "")).toUpperCase();
+    return (
+      (parts[0]?.[0] ?? "") + (parts[parts.length - 1]?.[0] ?? "")
+    ).toUpperCase();
   }
   return (parts[0]?.slice(0, 2) ?? "?").toUpperCase();
 }
@@ -111,23 +113,23 @@ export default function MeScreen() {
     remoteProfile?.phone || record.phone
   );
   const phoneNational = vnPhoneToNationalDisplay(phoneE164);
-  const emailDisplay = [
-    remoteProfile?.email,
-    record.email
-  ].find((e) => (e ?? "").trim().length > 0) ?? "";
+  const emailDisplay =
+    [remoteProfile?.email, record.email].find(
+      (e) => (e ?? "").trim().length > 0
+    ) ?? "";
 
   const memberSinceIso = remoteProfile?.joinedAt ?? record.createdAt;
 
   const reminderLabelByPreference: Record<ReminderPreference, string> = {
     quiet: t("reminder_gentle"),
     balanced: t("reminder_balanced"),
-    firm: t("reminder_firm"),
+    firm: t("reminder_firm")
   };
 
   const routineLabelByStage: Record<RoutineStage, string> = {
     starting: t("routine_starting"),
     steady: t("routine_steady"),
-    resetting: t("routine_resetting"),
+    resetting: t("routine_resetting")
   };
 
   const reminderLabel = record.reminderPreference
@@ -157,15 +159,15 @@ export default function MeScreen() {
         text: t("settings_languageEnglish"),
         onPress: () => {
           void chooseLanguage("en");
-        },
+        }
       },
       {
         text: t("settings_languageVietnamese"),
         onPress: () => {
           void chooseLanguage("vi");
-        },
+        }
       },
-      { text: t("common_cancel"), style: "cancel" },
+      { text: t("common_cancel"), style: "cancel" }
     ]);
   }
 
@@ -184,59 +186,64 @@ export default function MeScreen() {
   }
 
   const accountItems = [
-    { 
-      id: 'phone', 
-      label: t("settings_phone"), 
-      value: phoneNational, 
-      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_phoneSoon")) 
+    {
+      id: "phone",
+      label: t("settings_phone"),
+      value: phoneNational,
+      onPress: () =>
+        Alert.alert(t("common_comingSoon"), t("settings_phoneSoon"))
     },
-    { 
-      id: 'email', 
-      label: t("settings_email"), 
-      value: emailDisplay.trim().length > 0 ? emailDisplay : t("settings_notAdded"), 
-      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_emailSoon")) 
+    {
+      id: "email",
+      label: t("settings_email"),
+      value:
+        emailDisplay.trim().length > 0 ? emailDisplay : t("settings_notAdded"),
+      onPress: () =>
+        Alert.alert(t("common_comingSoon"), t("settings_emailSoon"))
     },
-    { 
-      id: 'member_since', 
-      label: t("settings_memberSince"), 
-      value: formatDate(memberSinceIso, locale), 
-      onPress: () => {}, 
-      showChevron: false 
-    },
+    {
+      id: "member_since",
+      label: t("settings_memberSince"),
+      value: formatDate(memberSinceIso, locale),
+      onPress: () => {},
+      showChevron: false
+    }
   ];
 
   const reminderItems = [
-    { 
-      id: 'intensity', 
-      label: t("settings_reminderIntensity"), 
-      value: reminderLabel, 
-      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_notificationSoon")) 
+    {
+      id: "intensity",
+      label: t("settings_reminderIntensity"),
+      value: reminderLabel,
+      onPress: () =>
+        Alert.alert(t("common_comingSoon"), t("settings_notificationSoon"))
     },
-    { 
-      id: 'condition', 
-      label: t("settings_conditionType"), 
-      value: routineLabel, 
-      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_routineSoon")) 
+    {
+      id: "condition",
+      label: t("settings_conditionType"),
+      value: routineLabel,
+      onPress: () =>
+        Alert.alert(t("common_comingSoon"), t("settings_routineSoon"))
     },
-    { 
-      id: 'notifications', 
-      label: t("settings_notifications"), 
-      value: t("common_comingSoon"), 
-      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_pushSoon")) 
+    {
+      id: "notifications",
+      label: t("settings_notifications"),
+      value: t("common_comingSoon"),
+      onPress: () => Alert.alert(t("common_comingSoon"), t("settings_pushSoon"))
     },
     {
       id: "language",
       label: t("settings_language"),
       value: languageValue,
-      onPress: handleLanguagePicker,
-    },
+      onPress: handleLanguagePicker
+    }
   ];
 
   return (
     <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
       <AppScreen>
-        <ScreenHeader 
-          title={t("settings_title")} 
+        <ScreenHeader
+          title={t("settings_title")}
           subtitle={t("settings_subtitle")}
           style={styles.header}
         />
@@ -246,16 +253,9 @@ export default function MeScreen() {
           <View style={styles.profileContent}>
             {/* Avatar — initials placeholder */}
             <View
-              style={[
-                styles.avatar,
-                { backgroundColor: theme.colors.primary }
-              ]}
+              style={[styles.avatar, { backgroundColor: theme.colors.primary }]}
             >
-              <Typography
-                variant="headline-sm"
-                weight="bold"
-                color="#FFFFFF"
-              >
+              <Typography variant="headline-sm" weight="bold" color="#FFFFFF">
                 {getInitials(fullNameSource)}
               </Typography>
             </View>
@@ -265,11 +265,17 @@ export default function MeScreen() {
               <Typography variant="title-lg" weight="bold">
                 {profileHeadline}
               </Typography>
-              <Typography variant="body-md" color={theme.colors.onSurfaceVariant}>
+              <Typography
+                variant="body-md"
+                color={theme.colors.onSurfaceVariant}
+              >
                 {phoneNational}
               </Typography>
               {emailDisplay.trim().length > 0 ? (
-                <Typography variant="body-sm" color={theme.colors.onSurfaceVariant}>
+                <Typography
+                  variant="body-sm"
+                  color={theme.colors.onSurfaceVariant}
+                >
                   {emailDisplay}
                 </Typography>
               ) : null}
@@ -278,10 +284,16 @@ export default function MeScreen() {
         </Card>
 
         {/* ── 2. Account details ─────────────────────────────────────────── */}
-        <SettingsSection title={t("settings_section_account")} items={accountItems} />
+        <SettingsSection
+          title={t("settings_section_account")}
+          items={accountItems}
+        />
 
         {/* ── 3. Reminders & notifications ───────────────────────────────── */}
-        <SettingsSection title={t("settings_section_reminders")} items={reminderItems} />
+        <SettingsSection
+          title={t("settings_section_reminders")}
+          items={reminderItems}
+        />
 
         {/* ── 4. Support ─────────────────────────────────────────────────── */}
         <SupportSection
@@ -298,7 +310,7 @@ export default function MeScreen() {
           labelStyle={{ color: theme.colors.error, fontWeight: "600" }}
           style={[
             styles.signOutButton,
-            { backgroundColor: 'rgba(196, 30, 30, 0.08)' }
+            { backgroundColor: "rgba(196, 30, 30, 0.08)" }
           ]}
         />
       </AppScreen>
@@ -310,30 +322,30 @@ export default function MeScreen() {
 const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 0,
-    marginBottom: 0,
+    marginBottom: 0
   },
   profileCard: {
     padding: 24,
-    borderRadius: 32,
+    borderRadius: 32
   },
   profileContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
+    gap: 16
   },
   avatar: {
     width: 64,
     height: 64,
     borderRadius: 32,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   identity: {
     flex: 1,
-    gap: 2,
+    gap: 2
   },
   signOutButton: {
     marginTop: 8,
-    marginBottom: 120, // Space for internal tab bar
-  },
+    marginBottom: 120 // Space for internal tab bar
+  }
 });

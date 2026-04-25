@@ -5,9 +5,9 @@ Base button component for Thuocare.
 ## Usage
 
 ```tsx
-import { Button } from './button';
+import { Button } from "./button";
 
-<Button label="Click Me" onPress={() => console.log('Pressed')} />
+<Button label="Click Me" onPress={() => console.log("Pressed")} />;
 ```
 
 ## Props

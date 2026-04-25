@@ -8,13 +8,13 @@ import {
   COLLAPSE_END,
   PRIMARY,
   ReminderBadge,
-  ReminderTime,
+  ReminderTime
 } from "./shared-parts";
 
 // ── Compact medication rows (collapsed-only layout) ─────────────────
 function CompactMedicationRows({
   nextDose,
-  scrollY,
+  scrollY
 }: {
   readonly nextDose: NextDoseGroup;
   readonly scrollY?: Animated.Value;
@@ -22,24 +22,32 @@ function CompactMedicationRows({
   return (
     <View style={styles.compactList}>
       {nextDose.medications.map((med, index) => {
-        const rowOpacity = scrollY?.interpolate({
-          inputRange: [COLLAPSE_END - 130 + index * 20, COLLAPSE_END - 40 + index * 20],
-          outputRange: [0, 1],
-          extrapolate: "clamp",
-        }) ?? 1;
+        const rowOpacity =
+          scrollY?.interpolate({
+            inputRange: [
+              COLLAPSE_END - 130 + index * 20,
+              COLLAPSE_END - 40 + index * 20
+            ],
+            outputRange: [0, 1],
+            extrapolate: "clamp"
+          }) ?? 1;
 
-        const rowTranslateX = scrollY?.interpolate({
-          inputRange: [COLLAPSE_END - 130 + index * 20, COLLAPSE_END - 40 + index * 20],
-          outputRange: [12, 0],
-          extrapolate: "clamp",
-        }) ?? 0;
+        const rowTranslateX =
+          scrollY?.interpolate({
+            inputRange: [
+              COLLAPSE_END - 130 + index * 20,
+              COLLAPSE_END - 40 + index * 20
+            ],
+            outputRange: [12, 0],
+            extrapolate: "clamp"
+          }) ?? 0;
 
         return (
           <Animated.View
             key={med.id}
             style={{
               opacity: rowOpacity,
-              transform: [{ translateX: rowTranslateX }],
+              transform: [{ translateX: rowTranslateX }]
             }}
           >
             {index > 0 && <View style={styles.compactDivider} />}
@@ -78,7 +86,7 @@ interface CollapsedViewProps {
 export const CollapsedView: React.FC<CollapsedViewProps> = ({
   nextDose,
   onConfirm,
-  scrollY,
+  scrollY
 }) => {
   return (
     <View style={styles.collapsedCard}>
@@ -88,7 +96,7 @@ export const CollapsedView: React.FC<CollapsedViewProps> = ({
       </View>
 
       <CompactMedicationRows nextDose={nextDose} scrollY={scrollY} />
-      
+
       {/* Slider removed for compact card view per user request */}
     </View>
   );
@@ -104,39 +112,39 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 12, // Ultra tight bottom padding
     justifyContent: "flex-start",
-    gap: 12,
+    gap: 12
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 4,
+    marginBottom: 4
   },
   compactList: {
     gap: 8,
-    marginTop: 0,
+    marginTop: 0
   },
   compactDivider: {
     height: 1,
     backgroundColor: "rgba(255, 255, 255, 0.08)",
-    marginBottom: 8,
+    marginBottom: 8
   },
   compactRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 12
   },
   compactTextWrap: {
-    flex: 1,
+    flex: 1
   },
   compactName: {
     color: "#FFFFFF",
     fontSize: 16,
     lineHeight: 20,
-    fontWeight: "600",
+    fontWeight: "600"
   },
   compactBenefit: {
-    display: "none", // Hide instruction to save space
+    display: "none" // Hide instruction to save space
   },
   compactIconWrap: {
     width: 32,
@@ -144,6 +152,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "rgba(255, 255, 255, 0.12)",
     alignItems: "center",
-    justifyContent: "center",
-  },
+    justifyContent: "center"
+  }
 });

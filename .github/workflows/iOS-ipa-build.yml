@@ -136,4 +136,3 @@ jobs:
           name: ${{ inputs.release_name }}
           files: dist/*.ipa
           fail_on_unmatched_files: true
-

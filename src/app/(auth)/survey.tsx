@@ -28,7 +28,10 @@ import type {
   SurveyQ6,
   SurveyQ7
 } from "../../types/onboarding-survey";
-import { emptySurveyAnswers, isOnboardingSurveyComplete } from "../../types/onboarding-survey";
+import {
+  emptySurveyAnswers,
+  isOnboardingSurveyComplete
+} from "../../types/onboarding-survey";
 import { paperTheme } from "../../theme/paperTheme";
 
 function ChoiceButton({
@@ -49,7 +52,9 @@ function ChoiceButton({
         borderRadius: 16,
         backgroundColor: selected ? "rgba(0, 88, 188, 0.08)" : "#FFFFFF",
         borderWidth: 1.5,
-        borderColor: selected ? paperTheme.colors.primary : "rgba(0, 88, 188, 0.22)",
+        borderColor: selected
+          ? paperTheme.colors.primary
+          : "rgba(0, 88, 188, 0.22)",
         padding: 16,
         marginBottom: 12,
         opacity: pressed ? 0.8 : 1
@@ -62,8 +67,12 @@ function ChoiceButton({
             height: 20,
             borderRadius: multi ? 6 : 10,
             borderWidth: 2,
-            borderColor: selected ? paperTheme.colors.primary : "rgba(0, 88, 188, 0.22)",
-            backgroundColor: selected ? paperTheme.colors.primary : "transparent",
+            borderColor: selected
+              ? paperTheme.colors.primary
+              : "rgba(0, 88, 188, 0.22)",
+            backgroundColor: selected
+              ? paperTheme.colors.primary
+              : "transparent",
             alignItems: "center",
             justifyContent: "center"
           }}
@@ -163,7 +172,10 @@ function q7Label(t: (k: TranslationKey) => string, v: SurveyQ7): string {
   return t(m[v]);
 }
 
-function validateStep(stepIndex: number, a: OnboardingSurveyAnswers): TranslationKey | null {
+function validateStep(
+  stepIndex: number,
+  a: OnboardingSurveyAnswers
+): TranslationKey | null {
   switch (stepIndex) {
     case 0:
       return a.q1 ? null : "survey_error_pickOne";
@@ -190,7 +202,8 @@ export default function SurveyScreen() {
 
   const [hydrated, setHydrated] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
-  const [answers, setAnswers] = useState<OnboardingSurveyAnswers>(emptySurveyAnswers());
+  const [answers, setAnswers] =
+    useState<OnboardingSurveyAnswers>(emptySurveyAnswers());
   const [direction, setDirection] = useState<"forward" | "back">("forward");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -241,7 +254,9 @@ export default function SurveyScreen() {
     return (
       <AppScreen>
         <Stack.Screen options={{ headerShown: false }} />
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator color={paperTheme.colors.primary} />
         </View>
       </AppScreen>
@@ -256,7 +271,9 @@ export default function SurveyScreen() {
     return (
       <AppScreen>
         <Stack.Screen options={{ headerShown: false }} />
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator color={paperTheme.colors.primary} />
         </View>
       </AppScreen>
@@ -320,12 +337,18 @@ export default function SurveyScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 24 }}
         >
-          <AppText variant="headlineSmall" style={{ marginBottom: 12, fontWeight: "600" }}>
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 12, fontWeight: "600" }}
+          >
             {t("onboarding_readyTitle")}
           </AppText>
           <AppText
             variant="bodyMedium"
-            style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 20 }}
+            style={{
+              color: paperTheme.colors.onSurfaceVariant,
+              marginBottom: 20
+            }}
           >
             {t("survey_summaryLead")}
           </AppText>
@@ -342,64 +365,111 @@ export default function SurveyScreen() {
             }}
           >
             <View>
-              <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+              <AppText
+                variant="labelSmall"
+                style={{ color: paperTheme.colors.onSurfaceVariant }}
+              >
                 {t("survey_q1_title")}
               </AppText>
-              <AppText variant="bodyMedium" style={{ fontWeight: "600", marginTop: 4 }}>
-                {answers.q1 === "self" ? t("survey_q1_self") : t("survey_q1_self_help")}
+              <AppText
+                variant="bodyMedium"
+                style={{ fontWeight: "600", marginTop: 4 }}
+              >
+                {answers.q1 === "self"
+                  ? t("survey_q1_self")
+                  : t("survey_q1_self_help")}
               </AppText>
             </View>
             <View>
-              <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+              <AppText
+                variant="labelSmall"
+                style={{ color: paperTheme.colors.onSurfaceVariant }}
+              >
                 {t("survey_q2_title")}
               </AppText>
-              <AppText variant="bodyMedium" style={{ fontWeight: "600", marginTop: 4 }}>
+              <AppText
+                variant="bodyMedium"
+                style={{ fontWeight: "600", marginTop: 4 }}
+              >
                 {answers.q2 ? q2Label(t, answers.q2) : "—"}
               </AppText>
             </View>
             <View>
-              <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+              <AppText
+                variant="labelSmall"
+                style={{ color: paperTheme.colors.onSurfaceVariant }}
+              >
                 {t("survey_q3_title")}
               </AppText>
-              <AppText variant="bodyMedium" style={{ fontWeight: "600", marginTop: 4 }}>
+              <AppText
+                variant="bodyMedium"
+                style={{ fontWeight: "600", marginTop: 4 }}
+              >
                 {answers.q3.map((x) => q3Label(t, x)).join(", ")}
               </AppText>
             </View>
             <View>
-              <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+              <AppText
+                variant="labelSmall"
+                style={{ color: paperTheme.colors.onSurfaceVariant }}
+              >
                 {t("survey_q4_title")}
               </AppText>
-              <AppText variant="bodyMedium" style={{ fontWeight: "600", marginTop: 4 }}>
+              <AppText
+                variant="bodyMedium"
+                style={{ fontWeight: "600", marginTop: 4 }}
+              >
                 {answers.q4.map((x) => q4Label(t, x)).join(", ")}
               </AppText>
             </View>
             <View>
-              <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+              <AppText
+                variant="labelSmall"
+                style={{ color: paperTheme.colors.onSurfaceVariant }}
+              >
                 {t("survey_q5_title")}
               </AppText>
-              <AppText variant="bodyMedium" style={{ fontWeight: "600", marginTop: 4 }}>
+              <AppText
+                variant="bodyMedium"
+                style={{ fontWeight: "600", marginTop: 4 }}
+              >
                 {answers.q5 ? q5Label(t, answers.q5) : "—"}
               </AppText>
             </View>
             <View>
-              <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+              <AppText
+                variant="labelSmall"
+                style={{ color: paperTheme.colors.onSurfaceVariant }}
+              >
                 {t("survey_q6_title")}
               </AppText>
-              <AppText variant="bodyMedium" style={{ fontWeight: "600", marginTop: 4 }}>
+              <AppText
+                variant="bodyMedium"
+                style={{ fontWeight: "600", marginTop: 4 }}
+              >
                 {answers.q6 ? q6Label(t, answers.q6) : "—"}
               </AppText>
             </View>
             <View>
-              <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+              <AppText
+                variant="labelSmall"
+                style={{ color: paperTheme.colors.onSurfaceVariant }}
+              >
                 {t("survey_q7_title")}
               </AppText>
-              <AppText variant="bodyMedium" style={{ fontWeight: "600", marginTop: 4 }}>
+              <AppText
+                variant="bodyMedium"
+                style={{ fontWeight: "600", marginTop: 4 }}
+              >
                 {answers.q7 ? q7Label(t, answers.q7) : "—"}
               </AppText>
             </View>
             {answers.q8Notes.trim() ? (
               <View>
-                <AppText variant="labelSmall" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+                <AppText
+                  variant="labelSmall"
+                  style={{ color: paperTheme.colors.onSurfaceVariant }}
+                >
                   {t("survey_q8_title")}
                 </AppText>
                 <AppText variant="bodyMedium" style={{ marginTop: 4 }}>
@@ -411,7 +481,11 @@ export default function SurveyScreen() {
 
           <AppText
             variant="bodyMedium"
-            style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 20, lineHeight: 20 }}
+            style={{
+              color: paperTheme.colors.onSurfaceVariant,
+              marginBottom: 20,
+              lineHeight: 20
+            }}
           >
             {t("onboarding_saved")}
           </AppText>
@@ -421,8 +495,14 @@ export default function SurveyScreen() {
 
     if (stepIndex === 0) {
       return (
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <AppText variant="headlineSmall" style={{ marginBottom: 16, fontWeight: "600" }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 16, fontWeight: "600" }}
+          >
             {t("survey_q1_title")}
           </AppText>
           <ChoiceButton
@@ -440,10 +520,22 @@ export default function SurveyScreen() {
     }
 
     if (stepIndex === 1) {
-      const opts: SurveyQ2[] = ["once", "twice", "three_plus", "as_needed", "unsure"];
+      const opts: SurveyQ2[] = [
+        "once",
+        "twice",
+        "three_plus",
+        "as_needed",
+        "unsure"
+      ];
       return (
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <AppText variant="headlineSmall" style={{ marginBottom: 16, fontWeight: "600" }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 16, fontWeight: "600" }}
+          >
             {t("survey_q2_title")}
           </AppText>
           {opts.map((opt) => (
@@ -467,13 +559,22 @@ export default function SurveyScreen() {
         "understanding"
       ];
       return (
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <AppText variant="headlineSmall" style={{ marginBottom: 8, fontWeight: "600" }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 8, fontWeight: "600" }}
+          >
             {t("survey_q3_title")}
           </AppText>
           <AppText
             variant="bodyMedium"
-            style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 16 }}
+            style={{
+              color: paperTheme.colors.onSurfaceVariant,
+              marginBottom: 16
+            }}
           >
             {t("survey_q3_sub")}
           </AppText>
@@ -502,13 +603,22 @@ export default function SurveyScreen() {
         "routine_changes"
       ];
       return (
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <AppText variant="headlineSmall" style={{ marginBottom: 8, fontWeight: "600" }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 8, fontWeight: "600" }}
+          >
             {t("survey_q4_title")}
           </AppText>
           <AppText
             variant="bodyMedium"
-            style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 16 }}
+            style={{
+              color: paperTheme.colors.onSurfaceVariant,
+              marginBottom: 16
+            }}
           >
             {t("survey_q4_sub")}
           </AppText>
@@ -530,8 +640,14 @@ export default function SurveyScreen() {
     if (stepIndex === 4) {
       const opts: SurveyQ5[] = ["gentle", "balanced", "firm"];
       return (
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <AppText variant="headlineSmall" style={{ marginBottom: 16, fontWeight: "600" }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 16, fontWeight: "600" }}
+          >
             {t("survey_q5_title")}
           </AppText>
           {opts.map((opt) => (
@@ -549,8 +665,14 @@ export default function SurveyScreen() {
     if (stepIndex === 5) {
       const opts: SurveyQ6[] = ["short_illness", "ongoing", "unsure"];
       return (
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <AppText variant="headlineSmall" style={{ marginBottom: 16, fontWeight: "600" }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 16, fontWeight: "600" }}
+          >
             {t("survey_q6_title")}
           </AppText>
           {opts.map((opt) => (
@@ -568,8 +690,14 @@ export default function SurveyScreen() {
     if (stepIndex === 6) {
       const opts: SurveyQ7[] = ["doses_first", "stock_first", "both"];
       return (
-        <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <AppText variant="headlineSmall" style={{ marginBottom: 16, fontWeight: "600" }}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <AppText
+            variant="headlineSmall"
+            style={{ marginBottom: 16, fontWeight: "600" }}
+          >
             {t("survey_q7_title")}
           </AppText>
           {opts.map((opt) => (
@@ -585,13 +713,22 @@ export default function SurveyScreen() {
     }
 
     return (
-      <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-        <AppText variant="headlineSmall" style={{ marginBottom: 8, fontWeight: "600" }}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <AppText
+          variant="headlineSmall"
+          style={{ marginBottom: 8, fontWeight: "600" }}
+        >
           {t("survey_q8_title")}
         </AppText>
         <AppText
           variant="bodyMedium"
-          style={{ color: paperTheme.colors.onSurfaceVariant, marginBottom: 16 }}
+          style={{
+            color: paperTheme.colors.onSurfaceVariant,
+            marginBottom: 16
+          }}
         >
           {t("survey_q8_sub")}
         </AppText>
@@ -616,7 +753,10 @@ export default function SurveyScreen() {
         <AppText variant="titleMedium" style={{ marginBottom: 4 }}>
           {t("onboarding_title")}
         </AppText>
-        <AppText variant="labelMedium" style={{ color: paperTheme.colors.onSurfaceVariant }}>
+        <AppText
+          variant="labelMedium"
+          style={{ color: paperTheme.colors.onSurfaceVariant }}
+        >
           {t("survey_part", { part: macroPart })}
         </AppText>
         {stepIndex < 8 ? (
@@ -627,7 +767,14 @@ export default function SurveyScreen() {
             {t("survey_questionOf", { n: stepIndex + 1 })}
           </AppText>
         ) : null}
-        <View style={{ height: 3, backgroundColor: "#F3F3F8", borderRadius: 2, marginTop: 10 }}>
+        <View
+          style={{
+            height: 3,
+            backgroundColor: "#F3F3F8",
+            borderRadius: 2,
+            marginTop: 10
+          }}
+        >
           <View
             style={{
               height: "100%",

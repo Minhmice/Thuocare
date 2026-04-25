@@ -5,7 +5,7 @@ App-themed typography component using `react-native-paper` theme and custom font
 ## Usage
 
 ```tsx
-import { Typography } from '../wrapper/typography';
+import { Typography } from "../wrapper/typography";
 
-<Typography variant="headline-lg">Thuocare</Typography>
+<Typography variant="headline-lg">Thuocare</Typography>;
 ```

@@ -5,14 +5,14 @@ Visual call-to-action component for help and support in the `Me` screen.
 ## Usage
 
 ```tsx
-import { SupportSection } from './support-section';
+import { SupportSection } from "./support-section";
 
-<SupportSection 
+<SupportSection
   title="Need help?"
   description="Our clinical team is available 24/7 to answer your medication questions."
   actionLabel="Chat with Support"
-  onPress={() => console.log('Support Chat')}
-/>
+  onPress={() => console.log("Support Chat")}
+/>;
 ```
 
 ## Props

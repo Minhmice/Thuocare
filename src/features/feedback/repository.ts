@@ -25,7 +25,9 @@ export type SubmitAppFeedbackInput = {
   imageUri?: string | null;
 };
 
-export async function submitAppFeedback(input: SubmitAppFeedbackInput): Promise<void> {
+export async function submitAppFeedback(
+  input: SubmitAppFeedbackInput
+): Promise<void> {
   const userId = await getQueryUserId();
   if (!userId) {
     throw new Error("Not signed in");
@@ -62,7 +64,10 @@ export async function submitAppFeedback(input: SubmitAppFeedbackInput): Promise<
 
   if (error) {
     if (screenshotPath) {
-      await supabase.storage.from(BUCKET).remove([screenshotPath]).catch(() => undefined);
+      await supabase.storage
+        .from(BUCKET)
+        .remove([screenshotPath])
+        .catch(() => undefined);
     }
     throw new Error(error.message);
   }

@@ -15,7 +15,11 @@ export function GlassSurface({
   tint = Platform.OS === "ios" ? "systemChromeMaterial" : "light"
 }: GlassSurfaceProps) {
   if (Platform.OS === "web") {
-    return <View style={[{ backgroundColor: "rgba(255, 255, 255, 0.92)" }, style]}>{children}</View>;
+    return (
+      <View style={[{ backgroundColor: "rgba(255, 255, 255, 0.92)" }, style]}>
+        {children}
+      </View>
+    );
   }
 
   return (
@@ -27,7 +31,10 @@ export function GlassSurface({
           overflow: "hidden",
           borderWidth: 1,
           borderColor: "rgba(255, 255, 255, 0.6)",
-          backgroundColor: Platform.OS === "android" ? "rgba(255, 255, 255, 0.72)" : "rgba(255, 255, 255, 0.16)"
+          backgroundColor:
+            Platform.OS === "android"
+              ? "rgba(255, 255, 255, 0.72)"
+              : "rgba(255, 255, 255, 0.16)"
         },
         style
       ]}

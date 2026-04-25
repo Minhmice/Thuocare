@@ -50,7 +50,7 @@ export const storage = {
     if (!listeners.has(key)) listeners.set(key, new Set());
     listeners.get(key)!.add(listener);
     return () => listeners.get(key)?.delete(listener);
-  },
+  }
 };
 ```
 
@@ -111,11 +111,11 @@ await db.execAsync(`
 // Insert
 await db.runAsync("INSERT INTO events (title, date) VALUES (?, ?)", [
   "Meeting",
-  "2024-01-15",
+  "2024-01-15"
 ]);
 
 // Query
 const events = await db.getAllAsync("SELECT * FROM events WHERE date > ?", [
-  "2024-01-01",
+  "2024-01-01"
 ]);
 ```

@@ -22,6 +22,7 @@ HomeData            — userName, stats, missedDoseAlert?, stockWarning?, nextDo
 ### Updated mock: `src/mocks/home.ts`
 
 Rich mock data with:
+
 - Stats: 3 taken / 5 remaining / 1 missed
 - Missed dose alert: Paracetamol
 - Stock warning: Aspirin 81mg, 3 days left
@@ -81,6 +82,7 @@ Replaces the hero when `allSet === true` (local state, set by slider confirm). S
 Groups `ScheduledDose[]` by `DosePeriod`. Renders a period divider row (label + hairline) above each group. Skips empty periods.
 
 **DoseRow states:**
+
 - `taken` — name struck through, dimmed, `✓` icon in primary color
 - `missed` — time in error color, detail shows "Missed", faded `×` icon
 - `upcoming` — time in primary color, empty ring placeholder
@@ -93,8 +95,8 @@ Low-opacity card at the bottom. Camera icon, "Verify with photo" label, "Coming 
 
 ## Dependencies Added
 
-| Package | Reason |
-| --- | --- |
+| Package                      | Reason                                                                                                                                                                       |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@expo/vector-icons@^15.1.1` | MaterialCommunityIcons for pill, check, alert, camera, chevron icons. Already present as a transitive dep via Expo SDK 55 — added as explicit dep for TypeScript resolution. |
 
 ---
@@ -115,13 +117,13 @@ Tracked in `docs/TODO_LATER.md`.
 
 ## Changed Files
 
-| File | Change |
-| --- | --- |
-| `src/types/home.ts` | Created — home-specific domain types |
-| `src/mocks/home.ts` | Replaced — now exports `mockHomeData: HomeData` |
-| `src/features/home/repository.ts` | Replaced — `getHomeData()` returns mock |
-| `src/app/(tabs)/home.tsx` | Full rewrite — greeting, alerts, dashboard, hero, schedule, photo stub |
-| `package.json` | Added `@expo/vector-icons` as explicit dependency |
+| File                              | Change                                                                 |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `src/types/home.ts`               | Created — home-specific domain types                                   |
+| `src/mocks/home.ts`               | Replaced — now exports `mockHomeData: HomeData`                        |
+| `src/features/home/repository.ts` | Replaced — `getHomeData()` returns mock                                |
+| `src/app/(tabs)/home.tsx`         | Full rewrite — greeting, alerts, dashboard, hero, schedule, photo stub |
+| `package.json`                    | Added `@expo/vector-icons` as explicit dependency                      |
 
 ---
 

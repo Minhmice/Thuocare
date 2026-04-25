@@ -53,7 +53,9 @@ export function emptySurveyAnswers(): OnboardingSurveyAnswers {
   };
 }
 
-export function isOnboardingSurveyComplete(a: OnboardingSurveyAnswers): boolean {
+export function isOnboardingSurveyComplete(
+  a: OnboardingSurveyAnswers
+): boolean {
   return (
     a.q1 !== null &&
     a.q2 !== null &&

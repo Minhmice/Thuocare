@@ -10,7 +10,7 @@ A high-confidence gesture component for single-action confirmations, utilizing a
 - **High-Performance**: Powered by `react-native-gesture-handler` and `react-native-reanimated`, running entirely on the UI thread for fluid motion. Opacity animations are isolated inside the GlassView to avoid known rendering bugs.
 - **Scroll-Friendly**: Gracefully yields to vertical scrolling (fails gesture on > 12px vertical movement), eliminating "scroll lock" issues in standard lists.
 - **Tactile Feedback**: Integrated granular haptics via `expo-haptics` (Start → Impact Light, Threshold Cross → Impact Medium, Success → Notification Success).
-- **Visual Polish**: 
+- **Visual Polish**:
   - Dynamic opacity fading on the label as the thumb approaches.
   - Active soft translucent fill trail following the thumb.
   - Visually balanced label centering, specifically offsetting the thumb mass.
@@ -19,21 +19,22 @@ A high-confidence gesture component for single-action confirmations, utilizing a
 ## Requirements
 
 Requires `expo-glass-effect` to be installed:
+
 ```bash
 npx expo install expo-glass-effect
 ```
 
-*Note on limitations: `GlassView` is an iOS-first effect. On older iOS devices or Android, it will gracefully fall back to a colored tint that mimics translucent surfaces, preserving the visual cleanliness.*
+_Note on limitations: `GlassView` is an iOS-first effect. On older iOS devices or Android, it will gracefully fall back to a colored tint that mimics translucent surfaces, preserving the visual cleanliness._
 
 ## Usage
 
 ```tsx
-import { SliderConfirm } from 'src/features/components/composed/slider-confirm';
+import { SliderConfirm } from "src/features/components/composed/slider-confirm";
 
-<SliderConfirm 
+<SliderConfirm
   label="Slide to mark all as taken"
-  onConfirm={handleDoseTaken} 
-/>
+  onConfirm={handleDoseTaken}
+/>;
 ```
 
 ### With an async operation
@@ -50,7 +51,7 @@ const [loading, setLoading] = useState(false);
     await markDoseTaken();
     setLoading(false);
   }}
-/>
+/>;
 ```
 
 ### Resetting after a failed operation
@@ -64,21 +65,21 @@ const [retryKey, setRetryKey] = useState(0);
   key={retryKey}
   onConfirm={async () => {
     const success = await markDoseTaken();
-    if (!success) setRetryKey(k => k + 1); // Resets thumb
+    if (!success) setRetryKey((k) => k + 1); // Resets thumb
   }}
-/>
+/>;
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `onConfirm` | `() => void` | — | Called after the thumb snaps to the end (with a brief `SUCCESS_HOLD_MS` delay) |
-| `label` | `string` | `"Slide to mark all as taken"` | Center track text (sentence-cased) |
-| `size` | `"medium" \| "large"` | `"medium"` | Visual size variant |
-| `variant` | `"dark" \| "light"` | `"dark"` | Color scheme mode |
-| `threshold` | `number` | `0.75` | Fraction of track width required to successfully confirm |
-| `hapticEnabled` | `boolean` | `true` | Whether to play haptics during interaction |
-| `disabled` | `boolean` | `false` | Dims the component and prevents interaction |
-| `loading` | `boolean` | `false` | Shows spinner on thumb; prevents drag |
-| `style` | `StyleProp<ViewStyle>` | — | Override track container style |
+| Prop            | Type                   | Default                        | Description                                                                    |
+| --------------- | ---------------------- | ------------------------------ | ------------------------------------------------------------------------------ |
+| `onConfirm`     | `() => void`           | —                              | Called after the thumb snaps to the end (with a brief `SUCCESS_HOLD_MS` delay) |
+| `label`         | `string`               | `"Slide to mark all as taken"` | Center track text (sentence-cased)                                             |
+| `size`          | `"medium" \| "large"`  | `"medium"`                     | Visual size variant                                                            |
+| `variant`       | `"dark" \| "light"`    | `"dark"`                       | Color scheme mode                                                              |
+| `threshold`     | `number`               | `0.75`                         | Fraction of track width required to successfully confirm                       |
+| `hapticEnabled` | `boolean`              | `true`                         | Whether to play haptics during interaction                                     |
+| `disabled`      | `boolean`              | `false`                        | Dims the component and prevents interaction                                    |
+| `loading`       | `boolean`              | `false`                        | Shows spinner on thumb; prevents drag                                          |
+| `style`         | `StyleProp<ViewStyle>` | —                              | Override track container style                                                 |

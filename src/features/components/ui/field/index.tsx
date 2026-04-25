@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { FieldProps } from './types';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { FieldProps } from "./types";
 
 export const Field: React.FC<FieldProps> = ({
   label,
@@ -24,7 +24,9 @@ export const Field: React.FC<FieldProps> = ({
       )}
       <View style={styles.content}>{children}</View>
       {hint && !error && <Text style={[styles.hint, hintStyle]}>{hint}</Text>}
-      {typeof error === 'string' && <Text style={[styles.error, errorStyle]}>{error}</Text>}
+      {typeof error === "string" && (
+        <Text style={[styles.error, errorStyle]}>{error}</Text>
+      )}
     </View>
   );
 };
@@ -32,28 +34,28 @@ export const Field: React.FC<FieldProps> = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
-    width: '100%',
+    width: "100%"
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     marginBottom: 8,
-    color: '#374151',
+    color: "#374151"
   },
   required: {
-    color: '#EF4444',
+    color: "#EF4444"
   },
   content: {
-    width: '100%',
+    width: "100%"
   },
   hint: {
     fontSize: 12,
-    color: '#6B7280',
-    marginTop: 4,
+    color: "#6B7280",
+    marginTop: 4
   },
   error: {
     fontSize: 12,
-    color: '#EF4444',
-    marginTop: 4,
-  },
+    color: "#EF4444",
+    marginTop: 4
+  }
 });

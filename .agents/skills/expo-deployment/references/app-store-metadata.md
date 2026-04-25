@@ -256,8 +256,8 @@ module.exports = {
   ...baseConfig,
   apple: {
     ...baseConfig.apple,
-    copyright: `${year} Your Company, Inc.`,
-  },
+    copyright: `${year} Your Company, Inc.`
+  }
 };
 ```
 
@@ -277,8 +277,8 @@ module.exports = async () => {
     ...baseConfig,
     apple: {
       ...baseConfig.apple,
-      info: translations,
-    },
+      info: translations
+    }
   };
 };
 ```
@@ -300,10 +300,10 @@ module.exports = {
         ...baseConfig.apple.info["en-US"],
         promoText: isProduction
           ? "Download now and get started!"
-          : "[BETA] Help us test new features!",
-      },
-    },
-  },
+          : "[BETA] Help us test new features!"
+      }
+    }
+  }
 };
 ```
 

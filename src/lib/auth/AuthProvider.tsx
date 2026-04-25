@@ -2,7 +2,10 @@ import type { PropsWithChildren } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import type { OnboardingSurveyAnswers } from "../../types/onboarding-survey";
-import { resolveAuthEmailFromIdentifier, syntheticEmailFromPhone } from "./authEmail";
+import {
+  resolveAuthEmailFromIdentifier,
+  syntheticEmailFromPhone
+} from "./authEmail";
 import {
   isConfirmationEmailDeliveryError,
   RedirectToSignInAfterSignUp,
@@ -14,7 +17,10 @@ import {
   mapQ6ToRoutineStage
 } from "./mapOnboardingSurvey";
 import { clearOnboardingSurveyDraft } from "./onboardingSurveyDraft";
-import { isLikelyAuthStorageError, resetAuthAndGoToSignIn } from "./authRecovery";
+import {
+  isLikelyAuthStorageError,
+  resetAuthAndGoToSignIn
+} from "./authRecovery";
 import type { StoredAuthRecord } from "./storage";
 import { normalizeVnPhoneForDisplay } from "../phone/vnDisplay";
 import { supabase } from "../supabase/client";
@@ -55,14 +61,19 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function getAuthStatus(record: StoredAuthRecord | null, hydrated: boolean): AuthStatus {
+function getAuthStatus(
+  record: StoredAuthRecord | null,
+  hydrated: boolean
+): AuthStatus {
   if (!hydrated) return "loading";
   if (!record) return "signedOut";
   if (!record.onboardingCompleted) return "needsOnboarding";
   return "ready";
 }
 
-async function applySessionToRecord(session: Session | null): Promise<StoredAuthRecord | null> {
+async function applySessionToRecord(
+  session: Session | null
+): Promise<StoredAuthRecord | null> {
   if (!session?.user) {
     return null;
   }
@@ -179,10 +190,14 @@ export function AuthProvider({ children }: PropsWithChildren) {
       throw e;
     }
 
-    async function finishWithSessionUser(user: NonNullable<typeof data.session>["user"]) {
+    async function finishWithSessionUser(
+      user: NonNullable<typeof data.session>["user"]
+    ) {
       let row = await fetchProfileRowWithRetry(user.id);
       if (!row) {
-        throw new Error("Account created but profile is not ready yet. Sign in again in a moment.");
+        throw new Error(
+          "Account created but profile is not ready yet. Sign in again in a moment."
+        );
       }
       row = await backfillProfilePhoneIfMissing(user, row);
       await syncProfileContact(user.id, {
@@ -207,7 +222,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     if (error) {
       if (isConfirmationEmailDeliveryError(error.message)) {
-        const signedIn = await supabase.auth.signInWithPassword({ email, password });
+        const signedIn = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
         if (!signedIn.error && signedIn.data.session?.user) {
           await finishWithSessionUser(signedIn.data.session.user);
           return;
@@ -226,7 +244,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
       await finishWithSessionUser(data.session.user);
       return;
     }
-    const signedIn = await supabase.auth.signInWithPassword({ email, password });
+    const signedIn = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
     if (!signedIn.error && signedIn.data.session?.user) {
       await finishWithSessionUser(signedIn.data.session.user);
       return;

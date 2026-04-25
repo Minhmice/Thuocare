@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { Typography } from '../../wrapper/typography';
+import React from "react";
+import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { useTheme } from "react-native-paper";
+import { Typography } from "../../wrapper/typography";
 
 export interface ScreenHeaderProps {
   title: string;
@@ -14,7 +14,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   title,
   subtitle,
   rightSlot,
-  style,
+  style
 }) => {
   const theme = useTheme();
 
@@ -41,20 +41,20 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 16,
     paddingHorizontal: 24,
-    width: '100%',
+    width: "100%"
   },
   textContainer: {
-    flex: 1,
+    flex: 1
   },
   subtitle: {
-    marginTop: 2,
+    marginTop: 2
   },
   rightSlot: {
-    marginLeft: 16,
-  },
+    marginLeft: 16
+  }
 });

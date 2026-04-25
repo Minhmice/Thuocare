@@ -38,9 +38,7 @@
     },
     "android": {
       "package": "com.anonymous.thuocare.mobile",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "web": {
       "bundler": "metro"

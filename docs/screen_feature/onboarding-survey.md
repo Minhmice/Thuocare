@@ -57,16 +57,16 @@ For future implementation and prompting:
 
 ## Suggested Questions Table
 
-| ID | Question | Type | Why it matters | MVP use |
-| --- | --- | --- | --- | --- |
-| Q1 | Who are you managing medication for right now? | single choice | confirms personal-only use for MVP | lock user into `self` mode |
-| Q2 | How often do you usually need to take medicine? | single choice | estimates routine frequency | shapes future reminder defaults |
-| Q3 | What is hardest for you right now? | multi choice | identifies the biggest adherence problem | influences Home empty state and nudges |
-| Q4 | When are you most likely to forget? | multi choice | finds likely failure windows | informs later reminder timing presets |
-| Q5 | How strong do you want reminders to feel? | single choice | matches reminder tone to user tolerance | stores reminder preference |
-| Q6 | Are you taking medicine for a short illness or something ongoing? | single choice | helps separate temporary and repeated routines | informs future onboarding path |
-| Q7 | Do you want quick check-ins about doses, stock, or both? | single choice | identifies the most useful early dashboard focus | drives future Home emphasis |
-| Q8 | Anything else making your routine difficult? | optional text | catches edge cases without bloating the main flow | save for later form design |
+| ID  | Question                                                          | Type          | Why it matters                                    | MVP use                                |
+| --- | ----------------------------------------------------------------- | ------------- | ------------------------------------------------- | -------------------------------------- |
+| Q1  | Who are you managing medication for right now?                    | single choice | confirms personal-only use for MVP                | lock user into `self` mode             |
+| Q2  | How often do you usually need to take medicine?                   | single choice | estimates routine frequency                       | shapes future reminder defaults        |
+| Q3  | What is hardest for you right now?                                | multi choice  | identifies the biggest adherence problem          | influences Home empty state and nudges |
+| Q4  | When are you most likely to forget?                               | multi choice  | finds likely failure windows                      | informs later reminder timing presets  |
+| Q5  | How strong do you want reminders to feel?                         | single choice | matches reminder tone to user tolerance           | stores reminder preference             |
+| Q6  | Are you taking medicine for a short illness or something ongoing? | single choice | helps separate temporary and repeated routines    | informs future onboarding path         |
+| Q7  | Do you want quick check-ins about doses, stock, or both?          | single choice | identifies the most useful early dashboard focus  | drives future Home emphasis            |
+| Q8  | Anything else making your routine difficult?                      | optional text | catches edge cases without bloating the main flow | save for later form design             |
 
 ## Recommended Answer Sets
 
@@ -122,12 +122,12 @@ For future implementation and prompting:
 
 These are internal working labels, not user-facing labels:
 
-| Segment | Trigger logic | Product use |
-| --- | --- | --- |
-| `light-routine` | low frequency + gentle reminders | reduce friction and avoid over-alerting |
-| `structured-routine` | repeating schedule + balanced reminders | default personal medication flow |
-| `high-support` | frequent schedule or strong reminder preference | stronger reminder surfaces later |
-| `uncertain-start` | unsure answers or short illness | simpler guidance and more educational empty states |
+| Segment              | Trigger logic                                   | Product use                                        |
+| -------------------- | ----------------------------------------------- | -------------------------------------------------- |
+| `light-routine`      | low frequency + gentle reminders                | reduce friction and avoid over-alerting            |
+| `structured-routine` | repeating schedule + balanced reminders         | default personal medication flow                   |
+| `high-support`       | frequent schedule or strong reminder preference | stronger reminder surfaces later                   |
+| `uncertain-start`    | unsure answers or short illness                 | simpler guidance and more educational empty states |
 
 ## UX Guidance
 

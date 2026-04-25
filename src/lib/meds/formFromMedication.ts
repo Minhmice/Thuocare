@@ -1,4 +1,7 @@
-import type { Medication, MedicationWizardSnapshot } from "../../types/medication";
+import type {
+  Medication,
+  MedicationWizardSnapshot
+} from "../../types/medication";
 
 export type MedFormData = {
   name: string;
@@ -14,7 +17,7 @@ export type MedFormData = {
 const EMPTY_MOMENTS: MedFormData["moments"] = [
   { id: "morning", label: "Morning", active: false, mealRelation: "after" },
   { id: "noon", label: "Noon", active: false, mealRelation: "after" },
-  { id: "evening", label: "Evening", active: false, mealRelation: "after" },
+  { id: "evening", label: "Evening", active: false, mealRelation: "after" }
 ];
 
 function formFromDosage(dosage: string): MedFormData["form"] {
@@ -39,7 +42,7 @@ export function buildMedFormDataFromMedication(med: Medication): MedFormData {
       moments: s.moments.map((m) => ({ ...m })),
       stock: s.stock,
       startDate: s.startDate,
-      endDate: s.endDate,
+      endDate: s.endDate
     };
   }
 
@@ -52,12 +55,12 @@ export function buildMedFormDataFromMedication(med: Medication): MedFormData {
     moments: EMPTY_MOMENTS.map((m) => ({ ...m })),
     stock: med.remainingDoses != null ? String(med.remainingDoses) : "",
     startDate: today,
-    endDate: "",
+    endDate: ""
   };
 }
 
 export function snapshotFromFormData(
-  data: MedFormData,
+  data: MedFormData
 ): MedicationWizardSnapshot {
   return {
     whatFor: data.whatFor,
@@ -66,6 +69,6 @@ export function snapshotFromFormData(
     moments: data.moments.map((m) => ({ ...m })),
     stock: data.stock,
     startDate: data.startDate,
-    endDate: data.endDate,
+    endDate: data.endDate
   };
 }

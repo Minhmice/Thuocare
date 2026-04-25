@@ -3,17 +3,18 @@
 Last updated: 2026-03-28
 
 ## Purpose
+
 This spec defines a new, screen-dominant medication reminder experience for the Home screen. It transitions from a simple hero card to a calm, flat, clinical surface inspired by Apple’s alarm interaction model, emphasizing reassurance and deliberate action.
 
 ---
 
 ## 1. State Model
 
-| State | Trigger | Visuals | Navigation |
-| --- | --- | --- | --- |
-| **Expanded Reminder** | Unconfirmed meds exist on open; Reminder tap. | Blue dominant surface, full-screen above fold, large cards. | Tabs visible, scrollable to schedule. |
-| **Docked Reminder** | User scrolls down Today's schedule. | Compact blue bar/card docked at the top. | Sticky at top of AppScreen. |
-| **Confirmed / All-Set** | User completes slider confirmation. | Transition to standard Home "All Set" view. | Standard Home layout. |
+| State                   | Trigger                                       | Visuals                                                     | Navigation                            |
+| ----------------------- | --------------------------------------------- | ----------------------------------------------------------- | ------------------------------------- |
+| **Expanded Reminder**   | Unconfirmed meds exist on open; Reminder tap. | Blue dominant surface, full-screen above fold, large cards. | Tabs visible, scrollable to schedule. |
+| **Docked Reminder**     | User scrolls down Today's schedule.           | Compact blue bar/card docked at the top.                    | Sticky at top of AppScreen.           |
+| **Confirmed / All-Set** | User completes slider confirmation.           | Transition to standard Home "All Set" view.                 | Standard Home layout.                 |
 
 ---
 
@@ -46,6 +47,7 @@ The medication card is a large unit designed for high legibility and reassurance
 ## 4. Motion & Scroll Behavior
 
 ### Expand/Collapse Transition
+
 - **Trigger:** Scroll position of the `AppScreen`.
 - **Mechanism:** As the user scrolls up, the docked card interpolates its height, opacity, and scale into the expanded surface.
 - **Interpolation:**
@@ -55,6 +57,7 @@ The medication card is a large unit designed for high legibility and reassurance
 - **Motion:** Smooth ease-in-out (400ms).
 
 ### Slider Confirm Interaction
+
 - **Style:** Apple Alarm-inspired flat slider.
 - **Size:** Large touch target (height ~64px).
 - **Feedback:** Subtle haptic "click" at the start, midpoint, and completion.

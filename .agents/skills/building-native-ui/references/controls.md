@@ -56,7 +56,7 @@ const [index, setIndex] = useState(0);
 <SegmentedControl
   values={[
     { label: "List", icon: "list.bullet" },
-    { label: "Grid", icon: "square.grid.2x2" },
+    { label: "Grid", icon: "square.grid.2x2" }
   ]}
   selectedIndex={index}
   onChange={({ nativeEvent }) => setIndex(nativeEvent.selectedSegmentIndex)}
@@ -154,11 +154,7 @@ const [date, setDate] = useState(new Date());
 ### Time Intervals
 
 ```tsx
-<DateTimePicker
-  value={date}
-  mode="time"
-  minuteInterval={15}
-/>
+<DateTimePicker value={date} mode="time" minuteInterval={15} />
 ```
 
 ### Min/Max Dates
@@ -204,9 +200,9 @@ import { TextInput } from "react-native";
     padding: 12,
     fontSize: 16,
     borderRadius: 8,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#f0f0f0"
   }}
-/>
+/>;
 ```
 
 ### Keyboard Types

@@ -14,7 +14,7 @@ export function LoadingState({ message }: LoadingStateProps) {
     Animated.timing(opacity, {
       toValue: 1,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   }, [opacity]);
 
@@ -36,10 +36,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 16,
-    paddingHorizontal: 32,
+    paddingHorizontal: 32
   },
   message: {
     color: "#5F6673",
-    textAlign: "center",
-  },
+    textAlign: "center"
+  }
 });

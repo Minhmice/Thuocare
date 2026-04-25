@@ -5,9 +5,9 @@ Base text input component for Thuocare.
 ## Usage
 
 ```tsx
-import { Input } from './input';
+import { Input } from "./input";
 
-<Input label="Email" placeholder="Enter your email" />
+<Input label="Email" placeholder="Enter your email" />;
 ```
 
 ## Props

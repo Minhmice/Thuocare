@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { Dialog as DialogPrimitive, DialogProps } from '../../ui/dialog';
-import { PrimaryButton } from '../button/primary';
-import { DangerButton } from '../button/danger';
-import { GhostButton } from '../button/ghost';
-import { Typography } from '../typography';
+import React from "react";
+import { View, StyleSheet, Text } from "react-native";
+import { useTheme } from "react-native-paper";
+import { Dialog as DialogPrimitive, DialogProps } from "../../ui/dialog";
+import { PrimaryButton } from "../button/primary";
+import { DangerButton } from "../button/danger";
+import { GhostButton } from "../button/ghost";
+import { Typography } from "../typography";
 
 export interface DialogWrapperProps extends DialogProps {
   title?: string;
@@ -13,7 +13,7 @@ export interface DialogWrapperProps extends DialogProps {
   onConfirm?: () => void;
   confirmLabel?: string;
   cancelLabel?: string;
-  confirmVariant?: 'primary' | 'error';
+  confirmVariant?: "primary" | "error";
   loading?: boolean;
 }
 
@@ -21,9 +21,9 @@ export const Dialog: React.FC<DialogWrapperProps> = ({
   title,
   description,
   onConfirm,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
-  confirmVariant = 'primary',
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  confirmVariant = "primary",
   loading = false,
   children,
   ...props
@@ -31,7 +31,13 @@ export const Dialog: React.FC<DialogWrapperProps> = ({
   const theme = useTheme();
 
   return (
-    <DialogPrimitive {...props} contentStyle={[{ backgroundColor: theme.colors.surface }, props.contentStyle]}>
+    <DialogPrimitive
+      {...props}
+      contentStyle={[
+        { backgroundColor: theme.colors.surface },
+        props.contentStyle
+      ]}
+    >
       <View style={styles.header}>
         {title && (
           <Typography variant="headline-sm" weight="bold" style={styles.title}>
@@ -39,12 +45,16 @@ export const Dialog: React.FC<DialogWrapperProps> = ({
           </Typography>
         )}
         {description && (
-          <Typography variant="body-md" color={theme.colors.onSurfaceVariant} style={styles.description}>
+          <Typography
+            variant="body-md"
+            color={theme.colors.onSurfaceVariant}
+            style={styles.description}
+          >
             {description}
           </Typography>
         )}
       </View>
-      
+
       {children && <View style={styles.body}>{children}</View>}
 
       {(!!onConfirm || !!props.onDismiss) && (
@@ -55,7 +65,7 @@ export const Dialog: React.FC<DialogWrapperProps> = ({
             style={styles.actionButton}
             disabled={loading}
           />
-          {onConfirm && confirmVariant === 'primary' && (
+          {onConfirm && confirmVariant === "primary" && (
             <PrimaryButton
               label={confirmLabel}
               onPress={onConfirm}
@@ -63,7 +73,7 @@ export const Dialog: React.FC<DialogWrapperProps> = ({
               style={styles.actionButton}
             />
           )}
-          {onConfirm && confirmVariant === 'error' && (
+          {onConfirm && confirmVariant === "error" && (
             <DangerButton
               label={confirmLabel}
               onPress={onConfirm}
@@ -79,23 +89,23 @@ export const Dialog: React.FC<DialogWrapperProps> = ({
 
 const styles = StyleSheet.create({
   header: {
-    marginBottom: 16,
+    marginBottom: 16
   },
   title: {
-    marginBottom: 8,
+    marginBottom: 8
   },
   description: {
-    lineHeight: 20,
+    lineHeight: 20
   },
   body: {
-    marginBottom: 24,
+    marginBottom: 24
   },
   actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 8,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 8
   },
   actionButton: {
-    minWidth: 80,
-  },
+    minWidth: 80
+  }
 });

@@ -5,9 +5,9 @@ Base typography component for Thuocare.
 ## Usage
 
 ```tsx
-import { Typography } from './typography';
+import { Typography } from "./typography";
 
-<Typography variant="headline-lg">Hello World</Typography>
+<Typography variant="headline-lg">Hello World</Typography>;
 ```
 
 ## Props

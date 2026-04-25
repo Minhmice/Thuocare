@@ -15,7 +15,7 @@ Consult these resources as needed:
 references/
   animations.md          Reanimated: entering, exiting, layout, scroll-driven, gestures
   controls.md            Native iOS: Switch, Slider, SegmentedControl, DateTimePicker, Picker
-  form-sheet.md          Form sheets in expo-router: configuration, footers and background interaction. 
+  form-sheet.md          Form sheets in expo-router: configuration, footers and background interaction.
   gradients.md           CSS gradients via experimental_backgroundImage (New Arch only)
   icons.md               SF Symbols via expo-image (sf: source), names, animations, weights
   media.md               Camera, audio, video, and file saving
@@ -249,7 +249,7 @@ Present a screen as a dynamic form sheet:
     presentation: "formSheet",
     sheetGrabberVisible: true,
     sheetAllowedDetents: [0.5, 1.0],
-    contentStyle: { backgroundColor: "transparent" },
+    contentStyle: { backgroundColor: "transparent" }
   }}
 />
 ```
@@ -310,7 +310,7 @@ export default function Layout({ segment }) {
         headerTitleStyle: { color: PlatformColor("label") },
         headerLargeTitle: true,
         headerBlurEffect: "none",
-        headerBackButtonDisplayMode: "minimal",
+        headerBackButtonDisplayMode: "minimal"
       }}
     >
       <Stack.Screen name={screen} options={{ title: titles[screen] }} />

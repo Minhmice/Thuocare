@@ -10,7 +10,7 @@ type UIContextType = {
 const UIContext = createContext<UIContextType | undefined>(undefined);
 
 export const UIProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
+  children
 }) => {
   const homeScrollY = useRef(new Animated.Value(0)).current;
   const [isHomeReminderActive, setHomeReminderActive] = useState(false);
@@ -20,7 +20,7 @@ export const UIProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         homeScrollY,
         isHomeReminderActive,
-        setHomeReminderActive,
+        setHomeReminderActive
       }}
     >
       {children}

@@ -5,15 +5,15 @@ Compact quick-summary strip for 2-4 items with label/value hierarchy.
 ## Usage
 
 ```tsx
-import { SummaryStatsRow } from './summary-stats-row';
+import { SummaryStatsRow } from "./summary-stats-row";
 
-<SummaryStatsRow 
+<SummaryStatsRow
   items={[
-    { label: 'Đã uống', value: 3, color: '#0058BC' },
-    { label: 'Còn lại', value: 4 },
-    { label: 'Quên', value: 0, color: '#C41E1E' },
+    { label: "Đã uống", value: 3, color: "#0058BC" },
+    { label: "Còn lại", value: 4 },
+    { label: "Quên", value: 0, color: "#C41E1E" }
   ]}
-/>
+/>;
 ```
 
 ## Props

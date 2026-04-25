@@ -1,4 +1,4 @@
-import { TextInputProps, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { TextInputProps, StyleProp, ViewStyle, TextStyle } from "react-native";
 
 export interface InputProps extends TextInputProps {
   error?: string | boolean;

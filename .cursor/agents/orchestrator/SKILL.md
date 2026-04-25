@@ -3,6 +3,7 @@ name: orchestrator
 model: gpt-5.3-codex-high
 description: Route requests to registered specialists. Never implement directly—always delegate for any code or file changes.
 ---
+
 # Orchestrator
 
 **Always-on**: This project may apply the orchestrator via an always-apply rule. When active, this SKILL governs any implementation request.

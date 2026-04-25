@@ -8,17 +8,17 @@
 
 ## Summary
 
-| # | Criterion | Status | Evidence / Notes |
-|---|-----------|--------|-------------------|
-| 1 | Add menu contents | **PASS** | Code-only: menu has only New Folder, Upload File, Upload Folder. |
-| 2 | New Folder in provider | **PASS** | Wiring fixed; logic present. Manual/E2E recommended. |
-| 3 | Upload File with explorer context | **PASS** | Code-only: accountId + providerFolderId sent to execute. |
-| 4 | Upload Folder with explorer context | **PASS** | Code-only: creates folder then uploads into it. |
-| 5 | Default write / overflow | **PASS** | Dispatch + APIs verified. |
-| 6 | Split storage + stream 403 + download | **PASS** | Code-only: full flow present. |
-| 7 | UI badges + click to download | **PARTIAL** | Badges + click in FileGrid; list API gap for vault view. |
-| 8 | Build | **PASS** | `npm run build` succeeds. |
-| 9 | No regressions | **Not run** | App not run; manual/E2E recommended. |
+| #   | Criterion                             | Status      | Evidence / Notes                                                 |
+| --- | ------------------------------------- | ----------- | ---------------------------------------------------------------- |
+| 1   | Add menu contents                     | **PASS**    | Code-only: menu has only New Folder, Upload File, Upload Folder. |
+| 2   | New Folder in provider                | **PASS**    | Wiring fixed; logic present. Manual/E2E recommended.             |
+| 3   | Upload File with explorer context     | **PASS**    | Code-only: accountId + providerFolderId sent to execute.         |
+| 4   | Upload Folder with explorer context   | **PASS**    | Code-only: creates folder then uploads into it.                  |
+| 5   | Default write / overflow              | **PASS**    | Dispatch + APIs verified.                                        |
+| 6   | Split storage + stream 403 + download | **PASS**    | Code-only: full flow present.                                    |
+| 7   | UI badges + click to download         | **PARTIAL** | Badges + click in FileGrid; list API gap for vault view.         |
+| 8   | Build                                 | **PASS**    | `npm run build` succeeds.                                        |
+| 9   | No regressions                        | **Not run** | App not run; manual/E2E recommended.                             |
 
 **Go/No-go:** **Conditional go** — build passes and acceptance logic is implemented; one wiring fix was applied. Manual/E2E recommended for 2, 3, 4, 7, 9.
 
