@@ -21,7 +21,7 @@ import { MainTabBar } from "../../features/components/composed/main-tab-bar";
 import { ScreenHeader } from "../../features/components/composed/screen-header";
 import { SettingsSection } from "../../features/components/composed/settings-section";
 import { SupportSection } from "../../features/components/composed/support-section";
-import { Button } from "../../features/components/wrapper/button";
+import { SecondaryButton } from "../../features/components/wrapper/button/secondary";
 import { Card } from "../../features/components/wrapper/card";
 import { Typography } from "../../features/components/wrapper/typography";
 
@@ -292,12 +292,14 @@ export default function MeScreen() {
         />
 
         {/* ── 5. Sign out ────────────────────────────────────────────────── */}
-        <Button
-          variant="text"
+        <SecondaryButton
           label={t("settings_signOut")}
           onPress={handleSignOut}
-          labelStyle={{ color: theme.colors.error }}
-          style={styles.signOutButton}
+          labelStyle={{ color: theme.colors.error, fontWeight: "600" }}
+          style={[
+            styles.signOutButton,
+            { backgroundColor: 'rgba(196, 30, 30, 0.08)' }
+          ]}
         />
       </AppScreen>
       <MainTabBar />

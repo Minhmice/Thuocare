@@ -2,7 +2,9 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { Dialog as DialogPrimitive, DialogProps } from '../../ui/dialog';
-import { Button } from '../button';
+import { PrimaryButton } from '../button/primary';
+import { DangerButton } from '../button/danger';
+import { GhostButton } from '../button/ghost';
 import { Typography } from '../typography';
 
 export interface DialogWrapperProps extends DialogProps {
@@ -47,16 +49,22 @@ export const Dialog: React.FC<DialogWrapperProps> = ({
 
       {(!!onConfirm || !!props.onDismiss) && (
         <View style={styles.actions}>
-          <Button
-            variant="text"
+          <GhostButton
             label={cancelLabel}
             onPress={props.onDismiss}
             style={styles.actionButton}
             disabled={loading}
           />
-          {onConfirm && (
-            <Button
-              variant={confirmVariant}
+          {onConfirm && confirmVariant === 'primary' && (
+            <PrimaryButton
+              label={confirmLabel}
+              onPress={onConfirm}
+              loading={loading}
+              style={styles.actionButton}
+            />
+          )}
+          {onConfirm && confirmVariant === 'error' && (
+            <DangerButton
               label={confirmLabel}
               onPress={onConfirm}
               loading={loading}

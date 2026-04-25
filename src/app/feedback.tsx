@@ -16,7 +16,8 @@ import { AppTextField } from "../components/ui/AppTextField";
 import { AppText } from "../components/ui/AppText";
 import { FEEDBACK_CATEGORIES, type FeedbackCategory } from "../features/feedback/types";
 import { submitAppFeedback } from "../features/feedback/repository";
-import { Button } from "../features/components/wrapper/button";
+import { SecondaryButton } from "../features/components/wrapper/button/secondary";
+import { PrimaryButton } from "../features/components/wrapper/button/primary";
 import { useLanguage, type TranslationKey } from "../lib/i18n/LanguageProvider";
 import { paperTheme } from "../theme/paperTheme";
 
@@ -212,8 +213,7 @@ export default function FeedbackScreen() {
           {t("feedback_screenshotHint")}
         </AppText>
         <View style={styles.photoRow}>
-          <Button
-            variant="secondary"
+          <SecondaryButton
             label={t("feedback_pickPhoto")}
             onPress={pickImage}
             style={styles.pickPhotoBtn}
@@ -230,8 +230,7 @@ export default function FeedbackScreen() {
           ) : null}
         </View>
 
-        <Button
-          variant="primary"
+        <PrimaryButton
           label={t("feedback_submit")}
           onPress={() => void onSubmit()}
           loading={submitting}

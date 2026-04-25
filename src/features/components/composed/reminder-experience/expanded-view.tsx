@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, ScrollView, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import type { NextDoseGroup } from "../../../../types/home";
 import { PrimaryMedicationCard } from "../primary-medication-card";
 import { SliderConfirm } from "../slider-confirm";
@@ -79,18 +79,15 @@ export const ExpandedView: React.FC<ExpandedViewProps> = ({
 
       <Animated.View
         style={{
-          opacity: scrollY?.interpolate({
-            inputRange: [0, COLLAPSE_START, COLLAPSE_START + 100],
-            outputRange: [1, 1, 0],
-            extrapolate: "clamp",
-          }) ?? 1,
-          transform: [{
-            translateY: scrollY?.interpolate({
+          transform: [
+            {
+              translateY: scrollY?.interpolate({
               inputRange: [0, COLLAPSE_START, COLLAPSE_START + 100],
               outputRange: [0, 0, 40],
               extrapolate: "clamp",
-            }) ?? 0
-          }]
+              }) ?? 0,
+            },
+          ],
         }}
       >
         <SliderConfirm

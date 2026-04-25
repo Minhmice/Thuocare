@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Button } from "../../features/components/wrapper/button";
+import { PrimaryButton } from "../../features/components/wrapper/button/primary";
 import { Icon } from "../../features/components/wrapper/icon";
 import { Typography } from "../../features/components/wrapper/typography";
 
@@ -55,8 +55,7 @@ export function ErrorState({
       </View>
 
       {onRetry ? (
-        <Button
-          variant="primary"
+        <PrimaryButton
           label="Thử lại"
           onPress={onRetry}
           style={styles.retryButton}

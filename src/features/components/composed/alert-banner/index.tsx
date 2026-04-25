@@ -4,7 +4,7 @@ import { useTheme } from 'react-native-paper';
 import { Card } from '../../wrapper/card';
 import { Typography } from '../../wrapper/typography';
 import { Icon } from '../../wrapper/icon';
-import { Button } from '../../wrapper/button';
+import { GhostButton } from '../../wrapper/button/ghost';
 import { AlertBannerProps, AlertVariant } from './types';
 
 export const AlertBanner: React.FC<AlertBannerProps> = ({
@@ -87,8 +87,7 @@ export const AlertBanner: React.FC<AlertBannerProps> = ({
         </View>
       </View>
       {actionLabel && onAction && (
-        <Button
-          variant="text"
+        <GhostButton
           label={actionLabel}
           onPress={onAction}
           labelStyle={[styles.actionLabel, { color: vStyles.text }]}
