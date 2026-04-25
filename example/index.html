@@ -1,0 +1,249 @@
+<!doctype html>
+
+<html class="h-full" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CarePlan - Medication Takeover</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-fixed-variant": "#930005",
+              "secondary-fixed": "#e3e2e7",
+              "on-surface": "#1a1c1f",
+              "inverse-primary": "#adc6ff",
+              "surface-bright": "#f9f9fe",
+              "on-primary": "#ffffff",
+              primary: "#0058bc",
+              "surface-tint": "#005bc1",
+              "surface-container-highest": "#e2e2e7",
+              "surface-variant": "#e2e2e7",
+              "secondary-container": "#e0dfe4",
+              "surface-container-high": "#e8e8ed",
+              "primary-container": "#0070eb",
+              "on-primary-fixed-variant": "#004493",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed-variant": "#46464b",
+              "surface-container-low": "#f3f3f8",
+              "on-surface-variant": "#414755",
+              "on-secondary": "#ffffff",
+              "outline-variant": "#c1c6d7",
+              "error-container": "#ffdad6",
+              "on-tertiary-fixed": "#410001",
+              "primary-fixed": "#d8e2ff",
+              "on-secondary-container": "#626267",
+              "on-tertiary-container": "#fffbff",
+              "surface-dim": "#d9dade",
+              secondary: "#5d5e63",
+              tertiary: "#bc000a",
+              background: "#f9f9fe",
+              "primary-fixed-dim": "#adc6ff",
+              "on-secondary-fixed": "#1a1b1f",
+              "on-background": "#1a1c1f",
+              "surface-container": "#ededf2",
+              "tertiary-container": "#e2241f",
+              "secondary-fixed-dim": "#c6c6cb",
+              error: "#ba1a1a",
+              "tertiary-fixed": "#ffdad5",
+              outline: "#717786",
+              "inverse-surface": "#2e3034",
+              "tertiary-fixed-dim": "#ffb4aa",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f0f0f5",
+              surface: "#f9f9fe",
+              "on-primary-fixed": "#001a41",
+              "on-primary-container": "#fefcff",
+              "on-error-container": "#93000a"
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px"
+            },
+            spacing: {},
+            fontFamily: {
+              headline: ["Plus Jakarta Sans"],
+              display: ["Plus Jakarta Sans"],
+              body: ["Inter"],
+              label: ["Inter"]
+            },
+            fontSize: {}
+          }
+        }
+      };
+    </script>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body class="h-full m-0 p-0 bg-primary font-body antialiased overflow-hidden">
+    <!-- Immersive Background -->
+    <div
+      class="fixed inset-0 bg-gradient-to-b from-primary to-[#003B82] z-0"
+    ></div>
+    <!-- Main Content Container -->
+    <main
+      class="relative z-10 flex flex-col h-full px-6 pt-8 pb-8 overflow-y-auto"
+    >
+      <!-- Top Area: Overdue Badge -->
+      <div class="flex justify-center mb-6">
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full border border-white/30"
+        >
+          <span
+            class="material-symbols-outlined text-white text-sm"
+            data-weight="fill"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >schedule</span
+          >
+          <span
+            class="font-label text-sm font-semibold text-white tracking-wide"
+            >Due now · 1h 12m left</span
+          >
+        </div>
+      </div>
+      <!-- Hero Center: Time and Context -->
+      <div class="flex flex-col items-center text-center mb-8">
+        <h1
+          class="font-display text-[5.5rem] leading-none font-bold text-on-primary tracking-tighter mb-1"
+        >
+          18:00
+        </h1>
+        <h2 class="font-headline text-2xl font-semibold text-on-primary mb-1">
+          Evening dose
+        </h2>
+        <div class="flex items-center gap-2 text-primary-fixed-dim font-body">
+          <span class="material-symbols-outlined text-lg">schedule</span>
+          <span class="text-base">18:00–20:00 · 2 medicines</span>
+        </div>
+      </div>
+      <!-- Medicine Zone -->
+      <div class="flex-grow flex flex-col gap-4 mb-6">
+          <!-- Medicine Card 1 -->
+          <div
+            class="flex items-center justify-between gap-4 p-5 rounded-2xl bg-surface-container-lowest shadow-sm"
+          >
+            <div class="flex-grow">
+              <div
+                class="inline-flex px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold tracking-wider uppercase mb-2"
+              >
+                DUE NOW
+              </div>
+              <h3
+                class="font-headline text-lg font-bold text-[#1a1c1f] leading-tight mb-0.5"
+              >
+                Metformin Hydrochloride
+              </h3>
+              <div class="text-on-surface-variant font-body text-sm">
+                500mg
+              </div>
+            </div>
+            <div
+              class="w-20 h-20 rounded-2xl bg-[#E8F1FF] flex items-center justify-center shrink-0"
+            >
+              <span class="material-symbols-outlined text-primary text-3xl"
+                >pill</span
+              >
+            </div>
+          </div>
+          <!-- Medicine Card 2 -->
+          <div
+            class="flex items-center justify-between gap-4 p-5 rounded-2xl bg-surface-container-lowest shadow-sm"
+          >
+            <div class="flex-grow">
+              <div
+                class="inline-flex px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold tracking-wider uppercase mb-2"
+              >
+                DUE NOW
+              </div>
+              <h3
+                class="font-headline text-lg font-bold text-[#1a1c1f] leading-tight mb-0.5"
+              >
+                Atorvastatin Calcium
+              </h3>
+              <div class="text-on-surface-variant font-body text-sm">
+                20mg · Take with water
+              </div>
+            </div>
+            <div
+              class="w-20 h-20 rounded-2xl bg-[#E8F1FF] flex items-center justify-center shrink-0"
+            >
+              <span class="material-symbols-outlined text-primary text-3xl"
+                >medication</span
+              >
+            </div>
+          </div>
+      </div>
+      <!-- Bottom Action Area -->
+      <div class="mt-auto flex flex-col gap-6">
+        <!-- Secondary Actions -->
+        <div class="flex gap-4 w-full">
+          <button
+            class="flex-1 flex flex-col items-center justify-center gap-2 py-4 rounded-2xl bg-on-primary/10 hover:bg-on-primary/15 transition-colors"
+          >
+            <span class="material-symbols-outlined text-on-primary"
+              >snooze</span
+            >
+            <span class="font-label text-sm font-medium text-on-primary"
+              >Snooze 10 min</span
+            >
+          </button>
+          <button
+            class="flex-1 flex flex-col items-center justify-center gap-2 py-4 rounded-2xl bg-on-primary/10 hover:bg-on-primary/15 transition-colors"
+          >
+            <span class="material-symbols-outlined text-on-primary">close</span>
+            <span class="font-label text-sm font-medium text-on-primary"
+              >Skip dose</span
+            >
+          </button>
+        </div>
+        <!-- Primary Action: Slide to Confirm -->
+        <div class="flex flex-col gap-2">
+          <div
+            class="relative h-20 bg-on-primary/20 backdrop-blur-md rounded-full flex items-center px-2 overflow-hidden border border-on-primary/30"
+          >
+            <div
+              class="absolute inset-0 flex items-center justify-center pointer-events-none"
+            >
+              <span
+                class="font-headline text-lg font-semibold text-on-primary/80 ml-12"
+                >Slide to confirm dose</span
+              >
+            </div>
+            <div
+              class="w-16 h-16 bg-surface-container-lowest rounded-full shadow-lg flex items-center justify-center cursor-pointer z-10"
+            >
+              <span
+                class="material-symbols-outlined text-primary text-2xl font-bold"
+                >arrow_forward</span
+              >
+            </div>
+          </div>
+          <p class="text-center font-body text-xs text-primary-fixed-dim">
+            Marks 2 medicines as taken now.
+          </p>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

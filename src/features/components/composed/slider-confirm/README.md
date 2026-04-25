@@ -1,52 +1,61 @@
-# SliderConfirm
+# SliderConfirm (Liquid Glass Edition)
 
-A high-confidence gesture component for single-action confirmations — primarily used on the Home next-dose hero for marking a dose as taken.
+A high-confidence gesture component for single-action confirmations, utilizing a calm, medical "Liquid Glass" iOS aesthetic. This interaction primitive is designed for critical actions where accidental taps must be prevented (e.g., marking a dose as taken).
 
-## Design intent
+## Design & Engineering Intent
 
-- Strongly communicates a deliberate, irreversible action (swipe rather than tap)
-- Clinically minimal: white thumb on a semi-transparent dark track, readable on the primary blue hero background
-- Thumb is the only interactive area — the user must grab and drag it, not tap the track
+- **Liquid Glass Aesthetic**: Uses `expo-glass-effect` for a soft translucent pill surface. Falls back gracefully to a solid translucent tint on Android/unsupported platforms.
+- **Calm & Trustworthy**: Avoids emergency/game UI styling. Uses sentence case, subtle shadows, soft scaling, and a reassuring check icon upon completion.
+- **Deliberate Action**: Requires a horizontal swipe rather than a tap to confirm.
+- **High-Performance**: Powered by `react-native-gesture-handler` and `react-native-reanimated`, running entirely on the UI thread for fluid motion. Opacity animations are isolated inside the GlassView to avoid known rendering bugs.
+- **Scroll-Friendly**: Gracefully yields to vertical scrolling (fails gesture on > 12px vertical movement), eliminating "scroll lock" issues in standard lists.
+- **Tactile Feedback**: Integrated granular haptics via `expo-haptics` (Start → Impact Light, Threshold Cross → Impact Medium, Success → Notification Success).
+- **Visual Polish**: 
+  - Dynamic opacity fading on the label as the thumb approaches.
+  - Active soft translucent fill trail following the thumb.
+  - Visually balanced label centering, specifically offsetting the thumb mass.
+  - Icon switch (arrow → check) upon successful slide.
+
+## Requirements
+
+Requires `expo-glass-effect` to be installed:
+```bash
+npx expo install expo-glass-effect
+```
+
+*Note on limitations: `GlassView` is an iOS-first effect. On older iOS devices or Android, it will gracefully fall back to a colored tint that mimics translucent surfaces, preserving the visual cleanliness.*
 
 ## Usage
 
 ```tsx
 import { SliderConfirm } from 'src/features/components/composed/slider-confirm';
 
-<SliderConfirm onConfirm={handleDoseTaken} />
-```
-
-### On the Home hero (primary blue background)
-
-The default track color (`rgba(0, 0, 0, 0.15)`) is tuned for rendering on the blue hero card. No extra style props needed.
-
-```tsx
-<SliderConfirm
-  label="Slide to take"
-  onConfirm={() => setAllSet(true)}
+<SliderConfirm 
+  label="Slide to mark all as taken"
+  onConfirm={handleDoseTaken} 
 />
 ```
 
 ### With an async operation
 
-When `onConfirm` starts an async operation, set `loading={true}` to block re-interaction while the operation completes.
+When `onConfirm` triggers an async task, set `loading={true}`. The component hides the label, blocks dragging, and shows an activity indicator inside the thumb.
 
 ```tsx
-const [confirming, setConfirming] = useState(false);
+const [loading, setLoading] = useState(false);
 
 <SliderConfirm
-  loading={confirming}
+  loading={loading}
   onConfirm={async () => {
-    setConfirming(true);
+    setLoading(true);
     await markDoseTaken();
-    setConfirming(false);
+    setLoading(false);
   }}
 />
 ```
 
 ### Resetting after a failed operation
 
-If an async operation fails and the user should be able to retry, re-key the component to snap the thumb back to the start:
+By design, the slider does not automatically reset after a successful slide. If an async operation fails and the user needs to try again, re-key the component to snap the thumb back to the start position:
 
 ```tsx
 const [retryKey, setRetryKey] = useState(0);
@@ -54,8 +63,8 @@ const [retryKey, setRetryKey] = useState(0);
 <SliderConfirm
   key={retryKey}
   onConfirm={async () => {
-    const ok = await markDoseTaken();
-    if (!ok) setRetryKey(k => k + 1); // resets thumb
+    const success = await markDoseTaken();
+    if (!success) setRetryKey(k => k + 1); // Resets thumb
   }}
 />
 ```
@@ -64,23 +73,12 @@ const [retryKey, setRetryKey] = useState(0);
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `onConfirm` | `() => void` | — | Called once when the thumb snaps to the end |
-| `label` | `string` | `"Slide to confirm"` | Center track text (auto-uppercased) |
-| `threshold` | `number` | `0.75` | Fraction of track width required to confirm |
-| `disabled` | `boolean` | `false` | Dims and prevents interaction |
+| `onConfirm` | `() => void` | — | Called after the thumb snaps to the end (with a brief `SUCCESS_HOLD_MS` delay) |
+| `label` | `string` | `"Slide to mark all as taken"` | Center track text (sentence-cased) |
+| `size` | `"medium" \| "large"` | `"medium"` | Visual size variant |
+| `variant` | `"dark" \| "light"` | `"dark"` | Color scheme mode |
+| `threshold` | `number` | `0.75` | Fraction of track width required to successfully confirm |
+| `hapticEnabled` | `boolean` | `true` | Whether to play haptics during interaction |
+| `disabled` | `boolean` | `false` | Dims the component and prevents interaction |
 | `loading` | `boolean` | `false` | Shows spinner on thumb; prevents drag |
 | `style` | `StyleProp<ViewStyle>` | — | Override track container style |
-
-## Behavior
-
-- Drag the thumb right past the threshold (75% by default) and release → thumb snaps to end → `onConfirm` fires
-- Release before the threshold → thumb springs back to start
-- OS gesture interruption (e.g., incoming call) → thumb springs back via `onPanResponderTerminate`
-- `loading={true}` → spinner appears on thumb, center label hidden, no drag
-- `disabled={true}` → track dimmed, no drag, chevron uses muted color
-
-## Constraints
-
-- Does not auto-reset after confirm. The parent controls lifecycle (unmount, re-key, or set loading).
-- No haptic feedback included — use `expo-haptics` at the call site if needed.
-- Track color defaults assume a dark/colored background. Override `style` for light-surface contexts.

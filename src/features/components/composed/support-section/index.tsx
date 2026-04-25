@@ -4,7 +4,7 @@ import { useTheme } from 'react-native-paper';
 import { Card } from '../../wrapper/card';
 import { Typography } from '../../wrapper/typography';
 import { Icon } from '../../wrapper/icon';
-import { Button } from '../../wrapper/button';
+import { SecondaryButton } from '../../wrapper/button/secondary';
 import { SupportSectionProps } from './types';
 
 const SUPPORT_CARD_BG = '#F0F0F7';
@@ -52,8 +52,7 @@ export const SupportSection: React.FC<SupportSectionProps> = ({
           )}
         </View>
       </View>
-      <Button
-        variant="secondary"
+      <SecondaryButton
         label={actionLabel}
         onPress={onPress}
         style={[

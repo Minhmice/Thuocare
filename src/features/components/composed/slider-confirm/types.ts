@@ -20,8 +20,8 @@ export interface SliderConfirmProps {
 
   /**
    * Instructional text shown centered inside the track while the thumb is idle.
-   * Rendered in uppercase automatically.
-   * @default "Slide to confirm"
+   * Rendered in sentence case.
+   * @default "Slide to mark all as taken"
    */
   label?: string;
 
@@ -51,8 +51,8 @@ export interface SliderConfirmProps {
 
   /**
    * Visual variant for different background contexts.
-   * - `dark`: white text on semi-transparent dark track (for use on colored backgrounds)
-   * - `light`: dark text on semi-transparent light track (for use on white backgrounds)
+   * - `dark`: for use on colored/dark backgrounds
+   * - `light`: for use on white/light backgrounds
    * @default "dark"
    */
   variant?: "dark" | "light";

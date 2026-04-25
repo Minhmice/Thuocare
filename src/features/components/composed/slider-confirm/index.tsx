@@ -1,39 +1,30 @@
-import React, { useCallback, useRef } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import React, { useCallback, useRef, useState } from "react";
+import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
-  interpolateColor,
   runOnJS,
+  useAnimatedReaction,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
   Extrapolation,
 } from "react-native-reanimated";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { GlassView } from "expo-glass-effect";
 import {
-  SIZE_CONFIG,
   SPRING_BACK,
   SPRING_COMPLETE,
   SUCCESS_HOLD_MS,
   THUMB_ACTIVE_SCALE,
 } from "./constants";
 import { useSliderHaptics } from "./use-haptics";
-import type { SliderConfirmProps, SliderConfirmSize } from "./types";
-
-// ── Size normalization ──────────────────────────────────────────────
-type NormalizedSize = keyof typeof SIZE_CONFIG;
-
-function normalizeSize(size: SliderConfirmSize | undefined): NormalizedSize {
-  if (size === "lg" || size === "large") return "large";
-  return "medium";
-}
+import type { SliderConfirmProps } from "./types";
 
 // ── Component ───────────────────────────────────────────────────────
 export const SliderConfirm: React.FC<SliderConfirmProps> = ({
   onConfirm,
-  label = "Slide to confirm",
+  label = "Slide to mark all as taken",
   threshold = 0.75,
   disabled = false,
   loading = false,
@@ -42,8 +33,14 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
   variant = "dark",
   style,
 }) => {
-  const sz = normalizeSize(size);
-  const { thumb: THUMB_SIZE, padding: TRACK_PADDING } = SIZE_CONFIG[sz];
+  const isIOS = Platform.OS === "ios";
+
+  // Fixed geometry system
+  const TRACK_HEIGHT = isIOS ? 72 : 84;
+  const THUMB_SIZE = isIOS ? 60 : 60;
+  const TRACK_PADDING = isIOS ? 6 : 12;
+  const TRACK_RADIUS = TRACK_HEIGHT / 2;
+  const THUMB_RADIUS = THUMB_SIZE / 2;
 
   // Track width measured on layout
   const trackWidth = useSharedValue(0);
@@ -57,22 +54,36 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
   // Whether the thumb is being actively dragged
   const isActive = useSharedValue(false);
 
-  // Whether confirmation has already been triggered (prevent double-fire)
+  // Whether confirmation has already been triggered
   const hasConfirmed = useSharedValue(false);
 
-  // Whether the threshold was crossed during this drag (for haptic gating)
+  // Mirror hasConfirmed into React state so render-phase reads are safe
+  const [hasConfirmedState, setHasConfirmedState] = useState(false);
+  useAnimatedReaction(
+    () => hasConfirmed.value,
+    (current, previous) => {
+      if (current !== previous) {
+        runOnJS(setHasConfirmedState)(current);
+      }
+    }
+  );
+
+  // For showing check icon briefly upon success
+  const [showCheck, setShowCheck] = useState(false);
+
+  // Whether the threshold was crossed during this drag
   const thresholdCrossed = useSharedValue(false);
 
-  // Stable ref for the callback
   const onConfirmRef = useRef(onConfirm);
   onConfirmRef.current = onConfirm;
 
   const haptics = useSliderHaptics(hapticEnabled);
 
-  const isBlocked = disabled || loading;
+  const isBlocked = disabled || loading || hasConfirmedState;
 
   // ── JS callbacks (called from worklets via runOnJS) ─────────────
   const fireConfirm = useCallback(() => {
+    setShowCheck(true);
     haptics.onComplete();
     setTimeout(() => {
       onConfirmRef.current();
@@ -149,7 +160,7 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
 
   const fillAnimatedStyle = useAnimatedStyle(() => {
     return {
-      width: thumbX.value + THUMB_SIZE / 2 + TRACK_PADDING,
+      width: thumbX.value + THUMB_SIZE / 2,
     };
   });
 
@@ -157,129 +168,314 @@ export const SliderConfirm: React.FC<SliderConfirmProps> = ({
     const opacity = interpolate(
       thumbX.value,
       [0, 60],
-      [1, 0],
+      [1, 0.3], // don't fade to 0 entirely, and never fade the parent views
       Extrapolation.CLAMP
     );
     return { opacity };
   });
 
-  // Visual tokens based on variant
   const isDark = variant === "dark";
-  const trackBg = isDark ? "rgba(0, 0, 0, 0.15)" : "rgba(0, 0, 0, 0.06)";
-  const fillBg = isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 88, 188, 0.08)";
-  const labelColor = isDark ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.45)";
-  const thumbBg = "#FFFFFF";
-  const iconColor = isDark ? "#0058BC" : "#0058BC";
+  const labelColor = isDark ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.6)";
 
-  return (
-    <View
-      style={[
-        styles.track,
-        {
-          height: THUMB_SIZE + TRACK_PADDING * 2,
-          padding: TRACK_PADDING,
-          backgroundColor: trackBg,
-        },
-        disabled && !loading && styles.trackDisabled,
-        style,
-      ]}
-      onLayout={(e) => {
-        const w = e.nativeEvent.layout.width;
-        trackWidth.value = w;
-        maxTravel.value = Math.max(0, w - THUMB_SIZE - TRACK_PADDING * 2);
-      }}
-      accessible
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{ disabled: isBlocked }}
-      accessibilityHint="Slide right to confirm"
-    >
-      {/* Track fill */}
-      <Animated.View
+  const renderAndroidSlider = () => {
+    const trackBg = isDark
+      ? "rgba(180, 220, 255, 0.18)"
+      : "rgba(0, 88, 188, 0.10)";
+    const fillBg = isDark
+      ? "rgba(0, 88, 188, 0.26)"
+      : "rgba(0, 88, 188, 0.18)";
+    const androidOuterStrokeColor = "rgba(255, 255, 255, 0.5)";
+    const thumbBg = "#FFFFFF";
+    const iconColor = "#0058BC";
+    const disabledIconColor = "#9CA3AF";
+
+    return (
+      <View
         style={[
-          styles.fill,
-          fillAnimatedStyle,
+          styles.trackContainer,
           {
-            backgroundColor: fillBg,
-            borderRadius: 9999,
-            height: THUMB_SIZE,
+            height: TRACK_HEIGHT,
+            borderRadius: TRACK_RADIUS,
+            borderWidth: 1,
+            borderColor: androidOuterStrokeColor,
+            elevation: 1,
           },
+          style,
         ]}
-        pointerEvents="none"
-      />
-
-      {/* Label */}
-      {!loading && (
-        <Animated.View
-          style={[styles.overlay, labelAnimatedStyle]}
-          pointerEvents="none"
-        >
-          <Animated.Text
+        onLayout={(e) => {
+          const w = e.nativeEvent.layout.width;
+          trackWidth.value = w;
+          maxTravel.value = Math.max(0, w - THUMB_SIZE - TRACK_PADDING * 2);
+        }}
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{ disabled: isBlocked }}
+        accessibilityHint="Slide right to confirm"
+      >
+        <View style={[StyleSheet.absoluteFill, styles.glassWrapper, { borderRadius: TRACK_RADIUS }]}>
+          <View
             style={[
-              styles.labelText,
-              {
-                color: labelColor,
-                fontSize: sz === "large" ? 13 : 11,
-              },
+              StyleSheet.absoluteFill,
+              { backgroundColor: trackBg, borderRadius: TRACK_RADIUS },
             ]}
-          >
-            {label.toUpperCase()}
-          </Animated.Text>
-        </Animated.View>
-      )}
-
-      {/* Loading spinner overlay */}
-      {loading && (
-        <View style={styles.overlay} pointerEvents="none">
-          <ActivityIndicator size="small" color="rgba(255,255,255,0.6)" />
+          />
         </View>
-      )}
 
-      {/* Thumb */}
-      <GestureDetector gesture={panGesture}>
-        <Animated.View
+        {disabled && !loading && (
+          <View style={[StyleSheet.absoluteFill, styles.disabledOverlay]} />
+        )}
+
+        <View
           style={[
-            styles.thumb,
-            thumbAnimatedStyle,
+            StyleSheet.absoluteFill,
             {
-              width: THUMB_SIZE,
-              height: THUMB_SIZE,
-              borderRadius: THUMB_SIZE / 2,
-              backgroundColor: thumbBg,
+              padding: TRACK_PADDING,
+              borderRadius: TRACK_RADIUS,
+              overflow: "hidden",
             },
           ]}
         >
-          {loading ? (
-            <ActivityIndicator size="small" color={iconColor} />
-          ) : (
-            <MaterialCommunityIcons
-              name="chevron-right"
-              size={sz === "large" ? 36 : 28}
-              color={disabled ? "#9CA3AF" : iconColor}
-            />
+          <Animated.View
+            style={[
+              styles.fill,
+              fillAnimatedStyle,
+              {
+                backgroundColor: fillBg,
+                borderRadius: THUMB_RADIUS,
+                height: THUMB_SIZE,
+                left: 0,
+                top: 0,
+              },
+            ]}
+            pointerEvents="none"
+          />
+
+          {!loading && (
+            <Animated.View
+              style={[
+                styles.overlay,
+                labelAnimatedStyle,
+                { paddingLeft: THUMB_RADIUS }
+              ]}
+              pointerEvents="none"
+            >
+              <Animated.Text
+                style={[
+                  styles.labelText,
+                  { color: labelColor, fontSize: 13 },
+                ]}
+              >
+                {label}
+              </Animated.Text>
+            </Animated.View>
           )}
-        </Animated.View>
-      </GestureDetector>
-    </View>
-  );
+
+          {loading && <View style={styles.overlay} pointerEvents="none" />}
+
+          <GestureDetector gesture={panGesture}>
+            <Animated.View
+              style={[
+                styles.thumb,
+                thumbAnimatedStyle,
+                {
+                  width: THUMB_SIZE,
+                  height: THUMB_SIZE,
+                  borderRadius: THUMB_RADIUS,
+                  backgroundColor: thumbBg,
+                },
+              ]}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color={iconColor} />
+              ) : (
+                <MaterialCommunityIcons
+                  name={showCheck ? "check" : "chevron-right"}
+                  size={28}
+                  color={disabled ? disabledIconColor : iconColor}
+                />
+              )}
+            </Animated.View>
+          </GestureDetector>
+        </View>
+      </View>
+    );
+  };
+
+  const renderIOSSlider = () => {
+    // Soft blue glass tint, not flat
+    const trackTint = "rgba(120, 190, 255, 0.22)";
+    const fillBg = "rgba(0, 88, 188, 0.26)"; // soft blue liquid fill
+    const strokeColor = "rgba(255, 255, 255, 0.50)";
+    
+    // Glassy thumb
+    const thumbBg = "rgba(255, 255, 255, 0.85)";
+    const thumbStrokeColor = "rgba(255, 255, 255, 0.9)";
+    const iconColor = "#0058BC";
+    const disabledIconColor = "#9CA3AF";
+
+    return (
+      <View
+        style={[
+          styles.trackContainerIOS,
+          {
+            height: TRACK_HEIGHT,
+            borderRadius: TRACK_RADIUS,
+          },
+          style,
+        ]}
+        onLayout={(e) => {
+          const w = e.nativeEvent.layout.width;
+          trackWidth.value = w;
+          maxTravel.value = Math.max(0, w - THUMB_SIZE - TRACK_PADDING * 2);
+        }}
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityState={{ disabled: isBlocked }}
+        accessibilityHint="Slide right to confirm"
+      >
+        <View style={[StyleSheet.absoluteFill, { borderRadius: TRACK_RADIUS, overflow: "hidden" }]}>
+          <GlassView
+            style={[StyleSheet.absoluteFill, { borderRadius: TRACK_RADIUS }]}
+          />
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: trackTint },
+            ]}
+          />
+        </View>
+
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              borderRadius: TRACK_RADIUS,
+              borderWidth: 1.5,
+              borderColor: strokeColor,
+            },
+          ]}
+          pointerEvents="none"
+        />
+
+        {disabled && !loading && (
+          <View style={[StyleSheet.absoluteFill, styles.disabledOverlayIOS]} />
+        )}
+
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              padding: TRACK_PADDING,
+              borderRadius: TRACK_RADIUS,
+              overflow: "hidden",
+            },
+          ]}
+        >
+          <Animated.View
+            style={[
+              styles.fill,
+              fillAnimatedStyle,
+              {
+                backgroundColor: fillBg,
+                borderRadius: THUMB_RADIUS,
+                height: THUMB_SIZE,
+                left: 0,
+                top: 0,
+              },
+            ]}
+            pointerEvents="none"
+          />
+
+          {!loading && (
+            <Animated.View
+              style={[
+                styles.overlay,
+                labelAnimatedStyle,
+                { paddingLeft: THUMB_RADIUS }
+              ]}
+              pointerEvents="none"
+            >
+              <Animated.Text
+                style={[
+                  styles.labelTextIOS,
+                ]}
+              >
+                {label}
+              </Animated.Text>
+            </Animated.View>
+          )}
+
+          {loading && <View style={styles.overlay} pointerEvents="none" />}
+
+          <GestureDetector gesture={panGesture}>
+            <Animated.View
+              style={[
+                styles.thumbIOS,
+                thumbAnimatedStyle,
+                {
+                  width: THUMB_SIZE,
+                  height: THUMB_SIZE,
+                  borderRadius: THUMB_RADIUS,
+                  backgroundColor: thumbBg,
+                  borderColor: thumbStrokeColor,
+                  borderWidth: 1,
+                },
+              ]}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color={iconColor} />
+              ) : (
+                <MaterialCommunityIcons
+                  name={showCheck ? "check" : "chevron-right"}
+                  size={28}
+                  color={disabled ? disabledIconColor : iconColor}
+                />
+              )}
+            </Animated.View>
+          </GestureDetector>
+        </View>
+      </View>
+    );
+  };
+
+  return isIOS ? renderIOSSlider() : renderAndroidSlider();
 };
 
 // ── Styles ────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  track: {
-    borderRadius: 9999,
-    flexDirection: "row",
-    alignItems: "center",
+  trackContainer: {
+    width: "100%",
+    alignSelf: "stretch",
+    // Android flat styling remains
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+  },
+  trackContainerIOS: {
+    width: "100%",
+    alignSelf: "stretch",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    elevation: 0,
+  },
+  glassWrapper: {
     overflow: "hidden",
   },
-  trackDisabled: {
-    opacity: 0.45,
+  disabledOverlay: {
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    zIndex: 1,
+  },
+  disabledOverlayIOS: {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    zIndex: 1,
   },
   fill: {
     position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
   },
   overlay: {
     position: "absolute",
@@ -291,19 +487,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   labelText: {
-    fontWeight: "700",
-    letterSpacing: 2.5,
-    textTransform: "uppercase",
+    fontWeight: "600",
+    letterSpacing: 0.3,
+  },
+  labelTextIOS: {
+    fontWeight: "600",
+    letterSpacing: 0.2,
+    color: "rgba(255, 255, 255, 0.95)",
+    fontSize: 14,
   },
   thumb: {
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 1,
-    // Subtle shadow for depth
+    zIndex: 2,
+  },
+  thumbIOS: {
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    elevation: 4,
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
 });

@@ -23,7 +23,7 @@ export const MainTabBar: React.FC = () => {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const pathname = usePathname();
-  
+
   // Extract the current tab from the pathname (e.g., "/(tabs)/home" -> "home")
   const currentTab = pathname.split("/").pop() || "home";
 

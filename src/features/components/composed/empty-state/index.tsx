@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Button } from "../../wrapper/button";
+import { PrimaryButton } from "../../wrapper/button/primary";
 import { Icon } from "../../wrapper/icon";
 import type { IconWrapperProps } from "../../wrapper/icon";
 import { Typography } from "../../wrapper/typography";
@@ -60,8 +60,7 @@ export function EmptyState({
       </View>
 
       {actionLabel && onAction ? (
-        <Button
-          variant="primary"
+        <PrimaryButton
           label={actionLabel}
           onPress={onAction}
           style={styles.actionButton}
