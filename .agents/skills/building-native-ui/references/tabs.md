@@ -194,7 +194,7 @@ import { Pressable, Text, View } from "react-native";
 
 function MiniPlayer({
   isPlaying,
-  onToggle,
+  onToggle
 }: {
   isPlaying: boolean;
   onToggle: () => void;
@@ -268,7 +268,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 <NativeTabs.Trigger name="home">
   <NativeTabs.Trigger.VectorIcon vector={Ionicons} name="home" />
   <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
-</NativeTabs.Trigger>
+</NativeTabs.Trigger>;
 ```
 
 **Prefer SF Symbols + `md` prop over vector icons for native feel.**
@@ -335,7 +335,7 @@ import { Tabs } from "expo-router";
     options={{
       title: "Home",
       tabBarIcon: ({ color }) => <IconSymbol name="house.fill" color={color} />,
-      tabBarBadge: 3,
+      tabBarBadge: 3
     }}
   />
 </Tabs>;
@@ -402,7 +402,7 @@ Configure in app.json:
 import {
   ThemeProvider,
   DarkTheme,
-  DefaultTheme,
+  DefaultTheme
 } from "@react-navigation/native";
 import { useColorScheme } from "react-native";
 import { Stack } from "expo-router";

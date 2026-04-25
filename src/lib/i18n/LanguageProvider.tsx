@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from "react";
 import type { AppLanguage } from "./storage";
 import { readLanguage, writeLanguage } from "./storage";
 
@@ -39,22 +45,28 @@ const translations = {
     settings_signOut: "Sign out",
     settings_signOutTitle: "Sign out",
     settings_signOutConfirm: "Are you sure you want to sign out?",
-    settings_supportDescription: "Share a rating and details with our team. This stays in Thuocare—not sent to the App Store.",
+    settings_supportDescription:
+      "Share a rating and details with our team. This stays in Thuocare—not sent to the App Store.",
     settings_supportAction: "Send feedback",
     settings_supportSoonTitle: "Support",
     settings_supportSoon: "Support features are coming soon.",
-    settings_supportRecorded: "We've received your support request. Our team will follow up if needed.",
-    settings_supportError: "Could not send your request. Please try again later.",
+    settings_supportRecorded:
+      "We've received your support request. Our team will follow up if needed.",
+    settings_supportError:
+      "Could not send your request. Please try again later.",
     feedback_title: "Ratings & feedback",
     feedback_back: "Back",
-    feedback_guide: "Quick guide: choose a star rating, pick what the feedback is about, describe what happened, and attach a screenshot if you can. Everything is sent securely to the Thuocare team—not to the App Store.",
+    feedback_guide:
+      "Quick guide: choose a star rating, pick what the feedback is about, describe what happened, and attach a screenshot if you can. Everything is sent securely to the Thuocare team—not to the App Store.",
     feedback_ratingLabel: "Overall rating",
     feedback_categoryLabel: "What is this about?",
     feedback_categoryPlaceholder: "Choose a topic",
     feedback_problemLabel: "What went wrong?",
-    feedback_problemPlaceholder: "Write at least 10 characters so we can understand.",
+    feedback_problemPlaceholder:
+      "Write at least 10 characters so we can understand.",
     feedback_screenshotLabel: "Screenshot (optional)",
-    feedback_screenshotHint: "A screen capture often helps us reproduce the issue.",
+    feedback_screenshotHint:
+      "A screen capture often helps us reproduce the issue.",
     feedback_pickPhoto: "Choose image",
     feedback_removePhoto: "Remove image",
     feedback_submit: "Submit feedback",
@@ -62,8 +74,10 @@ const translations = {
     feedback_error: "Could not submit feedback. Please try again.",
     feedback_validationRating: "Please choose a star rating.",
     feedback_validationCategory: "Please choose a topic.",
-    feedback_validationProblem: "Please describe the issue in at least 10 characters.",
-    feedback_photoPermissionDenied: "Allow photo access to attach a screenshot.",
+    feedback_validationProblem:
+      "Please describe the issue in at least 10 characters.",
+    feedback_photoPermissionDenied:
+      "Allow photo access to attach a screenshot.",
     feedback_category_bug: "Bug or error",
     feedback_category_ui_ux: "Design or ease of use",
     feedback_category_medications: "Medications or reminders",
@@ -93,7 +107,8 @@ const translations = {
     home_missedDetail: "{{dosage}} · Missed",
     home_verifyPhoto: "Verify with photo",
     home_missedBannerTitle: "You missed {{name}}",
-    home_missedBannerDescription: "This morning dose still needs your attention.",
+    home_missedBannerDescription:
+      "This morning dose still needs your attention.",
     home_takeNow: "Take now",
     home_stockTitle: "{{name}} is running low",
     home_stockDescription: "{{days}} days left before refill is needed.",
@@ -105,7 +120,8 @@ const translations = {
     meds_activeToday: "Active today",
     meds_needRefill: "Need refill",
     meds_emptyTitle: "No medications yet",
-    meds_emptyDescription: "Add your first medication to start tracking daily routines.",
+    meds_emptyDescription:
+      "Add your first medication to start tracking daily routines.",
     meds_outOfStock: "Out of stock",
     meds_remaining: "{{count}} remaining",
     meds_screenAddTitle: "Add Medication",
@@ -146,14 +162,18 @@ const translations = {
     auth_termsPrivacy: "Terms and Privacy Policy",
     auth_legalTitle: "Terms & Privacy",
     auth_legalLine1: "This is a prototype application in development mode.",
-    auth_legalLine2: "All data is stored locally on your device using secure storage. No data is sent to servers in this prototype phase.",
+    auth_legalLine2:
+      "All data is stored locally on your device using secure storage. No data is sent to servers in this prototype phase.",
     auth_legalLine3: "By using this app, you acknowledge that:",
-    auth_legalBullets: "• This is a prototype and may contain bugs\n• Your data is stored locally and not backed up\n• You can delete the app to remove all data",
-    auth_legalLine4: "Future versions will include a full privacy policy and terms of service.",
+    auth_legalBullets:
+      "• This is a prototype and may contain bugs\n• Your data is stored locally and not backed up\n• You can delete the app to remove all data",
+    auth_legalLine4:
+      "Future versions will include a full privacy policy and terms of service.",
     auth_understand: "I understand",
     auth_backToSignIn: "Back to sign in",
     auth_createAccountTitle: "Create Account",
-    auth_createAccountSubtitle: "Set up your local prototype account. All data stays on your device.",
+    auth_createAccountSubtitle:
+      "Set up your local prototype account. All data stays on your device.",
     auth_fullName: "Full name",
     auth_fullNamePlaceholder: "Your full name",
     auth_emailOptional: "Email address (optional)",
@@ -173,21 +193,25 @@ const translations = {
     forgotPassword_title: "Forgot Password",
     forgotPassword_done: "Done",
     forgotPassword_close: "Close",
-    forgotPassword_description: "Enter your phone number or email and we'll send you recovery instructions.",
+    forgotPassword_description:
+      "Enter your phone number or email and we'll send you recovery instructions.",
     forgotPassword_label: "Phone or email",
     forgotPassword_placeholder: "e.g., 09123456789 or you@example.com",
     forgotPassword_send: "Send recovery instructions",
-    forgotPassword_notFound: "We could not find an account with that phone or email.",
+    forgotPassword_notFound:
+      "We could not find an account with that phone or email.",
     forgotPassword_sent: "Recovery instructions sent to {{destination}}.",
     onboarding_title: "Personalizing your experience",
     onboarding_step: "Step {{step}} of 2",
     onboarding_reminderQuestion: "How strong do you want reminders to feel?",
-    onboarding_reminderDescription: "Choose the reminder intensity that works best for you.",
+    onboarding_reminderDescription:
+      "Choose the reminder intensity that works best for you.",
     onboarding_reminderGentle: "Gentle — Soft, subtle notifications",
     onboarding_reminderBalanced: "Balanced — Clear but not intrusive",
     onboarding_reminderFirm: "Firm — Strong, attention-getting",
     onboarding_conditionQuestion: "Is this a short illness or ongoing?",
-    onboarding_conditionDescription: "This helps us tailor your medication routine.",
+    onboarding_conditionDescription:
+      "This helps us tailor your medication routine.",
     onboarding_conditionShort: "A short-term illness",
     onboarding_conditionOngoing: "An ongoing condition",
     onboarding_conditionUnsure: "I'm not sure yet",
@@ -197,7 +221,8 @@ const translations = {
     onboarding_readyTitle: "You're all set!",
     onboarding_summaryReminder: "REMINDER PREFERENCE",
     onboarding_summaryCondition: "CONDITION TYPE",
-    onboarding_saved: "Your settings have been saved locally. You can adjust them anytime from your profile screen.",
+    onboarding_saved:
+      "Your settings have been saved locally. You can adjust them anytime from your profile screen.",
     onboarding_getStarted: "Get started",
     onboarding_back: "Back",
     onboarding_welcomeTitle: "A few quick questions",
@@ -234,7 +259,8 @@ const translations = {
     survey_q5_gentle: "Gentle",
     survey_q5_balanced: "Balanced",
     survey_q5_firm: "Firm",
-    survey_q6_title: "Are you taking medicine for a short illness or something ongoing?",
+    survey_q6_title:
+      "Are you taking medicine for a short illness or something ongoing?",
     survey_q6_short: "A short illness",
     survey_q6_ongoing: "An ongoing condition",
     survey_q6_unsure: "Not sure yet",
@@ -247,7 +273,7 @@ const translations = {
     survey_q8_placeholder: "Type here (optional)",
     survey_error_pickOne: "Please pick an answer to continue.",
     survey_error_pickSome: "Pick at least one option.",
-    survey_summaryLead: "Review and finish",
+    survey_summaryLead: "Review and finish"
   },
   vi: {
     tab_home: "Trang chủ",
@@ -275,7 +301,8 @@ const translations = {
     settings_languageVietnamese: "Tiếng Việt",
     settings_languageValueEnglish: "Tiếng Anh",
     settings_languageValueVietnamese: "Tiếng Việt",
-    settings_phoneSoon: "Tính năng chỉnh sửa số điện thoại đang được phát triển.",
+    settings_phoneSoon:
+      "Tính năng chỉnh sửa số điện thoại đang được phát triển.",
     settings_emailSoon: "Tính năng chỉnh sửa email đang được phát triển.",
     settings_notificationSoon: "Cài đặt nhắc nhở sẽ sớm ra mắt.",
     settings_routineSoon: "Cài đặt routine sẽ sớm ra mắt.",
@@ -283,22 +310,27 @@ const translations = {
     settings_signOut: "Đăng xuất",
     settings_signOutTitle: "Đăng xuất",
     settings_signOutConfirm: "Bạn có chắc muốn đăng xuất không?",
-    settings_supportDescription: "Gửi đánh giá và chi tiết cho đội Thuocare. Dữ liệu chỉ trong ứng dụng—không gửi lên App Store.",
+    settings_supportDescription:
+      "Gửi đánh giá và chi tiết cho đội Thuocare. Dữ liệu chỉ trong ứng dụng—không gửi lên App Store.",
     settings_supportAction: "Gửi góp ý",
     settings_supportSoonTitle: "Hỗ trợ",
     settings_supportSoon: "Tính năng hỗ trợ sẽ sớm ra mắt.",
-    settings_supportRecorded: "Chúng tôi đã ghi nhận yêu cầu hỗ trợ. Đội ngũ sẽ liên hệ khi cần.",
+    settings_supportRecorded:
+      "Chúng tôi đã ghi nhận yêu cầu hỗ trợ. Đội ngũ sẽ liên hệ khi cần.",
     settings_supportError: "Không gửi được yêu cầu. Vui lòng thử lại sau.",
     feedback_title: "Đánh giá & góp ý",
     feedback_back: "Quay lại",
-    feedback_guide: "Hướng dẫn nhanh: chọn số sao, chọn chủ đề, mô tả chi tiết vấn đề, và gửi kèm ảnh chụp màn hình nếu được. Mọi thứ được gửi bảo mật tới đội Thuocare—không gửi lên App Store.",
+    feedback_guide:
+      "Hướng dẫn nhanh: chọn số sao, chọn chủ đề, mô tả chi tiết vấn đề, và gửi kèm ảnh chụp màn hình nếu được. Mọi thứ được gửi bảo mật tới đội Thuocare—không gửi lên App Store.",
     feedback_ratingLabel: "Đánh giá tổng thể",
     feedback_categoryLabel: "Bạn muốn góp ý về điều gì?",
     feedback_categoryPlaceholder: "Chọn chủ đề",
     feedback_problemLabel: "Vấn đề bạn gặp phải?",
-    feedback_problemPlaceholder: "Viết ít nhất 10 ký tự để chúng tôi hiểu rõ hơn.",
+    feedback_problemPlaceholder:
+      "Viết ít nhất 10 ký tự để chúng tôi hiểu rõ hơn.",
     feedback_screenshotLabel: "Ảnh chụp màn hình (tuỳ chọn)",
-    feedback_screenshotHint: "Ảnh màn hình thường giúp chúng tôi tái hiện lỗi nhanh hơn.",
+    feedback_screenshotHint:
+      "Ảnh màn hình thường giúp chúng tôi tái hiện lỗi nhanh hơn.",
     feedback_pickPhoto: "Chọn ảnh",
     feedback_removePhoto: "Xoá ảnh",
     feedback_submit: "Gửi góp ý",
@@ -307,7 +339,8 @@ const translations = {
     feedback_validationRating: "Vui lòng chọn số sao.",
     feedback_validationCategory: "Vui lòng chọn chủ đề.",
     feedback_validationProblem: "Vui lòng mô tả ít nhất 10 ký tự.",
-    feedback_photoPermissionDenied: "Cần quyền truy cập ảnh để đính kèm màn hình.",
+    feedback_photoPermissionDenied:
+      "Cần quyền truy cập ảnh để đính kèm màn hình.",
     feedback_category_bug: "Lỗi hoặc hệ thống báo lỗi",
     feedback_category_ui_ux: "Giao diện hoặc dễ dùng",
     feedback_category_medications: "Thuốc hoặc nhắc liều",
@@ -349,7 +382,8 @@ const translations = {
     meds_activeToday: "Dùng hôm nay",
     meds_needRefill: "Cần mua thêm",
     meds_emptyTitle: "Chưa có thuốc",
-    meds_emptyDescription: "Thêm thuốc đầu tiên để bắt đầu theo dõi routine hằng ngày.",
+    meds_emptyDescription:
+      "Thêm thuốc đầu tiên để bắt đầu theo dõi routine hằng ngày.",
     meds_outOfStock: "Hết thuốc",
     meds_remaining: "Còn {{count}}",
     meds_screenAddTitle: "Thêm thuốc",
@@ -370,7 +404,8 @@ const translations = {
     reminder_overdue: "TRỄ {{minutes}} PHÚT",
     reminder_slideConfirm: "Vuốt để xác nhận",
     reminder_slideConfirmAll: "Vuốt để xác nhận tất cả",
-    auth_tagline: "Một routine uống thuốc nhẹ nhàng hơn cho chăm sóc hằng ngày.",
+    auth_tagline:
+      "Một routine uống thuốc nhẹ nhàng hơn cho chăm sóc hằng ngày.",
     auth_phoneNumber: "Số điện thoại",
     auth_emailAddress: "Địa chỉ email",
     auth_useEmail: "Dùng email",
@@ -389,15 +424,20 @@ const translations = {
     auth_legalAgreement: "Tiếp tục đồng nghĩa với việc bạn đồng ý với ",
     auth_termsPrivacy: "Điều khoản và Chính sách riêng tư",
     auth_legalTitle: "Điều khoản & Riêng tư",
-    auth_legalLine1: "Đây là ứng dụng prototype đang trong giai đoạn phát triển.",
-    auth_legalLine2: "Tất cả dữ liệu được lưu cục bộ trên thiết bị của bạn bằng secure storage. Không có dữ liệu nào được gửi lên máy chủ trong giai đoạn prototype này.",
+    auth_legalLine1:
+      "Đây là ứng dụng prototype đang trong giai đoạn phát triển.",
+    auth_legalLine2:
+      "Tất cả dữ liệu được lưu cục bộ trên thiết bị của bạn bằng secure storage. Không có dữ liệu nào được gửi lên máy chủ trong giai đoạn prototype này.",
     auth_legalLine3: "Khi dùng ứng dụng, bạn xác nhận rằng:",
-    auth_legalBullets: "• Đây là prototype và có thể có lỗi\n• Dữ liệu của bạn được lưu cục bộ và không được sao lưu\n• Bạn có thể xóa ứng dụng để xóa toàn bộ dữ liệu",
-    auth_legalLine4: "Các phiên bản sau sẽ có đầy đủ chính sách riêng tư và điều khoản dịch vụ.",
+    auth_legalBullets:
+      "• Đây là prototype và có thể có lỗi\n• Dữ liệu của bạn được lưu cục bộ và không được sao lưu\n• Bạn có thể xóa ứng dụng để xóa toàn bộ dữ liệu",
+    auth_legalLine4:
+      "Các phiên bản sau sẽ có đầy đủ chính sách riêng tư và điều khoản dịch vụ.",
     auth_understand: "Tôi hiểu",
     auth_backToSignIn: "Quay lại đăng nhập",
     auth_createAccountTitle: "Tạo tài khoản",
-    auth_createAccountSubtitle: "Thiết lập tài khoản prototype cục bộ. Mọi dữ liệu đều ở trên thiết bị của bạn.",
+    auth_createAccountSubtitle:
+      "Thiết lập tài khoản prototype cục bộ. Mọi dữ liệu đều ở trên thiết bị của bạn.",
     auth_fullName: "Họ và tên",
     auth_fullNamePlaceholder: "Họ tên đầy đủ",
     auth_emailOptional: "Địa chỉ email (không bắt buộc)",
@@ -405,7 +445,8 @@ const translations = {
     auth_requiredFields: "Vui lòng điền tất cả trường bắt buộc.",
     auth_passwordsNoMatch: "Mật khẩu xác nhận không khớp.",
     auth_passwordLength: "Mật khẩu phải có ít nhất 6 ký tự.",
-    auth_acceptTerms: "Vui lòng đồng ý với Điều khoản và Chính sách riêng tư để tiếp tục.",
+    auth_acceptTerms:
+      "Vui lòng đồng ý với Điều khoản và Chính sách riêng tư để tiếp tục.",
     auth_createAccountUnable: "Không thể tạo tài khoản.",
     auth_agreePrefix: "Tôi đồng ý với ",
     auth_createAccountButton: "Tạo tài khoản",
@@ -417,21 +458,25 @@ const translations = {
     forgotPassword_title: "Quên mật khẩu",
     forgotPassword_done: "Xong",
     forgotPassword_close: "Đóng",
-    forgotPassword_description: "Nhập số điện thoại hoặc email và chúng tôi sẽ gửi hướng dẫn khôi phục.",
+    forgotPassword_description:
+      "Nhập số điện thoại hoặc email và chúng tôi sẽ gửi hướng dẫn khôi phục.",
     forgotPassword_label: "Số điện thoại hoặc email",
     forgotPassword_placeholder: "ví dụ: 09123456789 hoặc you@example.com",
     forgotPassword_send: "Gửi hướng dẫn khôi phục",
-    forgotPassword_notFound: "Chúng tôi không tìm thấy tài khoản với số điện thoại hoặc email đó.",
+    forgotPassword_notFound:
+      "Chúng tôi không tìm thấy tài khoản với số điện thoại hoặc email đó.",
     forgotPassword_sent: "Hướng dẫn khôi phục đã được gửi tới {{destination}}.",
     onboarding_title: "Cá nhân hóa trải nghiệm của bạn",
     onboarding_step: "Bước {{step}} / 2",
     onboarding_reminderQuestion: "Bạn muốn lời nhắc mạnh tới mức nào?",
-    onboarding_reminderDescription: "Chọn mức độ nhắc nhở phù hợp nhất với bạn.",
+    onboarding_reminderDescription:
+      "Chọn mức độ nhắc nhở phù hợp nhất với bạn.",
     onboarding_reminderGentle: "Nhẹ — Thông báo mềm và tinh tế",
     onboarding_reminderBalanced: "Cân bằng — Rõ nhưng không quá gắt",
     onboarding_reminderFirm: "Mạnh — Dễ gây chú ý",
     onboarding_conditionQuestion: "Đây là bệnh ngắn hạn hay kéo dài?",
-    onboarding_conditionDescription: "Điều này giúp chúng tôi điều chỉnh routine thuốc phù hợp hơn.",
+    onboarding_conditionDescription:
+      "Điều này giúp chúng tôi điều chỉnh routine thuốc phù hợp hơn.",
     onboarding_conditionShort: "Bệnh ngắn hạn",
     onboarding_conditionOngoing: "Tình trạng kéo dài",
     onboarding_conditionUnsure: "Tôi chưa chắc",
@@ -441,7 +486,8 @@ const translations = {
     onboarding_readyTitle: "Bạn đã sẵn sàng!",
     onboarding_summaryReminder: "MỨC ĐỘ NHẮC NHỞ",
     onboarding_summaryCondition: "LOẠI TÌNH TRẠNG",
-    onboarding_saved: "Cài đặt của bạn đã được lưu cục bộ. Bạn có thể chỉnh lại bất cứ lúc nào trong trang hồ sơ.",
+    onboarding_saved:
+      "Cài đặt của bạn đã được lưu cục bộ. Bạn có thể chỉnh lại bất cứ lúc nào trong trang hồ sơ.",
     onboarding_getStarted: "Bắt đầu",
     onboarding_back: "Quay lại",
     onboarding_welcomeTitle: "Vài câu hỏi ngắn",
@@ -482,7 +528,8 @@ const translations = {
     survey_q6_short: "Bệnh ngắn ngày",
     survey_q6_ongoing: "Tình trạng kéo dài",
     survey_q6_unsure: "Chưa chắc",
-    survey_q7_title: "Bạn muốn được hỏi nhanh về liều dùng, tồn kho, hay cả hai?",
+    survey_q7_title:
+      "Bạn muốn được hỏi nhanh về liều dùng, tồn kho, hay cả hai?",
     survey_q7_doses_first: "Ưu tiên liều dùng",
     survey_q7_stock_first: "Ưu tiên tồn kho",
     survey_q7_both: "Cả hai như nhau",
@@ -491,8 +538,8 @@ const translations = {
     survey_q8_placeholder: "Nhập tại đây (không bắt buộc)",
     survey_error_pickOne: "Vui lòng chọn một đáp án để tiếp tục.",
     survey_error_pickSome: "Chọn ít nhất một lựa chọn.",
-    survey_summaryLead: "Xem lại và hoàn tất",
-  },
+    survey_summaryLead: "Xem lại và hoàn tất"
+  }
 } as const;
 
 type TranslationKey = keyof typeof translations.en;
@@ -516,7 +563,11 @@ function interpolate(template: string, params?: TranslationParams): string {
   }, template);
 }
 
-export function LanguageProvider({ children }: { readonly children: React.ReactNode }) {
+export function LanguageProvider({
+  children
+}: {
+  readonly children: React.ReactNode;
+}) {
   const [language, setLanguageState] = useState<AppLanguage>("en");
 
   useEffect(() => {
@@ -531,11 +582,15 @@ export function LanguageProvider({ children }: { readonly children: React.ReactN
         setLanguageState(nextLanguage);
         await writeLanguage(nextLanguage);
       },
-      t: (key, params) => interpolate(translations[language][key], params),
+      t: (key, params) => interpolate(translations[language][key], params)
     };
   }, [language]);
 
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  return (
+    <LanguageContext.Provider value={value}>
+      {children}
+    </LanguageContext.Provider>
+  );
 }
 
 export function useLanguage() {

@@ -98,7 +98,7 @@ export default function InboxScreen() {
               style={{
                 fontSize: 12,
                 fontWeight: 700,
-                color: Color.ios.systemBlue,
+                color: Color.ios.systemBlue
               }}
             >
               Unread

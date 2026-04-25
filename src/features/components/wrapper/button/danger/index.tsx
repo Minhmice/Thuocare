@@ -1,8 +1,8 @@
-import React from 'react';
-import { Button as ButtonPrimitive } from '../../../ui/button';
-import { ButtonProps } from '../../../ui/button/types';
+import React from "react";
+import { Button as ButtonPrimitive } from "../../../ui/button";
+import { ButtonProps } from "../../../ui/button/types";
 
-export const DangerButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => {
+export const DangerButton: React.FC<Omit<ButtonProps, "variant">> = (props) => {
   return (
     <ButtonPrimitive
       {...props}
@@ -10,15 +10,15 @@ export const DangerButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => {
       style={[
         {
           borderRadius: 12,
-          paddingHorizontal: 16,
+          paddingHorizontal: 16
         },
-        props.style,
+        props.style
       ]}
       labelStyle={[
         {
-          fontWeight: '600',
+          fontWeight: "600"
         },
-        props.labelStyle,
+        props.labelStyle
       ]}
     />
   );

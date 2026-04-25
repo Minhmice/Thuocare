@@ -16,8 +16,8 @@ The previous storage used a single `StoredAuthRecord` at key `thuocare.mock.auth
 
 ```typescript
 type StoredAuthRecord = {
-  id: string;           // Date.now().toString(), unique per account
-  phone: string;        // always required, primary identity
+  id: string; // Date.now().toString(), unique per account
+  phone: string; // always required, primary identity
   email: string | null; // optional
   password: string;
   fullName: string;
@@ -28,7 +28,7 @@ type StoredAuthRecord = {
 };
 
 type AuthStore = {
-  accounts: StoredAuthRecord[];   // list of all local accounts
+  accounts: StoredAuthRecord[]; // list of all local accounts
   activeAccountId: string | null; // which account is currently signed in
 };
 ```
@@ -45,6 +45,7 @@ type AuthStore = {
 All four auth methods updated to work with the new `AuthStore`:
 
 **`signUp(input)`** — new `SignUpInput` type:
+
 ```typescript
 type SignUpInput = {
   phone: string;
@@ -53,6 +54,7 @@ type SignUpInput = {
   fullName: string;
 };
 ```
+
 - Checks phone uniqueness across ALL accounts in the store
 - Throws exact spec error on duplicate: `"This phone number is already registered. Please tap Forgot Password to recover access."`
 - Creates new account, appends to `accounts[]`, sets `activeAccountId`
@@ -72,6 +74,7 @@ type SignUpInput = {
 Complete rewrite per `docs/screen_feature/sign-up.md` spec.
 
 **Field order (per spec):**
+
 1. Full name (required)
 2. Phone number (required, primary identity)
 3. Email address (optional — labeled "optional" in the field)
@@ -81,6 +84,7 @@ Complete rewrite per `docs/screen_feature/sign-up.md` spec.
 7. Submit button
 
 **Behavioral correctness:**
+
 - Redirect guards at top: if already `needsOnboarding` → `/onboarding`, if `ready` → tabs
 - Submit disabled until all required fields are filled AND legal checkbox is checked
 - `canSubmit` computed without any async work (pure derived state)
@@ -90,6 +94,7 @@ Complete rewrite per `docs/screen_feature/sign-up.md` spec.
 - No identifier-type toggle — phone is always required, email is always optional
 
 **Design alignment (DESIGN_STYLE.md):**
+
 - Hero block: `GlassSurface` with title and subtitle
 - Form block: `AppCard` with `AppTextField` for each field
 - Spacing: `gap: 16` between fields, standard padding
@@ -107,26 +112,27 @@ Complete rewrite per `docs/screen_feature/sign-up.md` spec.
 
 ## Changed Files
 
-| File | Change type |
-| --- | --- |
-| `src/lib/auth/storage.ts` | Breaking refactor — multi-account `AuthStore` |
-| `src/lib/auth/AuthProvider.tsx` | Full rewrite — all methods updated for new store |
-| `src/app/(auth)/sign-up.tsx` | Full rewrite — correct fields, legal checkbox, redirects |
+| File                            | Change type                                              |
+| ------------------------------- | -------------------------------------------------------- |
+| `src/lib/auth/storage.ts`       | Breaking refactor — multi-account `AuthStore`            |
+| `src/lib/auth/AuthProvider.tsx` | Full rewrite — all methods updated for new store         |
+| `src/app/(auth)/sign-up.tsx`    | Full rewrite — correct fields, legal checkbox, redirects |
 
 ## Unchanged (verified still correct)
 
-| File | Why unchanged |
-| --- | --- |
-| `src/app/(auth)/sign-in.tsx` | Calls `signIn({ identifier, password })` — API unchanged |
-| `src/app/(auth)/onboarding.tsx` | Calls `completeOnboarding({ routineStage, reminderPreference })` — API unchanged |
-| `src/app/(auth)/forgot-password.tsx` | Placeholder — unchanged |
-| `src/app/(auth)/_layout.tsx` | Unchanged |
-| `src/app/index.tsx` | Uses `status` only — unchanged |
-| `src/app/_layout.tsx` | Unchanged |
+| File                                 | Why unchanged                                                                    |
+| ------------------------------------ | -------------------------------------------------------------------------------- |
+| `src/app/(auth)/sign-in.tsx`         | Calls `signIn({ identifier, password })` — API unchanged                         |
+| `src/app/(auth)/onboarding.tsx`      | Calls `completeOnboarding({ routineStage, reminderPreference })` — API unchanged |
+| `src/app/(auth)/forgot-password.tsx` | Placeholder — unchanged                                                          |
+| `src/app/(auth)/_layout.tsx`         | Unchanged                                                                        |
+| `src/app/index.tsx`                  | Uses `status` only — unchanged                                                   |
+| `src/app/_layout.tsx`                | Unchanged                                                                        |
 
 ## Testing the Sign Up Flow
 
 **Happy path:**
+
 1. Launch app → Sign In screen (no account)
 2. Tap "Create a new prototype account"
 3. Fill in: Full name, Phone, (optional Email), Password, Confirm password
@@ -136,6 +142,7 @@ Complete rewrite per `docs/screen_feature/sign-up.md` spec.
 7. Complete onboarding → routes to Home
 
 **Duplicate phone error path:**
+
 1. Create an account with phone `0912345678`
 2. Sign out (or use a different device session)
 3. Try to create another account with the same phone
@@ -143,15 +150,18 @@ Complete rewrite per `docs/screen_feature/sign-up.md` spec.
 5. "Go to Forgot Password →" link appears inline in the error block
 
 **Multi-account testing:**
+
 1. Create account A with phone `0900000001`
 2. Sign out → Sign In screen
 3. Create account B with phone `0900000002`
 4. Both accounts exist in store; each has independent onboarding state
 
 **Password mismatch:**
+
 - Error: "Passwords do not match."
 
 **Legal checkbox not checked:**
+
 - Submit button is disabled until checkbox is checked
 
 ## Completion Status
@@ -159,6 +169,7 @@ Complete rewrite per `docs/screen_feature/sign-up.md` spec.
 **Sign Up Implementation: COMPLETE FOR MVP**
 
 All requirements from `docs/screen_feature/sign-up.md` met:
+
 - ✓ Full name first
 - ✓ Phone required, primary identity
 - ✓ Email optional

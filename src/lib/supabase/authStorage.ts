@@ -58,7 +58,9 @@ async function clearChunked(key: string): Promise<void> {
     const n = parseInt(nStr, 10);
     if (Number.isFinite(n) && n > 0) {
       for (let i = 0; i < n; i++) {
-        await SecureStore.deleteItemAsync(`${key}.__${i}`).catch(() => undefined);
+        await SecureStore.deleteItemAsync(`${key}.__${i}`).catch(
+          () => undefined
+        );
       }
     }
   }

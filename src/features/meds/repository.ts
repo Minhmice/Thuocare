@@ -102,11 +102,11 @@ function mergeDefinitionIntoScheduled(
     schedule: def.schedule,
     ...(def.instruction !== undefined && { instruction: def.instruction }),
     ...(def.remainingDoses !== undefined && {
-      remainingDoses: def.remainingDoses,
+      remainingDoses: def.remainingDoses
     }),
     ...(def.wizardSnapshot !== undefined && {
-      wizardSnapshot: def.wizardSnapshot,
-    }),
+      wizardSnapshot: def.wizardSnapshot
+    })
   };
 }
 
@@ -116,7 +116,10 @@ function mergeDefinitionIntoScheduled(
  * the remote row.  Definition-only overrides (no scheduledDate, from wizard/edit)
  * only patch definition fields; remote schedule metadata is preserved.
  */
-function mergeMedications(remote: Medication[], local: Medication[]): Medication[] {
+function mergeMedications(
+  remote: Medication[],
+  local: Medication[]
+): Medication[] {
   const effectiveRemote =
     pendingDeleteIds.size > 0
       ? remote.filter((r) => !pendingDeleteIds.has(r.id))
@@ -136,7 +139,9 @@ function mergeMedications(remote: Medication[], local: Medication[]): Medication
       return def ? mergeDefinitionIntoScheduled(r, def) : r;
     });
 
-  const newLocalEntries = definitionOnlyLocal.filter((m) => !remoteIds.has(m.id));
+  const newLocalEntries = definitionOnlyLocal.filter(
+    (m) => !remoteIds.has(m.id)
+  );
 
   return [...doseLevelLocal, ...newLocalEntries, ...processedRemote];
 }
@@ -185,7 +190,7 @@ export async function upsertMedicationRemote(
         dosage: med.dosage,
         schedule: med.schedule,
         remaining_doses: med.remainingDoses ?? null,
-        instruction: med.instruction ?? "",
+        instruction: med.instruction ?? ""
       })
       .eq("id", med.id)
       .eq("user_id", userId);
@@ -203,7 +208,7 @@ export async function upsertMedicationRemote(
       period: med.period ?? "morning",
       dose_status: med.doseStatus ?? "upcoming",
       taken_at: med.takenAt ?? null,
-      scheduled_date: med.scheduledDate ?? "",
+      scheduled_date: med.scheduledDate ?? ""
     });
     if (error) throw new Error(error.message);
   }

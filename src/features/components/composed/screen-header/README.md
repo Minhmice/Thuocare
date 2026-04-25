@@ -5,13 +5,13 @@ Composed header component for screen titles and metadata.
 ## Usage
 
 ```tsx
-import { ScreenHeader } from './screen-header';
+import { ScreenHeader } from "./screen-header";
 
-<ScreenHeader 
+<ScreenHeader
   title="Chào buổi sáng, David"
   subtitle="Thứ Ba, 24 Th10"
   rightSlot={<TimeBadge time="09:00" />}
-/>
+/>;
 ```
 
 ## Props

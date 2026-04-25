@@ -10,7 +10,7 @@ Use Animated.View with entering and exiting animations. Layout animations can an
 import Animated, {
   FadeIn,
   FadeOut,
-  LinearTransition,
+  LinearTransition
 } from "react-native-reanimated";
 
 function App() {
@@ -33,7 +33,7 @@ import Animated, {
   useAnimatedRef,
   useScrollViewOffset,
   useAnimatedStyle,
-  interpolate,
+  interpolate
 } from "react-native-reanimated";
 
 function Page() {
@@ -41,7 +41,7 @@ function Page() {
   const scroll = useScrollViewOffset(ref);
 
   const style = useAnimatedStyle(() => ({
-    opacity: interpolate(scroll.value, [0, 30], [0, 1], "clamp"),
+    opacity: interpolate(scroll.value, [0, 30], [0, 1], "clamp")
   }));
 
   return (
@@ -111,7 +111,7 @@ For imperative control over animations:
 import {
   useSharedValue,
   withSpring,
-  withTiming,
+  withTiming
 } from "react-native-reanimated";
 
 const offset = useSharedValue(0);
@@ -124,7 +124,7 @@ offset.value = withTiming(100, { duration: 300 });
 
 // Use in styles
 const style = useAnimatedStyle(() => ({
-  transform: [{ translateX: offset.value }],
+  transform: [{ translateX: offset.value }]
 }));
 ```
 
@@ -137,7 +137,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
+  withSpring
 } from "react-native-reanimated";
 
 function DraggableBox() {
@@ -157,8 +157,8 @@ function DraggableBox() {
   const style = useAnimatedStyle(() => ({
     transform: [
       { translateX: translateX.value },
-      { translateY: translateY.value },
-    ],
+      { translateY: translateY.value }
+    ]
   }));
 
   return (
@@ -176,14 +176,14 @@ Animate with keyboard height changes:
 ```tsx
 import Animated, {
   useAnimatedKeyboard,
-  useAnimatedStyle,
+  useAnimatedStyle
 } from "react-native-reanimated";
 
 function KeyboardAwareView() {
   const keyboard = useAnimatedKeyboard();
 
   const style = useAnimatedStyle(() => ({
-    paddingBottom: keyboard.height.value,
+    paddingBottom: keyboard.height.value
   }));
 
   return <Animated.View style={style}>{/* content */}</Animated.View>;

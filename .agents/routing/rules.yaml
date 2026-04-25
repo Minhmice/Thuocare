@@ -17,13 +17,31 @@ sequential_delegation:
     - deployment_dependency_chain
 signals:
   product-manager:
-    keywords: ["requirements", "scope", "priority", "acceptance", "mvp", "non-goal"]
+    keywords:
+      ["requirements", "scope", "priority", "acceptance", "mvp", "non-goal"]
   planner:
     keywords: ["plan", "roadmap", "decompose", "sequence", "milestone"]
   research-analyst:
     keywords: ["compare", "evaluate", "unknown", "best practice", "tradeoff"]
   frontend-developer:
-    keywords: ["ui", "component", "page", "layout", "a11y", "render", "translation", "i18n", "locale", "localized", "shadcn", "components.json", "radix", "add button", "add dialog"]
+    keywords:
+      [
+        "ui",
+        "component",
+        "page",
+        "layout",
+        "a11y",
+        "render",
+        "translation",
+        "i18n",
+        "locale",
+        "localized",
+        "shadcn",
+        "components.json",
+        "radix",
+        "add button",
+        "add dialog"
+      ]
   backend-developer:
     keywords: ["api", "route", "auth", "service", "server", "endpoint"]
   typescript-specialist:
@@ -35,7 +53,19 @@ signals:
   code-reviewer:
     keywords: ["review", "risk", "security", "maintainability", "correctness"]
   security-specialist:
-    keywords: ["security", "vulnerability", "audit", "risk", "xss", "sql injection", "auth", "access control", "secret", "csp"]
+    keywords:
+      [
+        "security",
+        "vulnerability",
+        "audit",
+        "risk",
+        "xss",
+        "sql injection",
+        "auth",
+        "access control",
+        "secret",
+        "csp"
+      ]
   qa-tester:
     keywords: ["test plan", "verify", "pass/fail", "edge case", "coverage"]
   documentation-writer:
@@ -43,7 +73,17 @@ signals:
   devops-engineer:
     keywords: ["deploy", "pipeline", "rollback", "slo", "monitoring", "ci/cd"]
   google-cli-specialist:
-    keywords: ["gws", "google workspace", "google-cli", "cli", "discovery", "auth", "commands", "validate"]
+    keywords:
+      [
+        "gws",
+        "google workspace",
+        "google-cli",
+        "cli",
+        "discovery",
+        "auth",
+        "commands",
+        "validate"
+      ]
 quality_gates:
   mandatory_before_done:
     - code-reviewer

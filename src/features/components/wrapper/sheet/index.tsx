@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { Sheet as SheetPrimitive, SheetProps } from '../../ui/sheet';
-import { Typography } from '../typography';
+import React from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
+import { useTheme } from "react-native-paper";
+import { Sheet as SheetPrimitive, SheetProps } from "../../ui/sheet";
+import { Typography } from "../typography";
 
 export interface SheetWrapperProps extends SheetProps {
   title?: string;
@@ -25,7 +25,10 @@ export const Sheet: React.FC<SheetWrapperProps> = ({
         </Typography>
       )}
       {scrollable ? (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
           {children}
         </ScrollView>
       ) : (
@@ -38,12 +41,12 @@ export const Sheet: React.FC<SheetWrapperProps> = ({
 const styles = StyleSheet.create({
   title: {
     marginBottom: 16,
-    textAlign: 'center',
+    textAlign: "center"
   },
   scrollContent: {
-    paddingBottom: 24,
+    paddingBottom: 24
   },
   content: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });

@@ -14,7 +14,7 @@ type ErrorStateProps = {
 export function ErrorState({
   title = "Đã xảy ra lỗi",
   message,
-  onRetry,
+  onRetry
 }: ErrorStateProps) {
   const theme = useTheme();
   const opacity = useRef(new Animated.Value(0)).current;
@@ -23,7 +23,7 @@ export function ErrorState({
     Animated.timing(opacity, {
       toValue: 1,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   }, [opacity]);
 
@@ -32,7 +32,7 @@ export function ErrorState({
       <View
         style={[
           styles.iconWrap,
-          { backgroundColor: `${theme.colors.error}1A` },
+          { backgroundColor: `${theme.colors.error}1A` }
         ]}
       >
         <Icon name="alert-circle-outline" size="xl" variant="error" />
@@ -71,25 +71,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 32,
-    gap: 24,
+    gap: 24
   },
   iconWrap: {
     width: 80,
     height: 80,
     borderRadius: 40,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   textWrap: {
     gap: 8,
-    alignItems: "center",
+    alignItems: "center"
   },
   message: {
-    lineHeight: 22,
+    lineHeight: 22
   },
   retryButton: {
     marginTop: 8,
     minWidth: 160,
-    borderRadius: 9999,
-  },
+    borderRadius: 9999
+  }
 });

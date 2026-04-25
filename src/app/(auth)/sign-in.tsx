@@ -3,7 +3,10 @@ import { Redirect, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
-import { AuthModalPanel, AuthScreenPanel } from "../../components/auth/AuthScreenPanel";
+import {
+  AuthModalPanel,
+  AuthScreenPanel
+} from "../../components/auth/AuthScreenPanel";
 import { ForgotPasswordModal } from "../../components/auth/ForgotPasswordModal";
 import { AppButton } from "../../components/ui/AppButton";
 import { AppScreen } from "../../components/ui/AppScreen";
@@ -72,14 +75,19 @@ export default function SignInScreen() {
           <View style={styles.formInner}>
             {showAfterSignupHint ? (
               <View style={styles.afterSignupBanner}>
-                <AppText variant="bodySmall" style={styles.afterSignupBannerText}>
+                <AppText
+                  variant="bodySmall"
+                  style={styles.afterSignupBannerText}
+                >
                   {t("auth_afterSignupBanner")}
                 </AppText>
               </View>
             ) : null}
             <View style={styles.modeRow}>
               <AppText variant="titleMedium">
-                {mode === "phone" ? t("auth_phoneNumber") : t("auth_emailAddress")}
+                {mode === "phone"
+                  ? t("auth_phoneNumber")
+                  : t("auth_emailAddress")}
               </AppText>
               <Button
                 mode="text"
@@ -131,7 +139,9 @@ export default function SignInScreen() {
                   onPress={() => setPasswordVisible(!passwordVisible)}
                   hitSlop={12}
                   accessibilityRole="button"
-                  accessibilityLabel={passwordVisible ? t("auth_hide") : t("auth_show")}
+                  accessibilityLabel={
+                    passwordVisible ? t("auth_hide") : t("auth_show")
+                  }
                 >
                   <MaterialCommunityIcons
                     name={passwordVisible ? "eye-off-outline" : "eye-outline"}
@@ -162,14 +172,21 @@ export default function SignInScreen() {
                   onPress={() => router.push("/sign-up")}
                   style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
                 >
-                  <AppText style={styles.secondaryLink}>{t("auth_createAccount")}</AppText>
+                  <AppText style={styles.secondaryLink}>
+                    {t("auth_createAccount")}
+                  </AppText>
                 </Pressable>
               </View>
               <Pressable
                 onPress={() => setForgotPasswordVisible(true)}
-                style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1, flexShrink: 0 })}
+                style={({ pressed }) => ({
+                  opacity: pressed ? 0.6 : 1,
+                  flexShrink: 0
+                })}
               >
-                <AppText style={styles.forgotLink}>{t("auth_forgotPassword")}</AppText>
+                <AppText style={styles.forgotLink}>
+                  {t("auth_forgotPassword")}
+                </AppText>
               </Pressable>
             </View>
           </View>
@@ -205,7 +222,10 @@ export default function SignInScreen() {
                 {t("auth_legalTitle")}
               </AppText>
 
-              <ScrollView style={styles.legalScroll} contentContainerStyle={styles.legalScrollContent}>
+              <ScrollView
+                style={styles.legalScroll}
+                contentContainerStyle={styles.legalScrollContent}
+              >
                 <AppText variant="bodySmall" style={styles.legalBody}>
                   {t("auth_legalLine1")}
                 </AppText>
@@ -223,7 +243,10 @@ export default function SignInScreen() {
                 </AppText>
               </ScrollView>
 
-              <AppButton mode="contained" onPress={() => setLegalVisible(false)}>
+              <AppButton
+                mode="contained"
+                onPress={() => setLegalVisible(false)}
+              >
                 {t("auth_understand")}
               </AppButton>
             </AuthModalPanel>

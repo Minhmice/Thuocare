@@ -4,11 +4,11 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState,
+  useState
 } from "react";
 import {
   getMedications,
-  getMedicationsMerged,
+  getMedicationsMerged
 } from "../../features/meds/repository";
 import { subscribeLocalMedications } from "./localMedsStore";
 import type { Medication } from "../../types/medication";
@@ -23,7 +23,7 @@ type MedicationsContextValue = {
 const MedicationsContext = createContext<MedicationsContextValue | null>(null);
 
 export function MedicationsProvider({
-  children,
+  children
 }: {
   readonly children: React.ReactNode;
 }) {
@@ -72,9 +72,7 @@ export function MedicationsProvider({
   }, []);
 
   return (
-    <MedicationsContext.Provider
-      value={{ items, loading, error, refresh }}
-    >
+    <MedicationsContext.Provider value={{ items, loading, error, refresh }}>
       {children}
     </MedicationsContext.Provider>
   );

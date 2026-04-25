@@ -1,20 +1,17 @@
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
-import {
-  Alert,
-  Image,
-  Pressable,
-  StyleSheet,
-  View
-} from "react-native";
+import { Alert, Image, Pressable, StyleSheet, View } from "react-native";
 import { Menu, Button as PaperButton } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { AppScreen } from "../components/ui/AppScreen";
 import { AppTextField } from "../components/ui/AppTextField";
 import { AppText } from "../components/ui/AppText";
-import { FEEDBACK_CATEGORIES, type FeedbackCategory } from "../features/feedback/types";
+import {
+  FEEDBACK_CATEGORIES,
+  type FeedbackCategory
+} from "../features/feedback/types";
 import { submitAppFeedback } from "../features/feedback/repository";
 import { SecondaryButton } from "../features/components/wrapper/button/secondary";
 import { PrimaryButton } from "../features/components/wrapper/button/primary";
@@ -222,7 +219,10 @@ export default function FeedbackScreen() {
             <View style={styles.previewWrap}>
               <Image source={{ uri: imageUri }} style={styles.preview} />
               <Pressable onPress={clearImage} style={styles.removePhoto}>
-                <AppText variant="labelMedium" style={{ color: paperTheme.colors.error }}>
+                <AppText
+                  variant="labelMedium"
+                  style={{ color: paperTheme.colors.error }}
+                >
                   {t("feedback_removePhoto")}
                 </AppText>
               </Pressable>

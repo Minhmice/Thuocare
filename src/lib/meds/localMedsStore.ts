@@ -75,6 +75,9 @@ export function subscribeLocalMedications(listener: Listener) {
 }
 
 export function useLocalMedications() {
-  return useSyncExternalStore(subscribeLocalMedications, getLocalMedications, getLocalMedications);
+  return useSyncExternalStore(
+    subscribeLocalMedications,
+    getLocalMedications,
+    getLocalMedications
+  );
 }
-

@@ -1,5 +1,5 @@
-import { StyleProp, ViewStyle } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleProp, ViewStyle } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export interface SupportSectionProps {
   title: string;

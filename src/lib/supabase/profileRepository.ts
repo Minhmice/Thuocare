@@ -1,6 +1,13 @@
 import type { User } from "@supabase/supabase-js";
-import type { OnboardingSurveyAnswers, RoutineSegment } from "../../types/onboarding-survey";
-import type { ReminderPreference, RoutineStage, StoredAuthRecord } from "../auth/storage";
+import type {
+  OnboardingSurveyAnswers,
+  RoutineSegment
+} from "../../types/onboarding-survey";
+import type {
+  ReminderPreference,
+  RoutineStage,
+  StoredAuthRecord
+} from "../auth/storage";
 import { normalizeVnPhoneForDisplay } from "../phone/vnDisplay";
 import { supabase } from "./client";
 
@@ -22,7 +29,9 @@ export type ProfileAuthRow = {
   routine_segment: string | null;
 };
 
-export async function fetchProfileRow(userId: string): Promise<ProfileAuthRow | null> {
+export async function fetchProfileRow(
+  userId: string
+): Promise<ProfileAuthRow | null> {
   const { data, error } = await supabase
     .from("profiles")
     .select(PROFILE_AUTH_COLUMNS)
@@ -81,7 +90,10 @@ export async function syncProfileContact(
     return;
   }
 
-  const { error } = await supabase.from("profiles").update(patch).eq("user_id", userId);
+  const { error } = await supabase
+    .from("profiles")
+    .update(patch)
+    .eq("user_id", userId);
   if (error) {
     throw new Error(error.message);
   }
@@ -114,19 +126,28 @@ export async function backfillProfilePhoneIfMissing(
   return refreshed ?? row;
 }
 
-export function profileRowToStoredRecord(user: User, row: ProfileAuthRow): StoredAuthRecord {
-  const meta = user.user_metadata as Record<string, string | undefined> | undefined;
-  const phoneFromMeta = typeof meta?.phone === "string" ? meta.phone.trim() : "";
+export function profileRowToStoredRecord(
+  user: User,
+  row: ProfileAuthRow
+): StoredAuthRecord {
+  const meta = user.user_metadata as
+    | Record<string, string | undefined>
+    | undefined;
+  const phoneFromMeta =
+    typeof meta?.phone === "string" ? meta.phone.trim() : "";
   const phone = (row.phone ?? phoneFromMeta ?? "").trim();
 
   return {
     id: user.id,
     phone,
     email: user.email ?? (row.email ? row.email.trim() : null),
-    fullName: row.full_name.trim() || (typeof meta?.full_name === "string" ? meta.full_name : "—"),
+    fullName:
+      row.full_name.trim() ||
+      (typeof meta?.full_name === "string" ? meta.full_name : "—"),
     onboardingCompleted: row.onboarding_completed,
     routineStage: (row.routine_stage as RoutineStage | null) ?? null,
-    reminderPreference: (row.reminder_preference as ReminderPreference | null) ?? null,
+    reminderPreference:
+      (row.reminder_preference as ReminderPreference | null) ?? null,
     onboardingSurvey: row.onboarding_survey ?? null,
     routineSegment: (row.routine_segment as RoutineSegment | null) ?? null,
     createdAt: row.created_at ?? user.created_at ?? new Date().toISOString()

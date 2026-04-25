@@ -5,13 +5,13 @@ Base checkbox component for Thuocare.
 ## Usage
 
 ```tsx
-import { Checkbox } from './checkbox';
+import { Checkbox } from "./checkbox";
 
 <Checkbox
   checked={checked}
   onCheckedChange={setChecked}
   label="Accept terms"
-/>
+/>;
 ```
 
 ## Props

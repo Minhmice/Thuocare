@@ -5,26 +5,26 @@ Composed component for grouped settings rows in the `Me` screen.
 ## Usage
 
 ```tsx
-import { SettingsSection } from './settings-section';
+import { SettingsSection } from "./settings-section";
 
-<SettingsSection 
+<SettingsSection
   title="Account"
   items={[
-    { 
-      id: 'profile',
-      label: 'Profile Info',
-      icon: 'account-outline',
-      onPress: () => console.log('Profile'),
+    {
+      id: "profile",
+      label: "Profile Info",
+      icon: "account-outline",
+      onPress: () => console.log("Profile")
     },
-    { 
-      id: 'security',
-      label: 'Security',
-      icon: 'lock-outline',
-      value: 'Protected',
-      onPress: () => console.log('Security'),
+    {
+      id: "security",
+      label: "Security",
+      icon: "lock-outline",
+      value: "Protected",
+      onPress: () => console.log("Security")
     }
   ]}
-/>
+/>;
 ```
 
 ## Props

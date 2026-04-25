@@ -1,49 +1,49 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useTheme } from 'react-native-paper';
-import { Card } from '../../wrapper/card';
-import { Typography } from '../../wrapper/typography';
-import { Icon } from '../../wrapper/icon';
-import { GhostButton } from '../../wrapper/button/ghost';
-import { AlertBannerProps, AlertVariant } from './types';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { useTheme } from "react-native-paper";
+import { Card } from "../../wrapper/card";
+import { Typography } from "../../wrapper/typography";
+import { Icon } from "../../wrapper/icon";
+import { GhostButton } from "../../wrapper/button/ghost";
+import { AlertBannerProps, AlertVariant } from "./types";
 
 export const AlertBanner: React.FC<AlertBannerProps> = ({
-  variant = 'info',
+  variant = "info",
   title,
   description,
   icon,
   actionLabel,
   onAction,
-  style,
+  style
 }) => {
   const theme = useTheme();
 
   const getVariantStyles = (v: AlertVariant) => {
     switch (v) {
-      case 'critical':
+      case "critical":
         return {
           background: theme.colors.error,
-          text: '#FFFFFF',
-          secondaryText: 'rgba(255, 255, 255, 0.82)',
-          icon: '#FFFFFF',
-          defaultIcon: 'alert-octagon',
+          text: "#FFFFFF",
+          secondaryText: "rgba(255, 255, 255, 0.82)",
+          icon: "#FFFFFF",
+          defaultIcon: "alert-octagon"
         };
-      case 'warning':
+      case "warning":
         return {
-          background: 'rgba(200, 79, 61, 0.15)',
+          background: "rgba(200, 79, 61, 0.15)",
           text: theme.colors.tertiary,
           secondaryText: theme.colors.onSurfaceVariant,
           icon: theme.colors.tertiary,
-          defaultIcon: 'alert-circle',
+          defaultIcon: "alert-circle"
         };
-      case 'info':
+      case "info":
       default:
         return {
           background: theme.colors.surfaceVariant,
           text: theme.colors.onSurfaceVariant,
           secondaryText: theme.colors.onSurfaceVariant,
           icon: theme.colors.onSurfaceVariant,
-          defaultIcon: 'information',
+          defaultIcon: "information"
         };
     }
   };
@@ -55,11 +55,7 @@ export const AlertBanner: React.FC<AlertBannerProps> = ({
       variant="flat"
       padding={12}
       borderRadius={16}
-      style={[
-        { backgroundColor: vStyles.background },
-        styles.container,
-        style,
-      ]}
+      style={[{ backgroundColor: vStyles.background }, styles.container, style]}
     >
       <View style={styles.content}>
         <Icon
@@ -100,40 +96,40 @@ export const AlertBanner: React.FC<AlertBannerProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginVertical: 4,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginVertical: 4
   },
   content: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    flex: 1,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    flex: 1
   },
   icon: {
-    marginTop: 2,
+    marginTop: 2
   },
   textContent: {
     marginLeft: 12,
     flex: 1,
-    flexShrink: 1,
+    flexShrink: 1
   },
   title: {
-    flexShrink: 1,
+    flexShrink: 1
   },
   description: {
-    marginTop: 4,
+    marginTop: 4
   },
   actionButton: {
     paddingHorizontal: 0,
-    height: 'auto',
+    height: "auto",
     marginLeft: 8,
-    alignSelf: 'center',
+    alignSelf: "center"
   },
   actionLabel: {
     fontSize: 14,
-    fontWeight: 'bold',
-    textDecorationLine: 'underline',
-  },
+    fontWeight: "bold",
+    textDecorationLine: "underline"
+  }
 });

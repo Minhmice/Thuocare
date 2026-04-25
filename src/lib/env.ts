@@ -11,7 +11,10 @@ function requireNamedEnv(name: string, value: string | undefined): string {
 }
 
 export function getEnvConfig(): EnvConfig {
-  const supabaseUrl = requireNamedEnv("EXPO_PUBLIC_SUPABASE_URL", process.env.EXPO_PUBLIC_SUPABASE_URL);
+  const supabaseUrl = requireNamedEnv(
+    "EXPO_PUBLIC_SUPABASE_URL",
+    process.env.EXPO_PUBLIC_SUPABASE_URL
+  );
   const supabaseAnonKey = requireNamedEnv(
     "EXPO_PUBLIC_SUPABASE_ANON_KEY",
     process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY

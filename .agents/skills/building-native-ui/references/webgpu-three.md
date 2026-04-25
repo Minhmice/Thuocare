@@ -45,7 +45,7 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
       {
         ...context,
         unstable_conditionNames: ["module"],
-        mainFields: ["module"],
+        mainFields: ["module"]
       },
       moduleName,
       platform
@@ -110,7 +110,7 @@ export const makeWebGPURenderer = (
     antialias,
     // @ts-expect-error
     canvas: new ReactNativeCanvas(context.canvas),
-    context,
+    context
   });
 ```
 
@@ -124,7 +124,7 @@ import {
   extend,
   createRoot,
   unmountComponentAtNode,
-  events,
+  events
 } from "@react-three/fiber";
 import type { ViewProps } from "react-native";
 import { PixelRatio } from "react-native";
@@ -132,7 +132,7 @@ import { Canvas, type CanvasRef } from "react-native-wgpu";
 
 import {
   makeWebGPURenderer,
-  ReactNativeCanvas,
+  ReactNativeCanvas
 } from "@/lib/make-webgpu-renderer";
 
 // Extend THREE namespace for R3F - add all components you use
@@ -155,7 +155,7 @@ extend({
   MeshBasicMaterial: THREE.MeshBasicMaterial,
   PointsMaterial: THREE.PointsMaterial,
   PerspectiveCamera: THREE.PerspectiveCamera,
-  Scene: THREE.Scene,
+  Scene: THREE.Scene
 });
 
 interface FiberCanvasProps {
@@ -169,7 +169,7 @@ export const FiberCanvas = ({
   children,
   style,
   scene,
-  camera,
+  camera
 }: FiberCanvasProps) => {
   const root = useRef<ReconcilerRoot<OffscreenCanvas>>(null!);
   const canvasRef = useRef<CanvasRef>(null);
@@ -186,7 +186,7 @@ export const FiberCanvas = ({
       top: 0,
       left: 0,
       width: canvas.clientWidth,
-      height: canvas.clientHeight,
+      height: canvas.clientHeight
     };
 
     if (!root.current) {
@@ -208,7 +208,7 @@ export const FiberCanvas = ({
           renderFrame(s, c);
           context?.present();
         };
-      },
+      }
     });
     root.current.render(children);
     return () => {
@@ -445,7 +445,7 @@ function Scene() {
 
 ```tsx
 extend({
-  AmbientLight: THREE.AmbientLight,
+  AmbientLight: THREE.AmbientLight
   // Add other missing components...
 });
 ```

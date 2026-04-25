@@ -3,7 +3,10 @@ import { Redirect, Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { Button, Checkbox } from "react-native-paper";
-import { AuthModalPanel, AuthScreenPanel } from "../../components/auth/AuthScreenPanel";
+import {
+  AuthModalPanel,
+  AuthScreenPanel
+} from "../../components/auth/AuthScreenPanel";
 import { ForgotPasswordModal } from "../../components/auth/ForgotPasswordModal";
 import { AppButton } from "../../components/ui/AppButton";
 import { AppScreen } from "../../components/ui/AppScreen";
@@ -53,7 +56,12 @@ export default function SignUpScreen() {
   async function handleSubmit() {
     setError(null);
 
-    if (!fullName.trim() || !phone.trim() || !password.trim() || !confirmPassword.trim()) {
+    if (
+      !fullName.trim() ||
+      !phone.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
       setError(t("auth_requiredFields"));
       return;
     }
@@ -86,7 +94,9 @@ export default function SignUpScreen() {
         router.replace("/sign-in?afterSignup=1");
         return;
       }
-      setError(err instanceof Error ? err.message : t("auth_createAccountUnable"));
+      setError(
+        err instanceof Error ? err.message : t("auth_createAccountUnable")
+      );
     } finally {
       setSubmitting(false);
     }
@@ -163,7 +173,9 @@ export default function SignUpScreen() {
                   onPress={() => setPasswordVisible(!passwordVisible)}
                   hitSlop={12}
                   accessibilityRole="button"
-                  accessibilityLabel={passwordVisible ? t("auth_hide") : t("auth_show")}
+                  accessibilityLabel={
+                    passwordVisible ? t("auth_hide") : t("auth_show")
+                  }
                 >
                   <MaterialCommunityIcons
                     name={passwordVisible ? "eye-off-outline" : "eye-outline"}
@@ -183,13 +195,19 @@ export default function SignUpScreen() {
               editable={!submitting}
               rightAccessory={
                 <Pressable
-                  onPress={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+                  onPress={() =>
+                    setConfirmPasswordVisible(!confirmPasswordVisible)
+                  }
                   hitSlop={12}
                   accessibilityRole="button"
-                  accessibilityLabel={confirmPasswordVisible ? t("auth_hide") : t("auth_show")}
+                  accessibilityLabel={
+                    confirmPasswordVisible ? t("auth_hide") : t("auth_show")
+                  }
                 >
                   <MaterialCommunityIcons
-                    name={confirmPasswordVisible ? "eye-off-outline" : "eye-outline"}
+                    name={
+                      confirmPasswordVisible ? "eye-off-outline" : "eye-outline"
+                    }
                     size={22}
                     color={paperTheme.colors.primary}
                   />
@@ -234,7 +252,10 @@ export default function SignUpScreen() {
                 {shouldOfferPasswordRecoveryHint(error) ? (
                   <Pressable
                     onPress={() => setForgotPasswordVisible(true)}
-                    style={({ pressed }) => ({ marginTop: 8, opacity: pressed ? 0.6 : 1 })}
+                    style={({ pressed }) => ({
+                      marginTop: 8,
+                      opacity: pressed ? 0.6 : 1
+                    })}
                   >
                     <AppText style={styles.errorForgotLink}>
                       {`${t("auth_forgotPassword")} →`}
@@ -244,7 +265,11 @@ export default function SignUpScreen() {
               </View>
             ) : null}
 
-            <AppButton disabled={!canSubmit} loading={submitting} onPress={handleSubmit}>
+            <AppButton
+              disabled={!canSubmit}
+              loading={submitting}
+              onPress={handleSubmit}
+            >
               {t("auth_createAccountButton")}
             </AppButton>
 
@@ -253,7 +278,9 @@ export default function SignUpScreen() {
                 onPress={() => router.back()}
                 style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
               >
-                <AppText style={styles.signInLink}>{t("auth_haveAccount")}</AppText>
+                <AppText style={styles.signInLink}>
+                  {t("auth_haveAccount")}
+                </AppText>
               </Pressable>
             </View>
           </View>
@@ -276,7 +303,10 @@ export default function SignUpScreen() {
                 {t("auth_legalTitle")}
               </AppText>
 
-              <ScrollView style={styles.legalScroll} contentContainerStyle={styles.legalScrollContent}>
+              <ScrollView
+                style={styles.legalScroll}
+                contentContainerStyle={styles.legalScrollContent}
+              >
                 <AppText variant="bodySmall" style={styles.legalBody}>
                   {t("auth_legalLine1")}
                 </AppText>

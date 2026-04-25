@@ -47,6 +47,7 @@ Screen components call repository functions via `useCallback` + `useEffect`, man
 ### UI Components
 
 Thin wrappers around React Native Paper live in `src/components/ui/`:
+
 - `AppScreen` — ScrollView/View container
 - `AppCard` — Card wrapper
 - `AppText` — Text wrapper
@@ -61,6 +62,7 @@ All shared types are in `src/types/medication.ts`: `Medication`, `DailySummary`,
 ### Environment Variables
 
 Two Expo public vars are required (validated in `src/lib/env.ts`):
+
 ```
 EXPO_PUBLIC_SUPABASE_URL
 EXPO_PUBLIC_SUPABASE_ANON_KEY

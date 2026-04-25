@@ -1,7 +1,7 @@
-import React from 'react';
-import { useTheme } from 'react-native-paper';
-import { Input as InputPrimitive } from '../../ui/input';
-import { InputProps } from '../../ui/input/types';
+import React from "react";
+import { useTheme } from "react-native-paper";
+import { Input as InputPrimitive } from "../../ui/input";
+import { InputProps } from "../../ui/input/types";
 
 export const Input: React.FC<InputProps> = (props) => {
   const theme = useTheme();
@@ -11,15 +11,15 @@ export const Input: React.FC<InputProps> = (props) => {
       {...props}
       containerStyle={[
         {
-          marginBottom: 16,
+          marginBottom: 16
         },
-        props.containerStyle,
+        props.containerStyle
       ]}
       inputStyle={[
         {
-          color: theme.colors.onSurface,
+          color: theme.colors.onSurface
         },
-        props.inputStyle,
+        props.inputStyle
       ]}
       placeholderTextColor={theme.colors.onSurfaceVariant}
     />

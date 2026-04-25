@@ -36,7 +36,7 @@ export default function Layout() {
           sheetAllowedDetents: [0.25],
           headerTransparent: true,
           contentStyle: { backgroundColor: "transparent" },
-          sheetGrabberVisible: true,
+          sheetGrabberVisible: true
         }}
       >
         <Stack.Header style={{ backgroundColor: "transparent" }}></Stack.Header>
@@ -74,15 +74,15 @@ export default function AboutSheet() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   content: {
     flex: 1,
-    padding: 16,
+    padding: 16
   },
   footer: {
-    padding: 16,
-  },
+    padding: 16
+  }
 });
 ```
 
@@ -92,7 +92,7 @@ Use `sheetLargestUndimmedDetentIndex` (zero-indexed) to keep content behind the 
 
 ```tsx
 // app/_layout.tsx
-import { Stack } from 'expo-router';
+import { Stack } from "expo-router";
 
 export default function Layout() {
   return (
@@ -103,12 +103,12 @@ export default function Layout() {
         options={{
           presentation: "formSheet",
           sheetAllowedDetents: [0.2, 0.5, 1.0],
-          sheetLargestUndimmedDetentIndex: 1,
+          sheetLargestUndimmedDetentIndex: 1
           /* other options */
         }}
       />
     </Stack>
-  )
+  );
 }
 ```
 
@@ -148,7 +148,7 @@ export default function Layout() {
           title: "",
           sheetGrabberVisible: true,
           sheetAllowedDetents: [0.25],
-          headerTransparent: true,
+          headerTransparent: true
         }}
       >
         <Stack.Header style={{ backgroundColor: "transparent" }}>
@@ -189,52 +189,52 @@ export default function ConfirmSheet() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   content: {
     flex: 1,
     padding: 20,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 8,
+    marginBottom: 8
   },
   description: {
     fontSize: 14,
     color: "#666",
-    textAlign: "center",
+    textAlign: "center"
   },
   footer: {
     flexDirection: "row",
     padding: 16,
-    gap: 12,
+    gap: 12
   },
   cancelButton: {
     flex: 1,
     padding: 14,
     borderRadius: 10,
     backgroundColor: "#f0f0f0",
-    alignItems: "center",
+    alignItems: "center"
   },
   cancelText: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "500"
   },
   confirmButton: {
     flex: 1,
     padding: 14,
     borderRadius: 10,
     backgroundColor: "#007AFF",
-    alignItems: "center",
+    alignItems: "center"
   },
   confirmText: {
     fontSize: 16,
     fontWeight: "500",
-    color: "white",
-  },
+    color: "white"
+  }
 });
 ```
 

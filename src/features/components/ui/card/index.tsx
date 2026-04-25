@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
-import { CardProps } from './types';
+import React from "react";
+import { View, StyleSheet, Platform } from "react-native";
+import { CardProps } from "./types";
 
 export const Card: React.FC<CardProps> = ({
-  variant = 'flat',
+  variant = "flat",
   padding = 16,
   borderRadius = 16,
   style,
@@ -15,9 +15,9 @@ export const Card: React.FC<CardProps> = ({
       style={[
         styles.base,
         styles[variant],
-        { padding: typeof padding === 'number' ? padding : 0 },
+        { padding: typeof padding === "number" ? padding : 0 },
         { borderRadius },
-        style,
+        style
       ]}
       {...props}
     >
@@ -28,29 +28,29 @@ export const Card: React.FC<CardProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#FFFFFF',
-    overflow: 'hidden',
+    backgroundColor: "#FFFFFF",
+    overflow: "hidden"
   },
   flat: {
-    backgroundColor: '#F3F3F8',
+    backgroundColor: "#F3F3F8"
   },
   elevated: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     ...Platform.select({
       ios: {
-        shadowColor: '#0058BC',
+        shadowColor: "#0058BC",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.04,
-        shadowRadius: 12,
+        shadowRadius: 12
       },
       android: {
-        elevation: 4,
-      },
-    }),
+        elevation: 4
+      }
+    })
   },
   outlined: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
+    borderColor: "#E5E7EB"
+  }
 });

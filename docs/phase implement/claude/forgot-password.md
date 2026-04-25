@@ -13,11 +13,13 @@
 Props: `visible: boolean`, `onDismiss: () => void`.
 
 **Input state:**
+
 - Single identifier input accepting phone or email (no toggle, no priority)
 - Submit disabled when input is empty
 - Loading state during lookup
 
 **Result state (replaces input after submission):**
+
 - Success: blue-tinted message block
   - Phone input → "We sent recovery instructions to your phone."
   - Email input → "We sent recovery instructions to your email."
@@ -36,6 +38,7 @@ Props: `visible: boolean`, `onDismiss: () => void`.
 ### Sign In integration
 
 **`src/app/(auth)/sign-in.tsx`** — minimal change:
+
 - Added `forgotPasswordVisible` state
 - "Forgot password?" `Pressable` now calls `setForgotPasswordVisible(true)` instead of `router.push("/forgot-password")`
 - `<ForgotPasswordModal>` mounted at end of screen render
@@ -43,6 +46,7 @@ Props: `visible: boolean`, `onDismiss: () => void`.
 ### Sign Up integration
 
 **`src/app/(auth)/sign-up.tsx`** — minimal change:
+
 - Added `forgotPasswordVisible` state
 - "Go to Forgot Password →" tap target (shown on duplicate-phone error) now calls `setForgotPasswordVisible(true)` instead of `router.push("/forgot-password")`
 - `<ForgotPasswordModal>` mounted at end of screen render
@@ -60,16 +64,17 @@ Props: `visible: boolean`, `onDismiss: () => void`.
 
 ## Changed Files
 
-| File | Change |
-| --- | --- |
-| `src/components/auth/ForgotPasswordModal.tsx` | Created — shared modal component |
-| `src/app/(auth)/sign-in.tsx` | Wired modal, replaced `router.push` |
-| `src/app/(auth)/sign-up.tsx` | Wired modal, replaced `router.push` |
-| `src/app/(auth)/forgot-password.tsx` | Replaced with redirect to `/sign-in` |
+| File                                          | Change                               |
+| --------------------------------------------- | ------------------------------------ |
+| `src/components/auth/ForgotPasswordModal.tsx` | Created — shared modal component     |
+| `src/app/(auth)/sign-in.tsx`                  | Wired modal, replaced `router.push`  |
+| `src/app/(auth)/sign-up.tsx`                  | Wired modal, replaced `router.push`  |
+| `src/app/(auth)/forgot-password.tsx`          | Replaced with redirect to `/sign-in` |
 
 ## Completion Status
 
 All MVP acceptance criteria met:
+
 - ✓ Modal opens from Sign In ("Forgot password?" link)
 - ✓ Modal opens from Sign Up duplicate-phone error path
 - ✓ Single identifier input, phone or email

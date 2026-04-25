@@ -6,7 +6,7 @@ import {
   View,
   type StyleProp,
   type TextInputProps,
-  type ViewStyle,
+  type ViewStyle
 } from "react-native";
 import { paperTheme } from "../../theme/paperTheme";
 import { AppText } from "./AppText";
@@ -46,7 +46,7 @@ export function AppTextField({
           style={{
             marginBottom: 6,
             marginLeft: 4,
-            color: focused ? accent : paperTheme.colors.onSurfaceVariant,
+            color: focused ? accent : paperTheme.colors.onSurfaceVariant
           }}
         >
           {label}
@@ -63,7 +63,7 @@ export function AppTextField({
             styles.input,
             { borderColor: focused ? accent : outline },
             !editable && styles.inputDisabled,
-            rightAccessory != null && styles.inputWithRightAccessory,
+            rightAccessory != null && styles.inputWithRightAccessory
           ]}
           placeholderTextColor="rgba(95, 102, 115, 0.5)"
           onFocus={(e) => {
@@ -88,7 +88,7 @@ export function AppTextField({
 const styles = StyleSheet.create({
   inputShell: {
     position: "relative",
-    alignSelf: "stretch",
+    alignSelf: "stretch"
   },
   input: {
     height: 56,
@@ -97,10 +97,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     fontSize: 16,
     color: paperTheme.colors.onSurface,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF"
   },
   inputWithRightAccessory: {
-    paddingRight: 48,
+    paddingRight: 48
   },
   rightAccessorySlot: {
     position: "absolute",
@@ -109,10 +109,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: 44,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   inputDisabled: {
     backgroundColor: "#F5F5F5",
-    opacity: 0.6,
-  },
+    opacity: 0.6
+  }
 });

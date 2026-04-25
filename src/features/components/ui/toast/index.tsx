@@ -1,14 +1,14 @@
-import React from 'react';
-import { View, StyleSheet, Animated, Dimensions, Text } from 'react-native';
+import React from "react";
+import { View, StyleSheet, Animated, Dimensions, Text } from "react-native";
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export interface ToastProps {
   visible: boolean;
   message: string;
   duration?: number;
   onDismiss: () => void;
-  type?: 'info' | 'success' | 'error';
+  type?: "info" | "success" | "error";
 }
 
 export const Toast: React.FC<ToastProps> = ({
@@ -16,7 +16,7 @@ export const Toast: React.FC<ToastProps> = ({
   message,
   duration = 3000,
   onDismiss,
-  type = 'info',
+  type = "info"
 }) => {
   const [opacity] = React.useState(new Animated.Value(0));
 
@@ -26,14 +26,14 @@ export const Toast: React.FC<ToastProps> = ({
         Animated.timing(opacity, {
           toValue: 1,
           duration: 300,
-          useNativeDriver: true,
+          useNativeDriver: true
         }),
         Animated.delay(duration),
         Animated.timing(opacity, {
           toValue: 0,
           duration: 300,
-          useNativeDriver: true,
-        }),
+          useNativeDriver: true
+        })
       ]).start(() => {
         onDismiss();
       });
@@ -43,13 +43,7 @@ export const Toast: React.FC<ToastProps> = ({
   if (!visible) return null;
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        { opacity },
-        styles[type],
-      ]}
-    >
+    <Animated.View style={[styles.container, { opacity }, styles[type]]}>
       <Text style={styles.text}>{message}</Text>
     </Animated.View>
   );
@@ -57,30 +51,30 @@ export const Toast: React.FC<ToastProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 100,
-    alignSelf: 'center',
-    backgroundColor: '#374151',
+    alignSelf: "center",
+    backgroundColor: "#374151",
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
     width: SCREEN_WIDTH * 0.8,
-    alignItems: 'center',
-    zIndex: 9999,
+    alignItems: "center",
+    zIndex: 9999
   },
   info: {
-    backgroundColor: '#374151',
+    backgroundColor: "#374151"
   },
   success: {
-    backgroundColor: '#10B981',
+    backgroundColor: "#10B981"
   },
   error: {
-    backgroundColor: '#EF4444',
+    backgroundColor: "#EF4444"
   },
   text: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
+    fontWeight: "500",
+    textAlign: "center"
+  }
 });

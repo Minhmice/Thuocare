@@ -5,9 +5,9 @@ App-themed icon component with predefined sizes and variants.
 ## Usage
 
 ```tsx
-import { Icon } from '../wrapper/icon';
+import { Icon } from "../wrapper/icon";
 
-<Icon name="pill" size="lg" variant="primary" />
+<Icon name="pill" size="lg" variant="primary" />;
 ```
 
 ## Props

@@ -5,7 +5,7 @@ App-themed dialog with title, description, and actions.
 ## Usage
 
 ```tsx
-import { Dialog } from '../wrapper/dialog';
+import { Dialog } from "../wrapper/dialog";
 
 <Dialog
   visible={visible}
@@ -15,7 +15,7 @@ import { Dialog } from '../wrapper/dialog';
   onConfirm={handleConfirm}
   confirmLabel="Proceed"
   cancelLabel="Go back"
-/>
+/>;
 ```
 
 ## Props

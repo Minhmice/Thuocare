@@ -1,14 +1,19 @@
-import React from 'react';
-import { useTheme } from 'react-native-paper';
-import { Icon as IconPrimitive } from '../../ui/icon';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { StyleProp, TextStyle } from 'react-native';
+import React from "react";
+import { useTheme } from "react-native-paper";
+import { Icon as IconPrimitive } from "../../ui/icon";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StyleProp, TextStyle } from "react-native";
 
 export interface IconWrapperProps {
-  name: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
+  name: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | number;
   color?: string;
-  variant?: 'primary' | 'secondary' | 'error' | 'onSurface' | 'onSurfaceVariant';
+  variant?:
+    | "primary"
+    | "secondary"
+    | "error"
+    | "onSurface"
+    | "onSurfaceVariant";
   style?: StyleProp<TextStyle>;
 }
 
@@ -17,33 +22,33 @@ const SIZE_MAP = {
   sm: 20,
   md: 24,
   lg: 32,
-  xl: 48,
+  xl: 48
 };
 
 export const Icon: React.FC<IconWrapperProps> = ({
   name,
-  size = 'md',
+  size = "md",
   color,
-  variant = 'onSurface',
-  style,
+  variant = "onSurface",
+  style
 }) => {
   const theme = useTheme();
 
-  const iconSize = typeof size === 'number' ? size : SIZE_MAP[size];
-  
+  const iconSize = typeof size === "number" ? size : SIZE_MAP[size];
+
   let iconColor = color;
   if (!iconColor) {
     switch (variant) {
-      case 'primary':
+      case "primary":
         iconColor = theme.colors.primary;
         break;
-      case 'secondary':
+      case "secondary":
         iconColor = theme.colors.secondary;
         break;
-      case 'error':
+      case "error":
         iconColor = theme.colors.error;
         break;
-      case 'onSurfaceVariant':
+      case "onSurfaceVariant":
         iconColor = theme.colors.onSurfaceVariant;
         break;
       default:
@@ -51,5 +56,12 @@ export const Icon: React.FC<IconWrapperProps> = ({
     }
   }
 
-  return <IconPrimitive name={name} size={iconSize} color={iconColor} style={style} />;
+  return (
+    <IconPrimitive
+      name={name}
+      size={iconSize}
+      color={iconColor}
+      style={style}
+    />
+  );
 };

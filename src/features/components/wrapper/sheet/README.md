@@ -5,14 +5,14 @@ App-themed bottom sheet for Thuocare.
 ## Usage
 
 ```tsx
-import { Sheet } from '../wrapper/sheet';
+import { Sheet } from "../wrapper/sheet";
 
 <Sheet visible={visible} onDismiss={handleDismiss} title="Select Option">
   <View>
     <Typography>Option 1</Typography>
     <Typography>Option 2</Typography>
   </View>
-</Sheet>
+</Sheet>;
 ```
 
 ## Props

@@ -5,9 +5,9 @@ App-themed spinner for loading states.
 ## Usage
 
 ```tsx
-import { Spinner } from '../wrapper/spinner';
+import { Spinner } from "../wrapper/spinner";
 
-<Spinner size="lg" center />
+<Spinner size="lg" center />;
 ```
 
 ## Props

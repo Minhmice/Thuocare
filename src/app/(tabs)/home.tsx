@@ -1,12 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Animated,
-  StyleSheet,
-  useWindowDimensions,
-  View,
-} from "react-native";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Animated, StyleSheet, useWindowDimensions, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ErrorState } from "../../components/state/ErrorState";
 import { LoadingState } from "../../components/state/LoadingState";
@@ -16,17 +11,15 @@ import { ScreenHeader } from "../../features/components/composed/screen-header";
 import { SummaryStatsCard } from "../../features/components/composed/summary-stats-row/card";
 import { ReminderExperience } from "../../features/components/composed/reminder-experience";
 import { getProfile } from "../../features/me/repository";
+import { markDoseTaken } from "../../features/reminder/repository";
+import { formatDoseId } from "../../lib/reminder/doseId";
 import { useLanguage } from "../../lib/i18n/LanguageProvider";
 import { computeDailySummary } from "../../lib/meds/computeDailySummary";
 import { useMedicationsData } from "../../lib/meds/MedicationsProvider";
 import { profileDisplayFromFullName } from "../../lib/profile/displayFromFullName";
 import { useUIState } from "../../lib/ui-context";
 import { MainTabBar } from "../../features/components/composed/main-tab-bar";
-import type {
-  DosePeriod,
-  HomeData,
-  ScheduledDose,
-} from "../../types/home";
+import type { DosePeriod, HomeData, ScheduledDose } from "../../types/home";
 
 const PRIMARY = "#0058BC";
 const ERROR = "#C41E1E";
@@ -52,7 +45,7 @@ function formatToday(locale: string): string {
   return new Date().toLocaleDateString(locale, {
     weekday: "long",
     month: "long",
-    day: "numeric",
+    day: "numeric"
   });
 }
 
@@ -70,14 +63,14 @@ function groupSchedule(doses: ScheduledDose[]) {
   }
   return PERIOD_ORDER.filter((p) => groups.has(p)).map((p) => ({
     period: p,
-    doses: groups.get(p) as ScheduledDose[],
+    doses: groups.get(p) as ScheduledDose[]
   }));
 }
 
 function GreetingHeader({
   userName,
   greeting,
-  dateLabel,
+  dateLabel
 }: {
   readonly userName: string;
   readonly greeting: string;
@@ -96,7 +89,7 @@ function StatsDashboard({
   taken,
   remaining,
   missed,
-  t,
+  t
 }: {
   readonly taken: number;
   readonly remaining: number;
@@ -106,13 +99,18 @@ function StatsDashboard({
   return (
     <SummaryStatsCard
       items={[
-        { label: t("home_taken"), value: taken, color: PRIMARY, emphasize: true },
+        {
+          label: t("home_taken"),
+          value: taken,
+          color: PRIMARY,
+          emphasize: true
+        },
         { label: t("home_remaining"), value: remaining },
         {
           label: t("home_missed"),
           value: missed,
-          color: missed > 0 ? ERROR : ON_SURFACE_VARIANT,
-        },
+          color: missed > 0 ? ERROR : ON_SURFACE_VARIANT
+        }
       ]}
     />
   );
@@ -140,7 +138,7 @@ function AllSetCard({ t }: { readonly t: (key: any) => string }) {
 
 function TodayScheduleSection({
   schedule,
-  t,
+  t
 }: {
   readonly schedule: ScheduledDose[];
   readonly t: (key: any, params?: Record<string, string | number>) => string;
@@ -150,7 +148,7 @@ function TodayScheduleSection({
     morning: t("home_period_morning"),
     afternoon: t("home_period_afternoon"),
     evening: t("home_period_evening"),
-    night: t("home_period_night"),
+    night: t("home_period_night")
   };
   if (groups.length === 0) return null;
 
@@ -180,7 +178,7 @@ function TodayScheduleSection({
 
 function DoseRow({
   dose,
-  t,
+  t
 }: {
   readonly dose: ScheduledDose;
   readonly t: (key: any, params?: Record<string, string | number>) => string;
@@ -216,15 +214,19 @@ function DoseRow({
               {
                 color: nameColor,
                 textDecorationLine: taken ? "line-through" : "none",
-                opacity: taken ? 0.5 : 1,
-              },
+                opacity: taken ? 0.5 : 1
+              }
             ]}
           >
             {dose.medicationName}
           </AppText>
           <AppText
             variant="bodySmall"
-            style={{ color: detailColor, opacity: taken ? 0.5 : 0.7, marginTop: 1 }}
+            style={{
+              color: detailColor,
+              opacity: taken ? 0.5 : 0.7,
+              marginTop: 1
+            }}
           >
             {detailText}
           </AppText>
@@ -267,13 +269,16 @@ function PhotoConfirmationStub({ t }: { readonly t: (key: any) => string }) {
 }
 export default function HomeScreen() {
   const { locale, t } = useLanguage();
-  const { items: medications, loading: medsLoading, error: medsError, refresh } =
-    useMedicationsData();
+  const {
+    items: medications,
+    loading: medsLoading,
+    error: medsError,
+    refresh
+  } = useMedicationsData();
   const [profileName, setProfileName] = useState<string>("—");
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [allSet, setAllSet] = useState(false);
-  const seededAllSetRef = useRef(false);
   const { height: viewportHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { homeScrollY, setHomeReminderActive } = useUIState();
@@ -313,9 +318,25 @@ export default function HomeScreen() {
       stockWarning: summary.stockWarning,
       nextDose: summary.nextDose,
       schedule: summary.schedule,
-      allSetToday: summary.allSetToday,
+      allSetToday: summary.allSetToday
     };
   }, [medications, medsError, medsLoading, profileName, todayKey]);
+
+  const handleConfirm = useCallback(() => {
+    if (!data?.nextDose) return;
+    setAllSet(true);
+    const doseId = formatDoseId({
+      scheduledDate: data.nextDose.scheduledDate,
+      scheduledAt: data.nextDose.scheduledAt
+    });
+    const medicineIds = data.nextDose.medications.map((m) => m.id);
+    void markDoseTaken({
+      doseId,
+      takenAtISO: new Date().toISOString(),
+      medicineIds,
+      medications
+    });
+  }, [data, medications, todayKey]);
 
   const showReminder = !allSet && data?.nextDose != null;
 
@@ -325,15 +346,15 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (!data) return;
-    if (seededAllSetRef.current) return;
     setAllSet(data.allSetToday);
-    seededAllSetRef.current = true;
   }, [data]);
 
   if (medsLoading && medications.length === 0) return <LoadingState />;
-  if (medsError && medications.length === 0) return <ErrorState message={medsError} onRetry={refresh} />;
+  if (medsError && medications.length === 0)
+    return <ErrorState message={medsError} onRetry={refresh} />;
   if (profileLoading) return <LoadingState />;
-  if (profileError) return <ErrorState message={profileError} onRetry={loadProfile} />;
+  if (profileError)
+    return <ErrorState message={profileError} onRetry={loadProfile} />;
   if (!data) return <LoadingState />;
 
   return (
@@ -345,7 +366,7 @@ export default function HomeScreen() {
             viewportHeight={viewportHeight}
             topInset={insets.top}
             scrollY={homeScrollY}
-            onConfirm={() => setAllSet(true)}
+            onConfirm={handleConfirm}
           >
             <TodayScheduleSection schedule={data.schedule} t={t} />
             <PhotoConfirmationStub t={t} />
@@ -382,7 +403,9 @@ export default function HomeScreen() {
                 <AlertBanner
                   variant="warning"
                   icon="alert-circle"
-                  title={t("home_missedBannerTitle", { name: data.missedDoseAlert.medicationName })}
+                  title={t("home_missedBannerTitle", {
+                    name: data.missedDoseAlert.medicationName
+                  })}
                   description={t("home_missedBannerDescription")}
                   actionLabel={t("home_takeNow")}
                   onAction={() => undefined}
@@ -393,13 +416,17 @@ export default function HomeScreen() {
                 <AlertBanner
                   variant="info"
                   icon="package-variant"
-                  title={t("home_stockTitle", { name: data.stockWarning.medicationName })}
-                  description={t("home_stockDescription", { days: data.stockWarning.daysLeft })}
+                  title={t("home_stockTitle", {
+                    name: data.stockWarning.medicationName
+                  })}
+                  description={t("home_stockDescription", {
+                    days: data.stockWarning.daysLeft
+                  })}
                 />
               )}
             </View>
 
-            <AllSetCard t={t} />
+            {data.allSetToday && <AllSetCard t={t} />}
             <TodayScheduleSection schedule={data.schedule} t={t} />
             <PhotoConfirmationStub t={t} />
           </Animated.ScrollView>
@@ -411,22 +438,24 @@ export default function HomeScreen() {
         We animate its translateY so it slides UP only when scrolling down.
         If showReminder is FALSE, we keep it visible (translateY: 0).
       */}
-      <Animated.View 
-        style={{ 
-          position: 'absolute', 
-          bottom: 0, 
-          left: 0, 
-          right: 0, 
+      <Animated.View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
           zIndex: 100,
-          transform: [{
-            translateY: showReminder 
-              ? homeScrollY.interpolate({
-                  inputRange: [0, 80, 240],
-                  outputRange: [120, 120, 0],
-                  extrapolate: 'clamp'
-                })
-              : 0
-          }]
+          transform: [
+            {
+              translateY: showReminder
+                ? homeScrollY.interpolate({
+                    inputRange: [0, 80, 240],
+                    outputRange: [120, 120, 0],
+                    extrapolate: "clamp"
+                  })
+                : 0
+            }
+          ]
         }}
       >
         <MainTabBar />
@@ -440,26 +469,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 40,
     paddingBottom: 48,
-    gap: 16,
+    gap: 16
   },
   screenHeader: {
     paddingHorizontal: 0,
-    paddingVertical: 0,
+    paddingVertical: 0
   },
   topSection: {
-    gap: 16,
+    gap: 16
   },
   statsCard: {
     backgroundColor: SURFACE_LOW,
     borderRadius: 24,
-    overflow: "hidden",
+    overflow: "hidden"
   },
   allSetCard: {
     backgroundColor: SURFACE_LOW,
     borderRadius: 28,
     padding: 32,
     alignItems: "center",
-    gap: 12,
+    gap: 12
   },
   allSetIconWrap: {
     width: 64,
@@ -467,65 +496,65 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     backgroundColor: "rgba(0, 88, 188, 0.10)",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   allSetTitle: {
     fontWeight: "700",
     color: ON_SURFACE,
-    textAlign: "center",
+    textAlign: "center"
   },
   allSetSubtitle: {
     color: ON_SURFACE_VARIANT,
-    textAlign: "center",
+    textAlign: "center"
   },
   scheduleTitle: {
     fontWeight: "800",
     color: ON_SURFACE,
-    letterSpacing: -0.3,
+    letterSpacing: -0.3
   },
   periodHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 12
   },
   periodLabel: {
     color: ON_SURFACE_VARIANT,
     textTransform: "uppercase",
     letterSpacing: 1.2,
-    opacity: 0.5,
+    opacity: 0.5
   },
   periodDivider: {
     flex: 1,
     height: 0.5,
-    backgroundColor: "rgba(0, 88, 188, 0.12)",
+    backgroundColor: "rgba(0, 88, 188, 0.12)"
   },
   doseRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
   doseRowLeft: {
     flexDirection: "row",
     alignItems: "center",
     gap: 20,
-    flex: 1,
+    flex: 1
   },
   doseTime: {
     fontWeight: "700",
-    width: 40,
+    width: 40
   },
   doseTextWrap: {
-    flex: 1,
+    flex: 1
   },
   doseName: {
-    fontWeight: "700",
+    fontWeight: "700"
   },
   dosePending: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 1.5,
-    borderColor: "rgba(0, 88, 188, 0.25)",
+    borderColor: "rgba(0, 88, 188, 0.25)"
   },
   photoStub: {
     borderRadius: 20,
@@ -534,20 +563,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: "center",
     gap: 8,
-    opacity: 0.55,
+    opacity: 0.55
   },
   photoStubTitle: {
     fontWeight: "600",
-    color: ON_SURFACE_VARIANT,
+    color: ON_SURFACE_VARIANT
   },
   photoStubBadge: {
     backgroundColor: "rgba(0, 88, 188, 0.10)",
     borderRadius: 9999,
     paddingHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 3
   },
   photoStubBadgeText: {
     color: PRIMARY,
-    letterSpacing: 0.5,
-  },
+    letterSpacing: 0.5
+  }
 });

@@ -1,4 +1,9 @@
-import type { OnboardingSurveyAnswers, RoutineSegment, SurveyQ5, SurveyQ6 } from "../../types/onboarding-survey";
+import type {
+  OnboardingSurveyAnswers,
+  RoutineSegment,
+  SurveyQ5,
+  SurveyQ6
+} from "../../types/onboarding-survey";
 import type { ReminderPreference, RoutineStage } from "./storage";
 
 export function mapQ5ToReminderPreference(q5: SurveyQ5): ReminderPreference {
@@ -23,7 +28,9 @@ export function mapQ6ToRoutineStage(q6: SurveyQ6): RoutineStage {
   }
 }
 
-export function deriveRoutineSegment(answers: OnboardingSurveyAnswers): RoutineSegment {
+export function deriveRoutineSegment(
+  answers: OnboardingSurveyAnswers
+): RoutineSegment {
   if (answers.q6 === "unsure" || answers.q2 === "unsure") {
     return "uncertain-start";
   }
@@ -34,7 +41,10 @@ export function deriveRoutineSegment(answers: OnboardingSurveyAnswers): RoutineS
   ) {
     return "high-support";
   }
-  if (answers.q5 === "gentle" && (answers.q2 === "once" || answers.q2 === "as_needed")) {
+  if (
+    answers.q5 === "gentle" &&
+    (answers.q2 === "once" || answers.q2 === "as_needed")
+  ) {
     return "light-routine";
   }
   return "structured-routine";

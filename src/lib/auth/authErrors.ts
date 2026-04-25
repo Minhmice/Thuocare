@@ -28,7 +28,10 @@ export function translateAuthError(message: string): string {
   if (m.includes("invalid login credentials")) {
     return "Wrong phone, email, or password.";
   }
-  if (m.includes("user already registered") || m.includes("already been registered")) {
+  if (
+    m.includes("user already registered") ||
+    m.includes("already been registered")
+  ) {
     return "This account already exists. Try signing in or reset your password.";
   }
   if (m.includes("password") && m.includes("least")) {

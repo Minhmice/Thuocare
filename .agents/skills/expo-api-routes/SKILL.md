@@ -140,12 +140,12 @@ export async function POST(request: Request) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
     },
     body: JSON.stringify({
       model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-    }),
+      messages: [{ role: "user", content: prompt }]
+    })
   });
 
   const data = await response.json();
@@ -166,7 +166,7 @@ Add CORS for web clients:
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization"
 };
 
 export function OPTIONS() {
@@ -266,7 +266,7 @@ const response = await fetch("https://api.example.com");
 
 // Use Response/Request (already available)
 return new Response(JSON.stringify(data), {
-  headers: { "Content-Type": "application/json" },
+  headers: { "Content-Type": "application/json" }
 });
 ```
 
@@ -288,7 +288,7 @@ import { createClient } from "@libsql/client/web";
 
 const db = createClient({
   url: process.env.TURSO_URL!,
-  authToken: process.env.TURSO_AUTH_TOKEN!,
+  authToken: process.env.TURSO_AUTH_TOKEN!
 });
 
 export async function GET() {
@@ -308,7 +308,7 @@ const data = await response.json();
 const response = await fetch("/api/users", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ name: "John" }),
+  body: JSON.stringify({ name: "John" })
 });
 ```
 
@@ -324,7 +324,7 @@ export async function requireAuth(request: Request) {
   if (!token) {
     throw new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" }
     });
   }
 

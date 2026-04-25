@@ -37,7 +37,7 @@ Create a new file with the `'use dom';` directive at the top:
 "use dom";
 
 export default function WebChart({
-  data,
+  data
 }: {
   data: number[];
   dom: import("expo/dom").DOMProps;
@@ -187,7 +187,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip
 } from "recharts";
 
 interface Props {
@@ -219,7 +219,7 @@ CSS imports must be in the DOM component file since they run in isolated context
 import "@/styles.css"; // CSS file in same directory
 
 export default function StyledComponent({
-  dom,
+  dom
 }: {
   dom: import("expo/dom").DOMProps;
 }) {
@@ -239,16 +239,16 @@ Or use inline styles / CSS-in-JS:
 const styles = {
   container: {
     padding: 20,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#f0f0f0"
   },
   title: {
     fontSize: 24,
-    color: "#333",
-  },
+    color: "#333"
+  }
 };
 
 export default function StyledComponent({
-  dom,
+  dom
 }: {
   dom: import("expo/dom").DOMProps;
 }) {
@@ -270,7 +270,7 @@ The expo-router `<Link />` component and router API work inside DOM components:
 import { Link, useRouter } from "expo-router";
 
 export default function Navigation({
-  dom,
+  dom
 }: {
   dom: import("expo/dom").DOMProps;
 }) {
@@ -341,7 +341,7 @@ Check if code is running in a DOM component:
 import { IS_DOM } from "expo/dom";
 
 export default function Component({
-  dom,
+  dom
 }: {
   dom?: import("expo/dom").DOMProps;
 }) {
@@ -360,7 +360,7 @@ Prefer requiring assets instead of using the public directory:
 const logo = require("../assets/logo.png");
 
 export default function Component({
-  dom,
+  dom
 }: {
   dom: import("expo/dom").DOMProps;
 }) {

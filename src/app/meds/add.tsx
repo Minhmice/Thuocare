@@ -5,7 +5,7 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  ScrollView,
+  ScrollView
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -16,7 +16,7 @@ import Animated, {
   FadeOut,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
+  withTiming
 } from "react-native-reanimated";
 import { AppScreen } from "../../components/ui/AppScreen";
 import { AppText } from "../../components/ui/AppText";
@@ -28,16 +28,16 @@ import {
   addLocalMedication,
   removeLocalMedication,
   setPendingHighlightId,
-  upsertLocalMedication,
+  upsertLocalMedication
 } from "../../lib/meds/localMedsStore";
 import {
   buildMedFormDataFromMedication,
   snapshotFromFormData,
-  type MedFormData,
+  type MedFormData
 } from "../../lib/meds/formFromMedication";
 import {
   findMedicationById,
-  upsertMedicationRemote,
+  upsertMedicationRemote
 } from "../../features/meds/repository";
 import { useMedicationsData } from "../../lib/meds/MedicationsProvider";
 import { useLanguage } from "../../lib/i18n/LanguageProvider";
@@ -64,10 +64,7 @@ function localDateKey(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-function medicationFromWizardForm(
-  id: string,
-  data: MedFormData,
-): Medication {
+function medicationFromWizardForm(id: string, data: MedFormData): Medication {
   const dosageLabel =
     data.form === "tablet"
       ? parseInt(data.quantity, 10) > 1
@@ -99,7 +96,7 @@ function medicationFromWizardForm(
     schedule: scheduleStr || "—",
     remainingDoses:
       data.stock.trim() && Number.isFinite(stockN) ? stockN : undefined,
-    wizardSnapshot: snapshotFromFormData(data),
+    wizardSnapshot: snapshotFromFormData(data)
   };
 }
 
@@ -111,11 +108,11 @@ const INITIAL_DATA: MedFormData = {
   moments: [
     { id: "morning", label: "Morning", active: false, mealRelation: "after" },
     { id: "noon", label: "Noon", active: false, mealRelation: "after" },
-    { id: "evening", label: "Evening", active: false, mealRelation: "after" },
+    { id: "evening", label: "Evening", active: false, mealRelation: "after" }
   ],
   stock: "",
   startDate: new Date().toISOString().split("T")[0] ?? "",
-  endDate: "",
+  endDate: ""
 };
 
 export default function AddMedicationScreen() {
@@ -134,7 +131,7 @@ export default function AddMedicationScreen() {
   const [step, setStep] = useState<Step>(1);
   const [data, setData] = useState<MedFormData>(INITIAL_DATA);
   const [baselineJson, setBaselineJson] = useState(() =>
-    JSON.stringify(INITIAL_DATA),
+    JSON.stringify(INITIAL_DATA)
   );
   const [unsavedVisible, setUnsavedVisible] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -149,7 +146,7 @@ export default function AddMedicationScreen() {
   }, [step]); // eslint-disable-line react-hooks/exhaustive-deps -- stepRatio shared value
 
   const progressFillAnimated = useAnimatedStyle(() => ({
-    width: Math.max(0, progressTrackWidth.value * stepRatio.value),
+    width: Math.max(0, progressTrackWidth.value * stepRatio.value)
   }));
 
   const canContinue = useMemo(() => {
@@ -167,12 +164,12 @@ export default function AddMedicationScreen() {
       data.name.trim().length > 0 &&
       data.quantity.trim().length > 0 &&
       data.moments.some((m) => m.active),
-    [data],
+    [data]
   );
 
   const isDirty = useMemo(
     () => JSON.stringify(data) !== baselineJson,
-    [data, baselineJson],
+    [data, baselineJson]
   );
 
   const dataRef = useRef(data);
@@ -217,7 +214,10 @@ export default function AddMedicationScreen() {
       setUnsavedVisible(true);
       return true;
     };
-    const sub = BackHandler.addEventListener("hardwareBackPress", onHardwareBack);
+    const sub = BackHandler.addEventListener(
+      "hardwareBackPress",
+      onHardwareBack
+    );
     return () => sub.remove();
   }, [step, unsavedVisible]);
 
@@ -227,8 +227,10 @@ export default function AddMedicationScreen() {
     if (!editId) {
       const firstActive = data.moments.find((m) => m.active)?.id ?? "morning";
       const scheduled = (() => {
-        if (firstActive === "evening") return { period: "evening" as const, time: "18:00" as const };
-        if (firstActive === "noon") return { period: "afternoon" as const, time: "12:00" as const };
+        if (firstActive === "evening")
+          return { period: "evening" as const, time: "18:00" as const };
+        if (firstActive === "noon")
+          return { period: "afternoon" as const, time: "12:00" as const };
         return { period: "morning" as const, time: "08:00" as const };
       })();
       med = {
@@ -236,7 +238,7 @@ export default function AddMedicationScreen() {
         scheduledDate: localDateKey(new Date()),
         scheduledAt: scheduled.time,
         period: scheduled.period,
-        doseStatus: "upcoming",
+        doseStatus: "upcoming"
       };
     }
     if (editId) {
@@ -264,7 +266,7 @@ export default function AddMedicationScreen() {
         removeLocalMedication(id);
       }
       setSaveError(
-        err instanceof Error ? err.message : "Failed to save medication",
+        err instanceof Error ? err.message : "Failed to save medication"
       );
     } finally {
       setSaving(false);
@@ -317,9 +319,7 @@ export default function AddMedicationScreen() {
   const updateMoment = (id: string, updates: Partial<Moment>) => {
     setData((prev) => ({
       ...prev,
-      moments: prev.moments.map((m) =>
-        m.id === id ? { ...m, ...updates } : m,
-      ),
+      moments: prev.moments.map((m) => (m.id === id ? { ...m, ...updates } : m))
     }));
   };
 
@@ -358,280 +358,289 @@ export default function AddMedicationScreen() {
             exiting={FadeOut.duration(160)}
             style={styles.stepTransitionWrap}
           >
-          {step === 1 && (
-            <View style={styles.step}>
-              <AppTextField
-                label="Medication Name"
-                placeholder="e.g., Paracetamol"
-                value={data.name}
-                onChangeText={(name) => setData((d) => ({ ...d, name }))}
-              />
+            {step === 1 && (
+              <View style={styles.step}>
+                <AppTextField
+                  label="Medication Name"
+                  placeholder="e.g., Paracetamol"
+                  value={data.name}
+                  onChangeText={(name) => setData((d) => ({ ...d, name }))}
+                />
 
-              <AppTextField
-                label="What is it for? (Optional)"
-                placeholder="e.g., Headache"
-                value={data.whatFor}
-                onChangeText={(whatFor) => setData((d) => ({ ...d, whatFor }))}
-                style={{ marginTop: 20 }}
-              />
+                <AppTextField
+                  label="What is it for? (Optional)"
+                  placeholder="e.g., Headache"
+                  value={data.whatFor}
+                  onChangeText={(whatFor) =>
+                    setData((d) => ({ ...d, whatFor }))
+                  }
+                  style={{ marginTop: 20 }}
+                />
 
-              <View style={{ marginTop: 24 }}>
-                <AppText variant="labelMedium" style={styles.sectionLabel}>
-                  Dosage Form
+                <View style={{ marginTop: 24 }}>
+                  <AppText variant="labelMedium" style={styles.sectionLabel}>
+                    Dosage Form
+                  </AppText>
+                  <View style={styles.formPicker}>
+                    {(["tablet", "liquid", "powder"] as DosageForm[]).map(
+                      (f) => (
+                        <TouchableOpacity
+                          key={f}
+                          style={[
+                            styles.formOption,
+                            data.form === f && styles.formOptionActive
+                          ]}
+                          onPress={() => setData((d) => ({ ...d, form: f }))}
+                        >
+                          <MaterialCommunityIcons
+                            name={
+                              f === "tablet"
+                                ? "pill"
+                                : f === "liquid"
+                                  ? "cup-water"
+                                  : "shaker-outline"
+                            }
+                            size={24}
+                            color={
+                              data.form === f
+                                ? "#FFFFFF"
+                                : paperTheme.colors.onSurfaceVariant
+                            }
+                          />
+                          <AppText
+                            style={[
+                              styles.formLabel,
+                              data.form === f && styles.formLabelActive
+                            ]}
+                          >
+                            {f.charAt(0).toUpperCase() + f.slice(1)}
+                          </AppText>
+                        </TouchableOpacity>
+                      )
+                    )}
+                  </View>
+                </View>
+
+                <AppTextField
+                  label={
+                    data.form === "tablet"
+                      ? "How many pills?"
+                      : data.form === "liquid"
+                        ? "Quantity (ml)"
+                        : "Quantity (e.g. 1 scoop)"
+                  }
+                  placeholder={
+                    data.form === "tablet"
+                      ? "1"
+                      : data.form === "liquid"
+                        ? "10"
+                        : "1 scoop"
+                  }
+                  keyboardType={data.form === "powder" ? "default" : "numeric"}
+                  value={data.quantity}
+                  onChangeText={(quantity) =>
+                    setData((d) => ({ ...d, quantity }))
+                  }
+                  style={{ marginTop: 24 }}
+                />
+              </View>
+            )}
+
+            {step === 2 && (
+              <View style={styles.step}>
+                <AppText variant="labelMedium" style={styles.sectionLabelStep2}>
+                  When do you take it?
                 </AppText>
-                <View style={styles.formPicker}>
-                  {(["tablet", "liquid", "powder"] as DosageForm[]).map((f) => (
-                    <TouchableOpacity
-                      key={f}
-                      style={[
-                        styles.formOption,
-                        data.form === f && styles.formOptionActive,
+
+                {data.moments.map((m) => (
+                  <AppCard
+                    key={m.id}
+                    style={styles.momentCard}
+                    contentStyle={styles.momentCardContent}
+                  >
+                    <Pressable
+                      style={({ pressed }) => [
+                        styles.momentHeader,
+                        pressed && styles.momentHeaderPressed
                       ]}
-                      onPress={() => setData((d) => ({ ...d, form: f }))}
+                      onPress={() => updateMoment(m.id, { active: !m.active })}
+                      accessibilityRole="checkbox"
+                      accessibilityState={{ checked: m.active }}
+                      accessibilityLabel={`${m.label}, ${m.active ? "selected" : "not selected"}`}
                     >
-                      <MaterialCommunityIcons
-                        name={
-                          f === "tablet"
-                            ? "pill"
-                            : f === "liquid"
-                              ? "cup-water"
-                              : "shaker-outline"
-                        }
-                        size={24}
-                        color={
-                          data.form === f
-                            ? "#FFFFFF"
-                            : paperTheme.colors.onSurfaceVariant
-                        }
-                      />
-                      <AppText
+                      <View
                         style={[
-                          styles.formLabel,
-                          data.form === f && styles.formLabelActive,
+                          styles.momentToggleDisk,
+                          m.active && styles.momentToggleDiskActive
                         ]}
                       >
-                        {f.charAt(0).toUpperCase() + f.slice(1)}
-                      </AppText>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-
-              <AppTextField
-                label={
-                  data.form === "tablet"
-                    ? "How many pills?"
-                    : data.form === "liquid"
-                      ? "Quantity (ml)"
-                      : "Quantity (e.g. 1 scoop)"
-                }
-                placeholder={
-                  data.form === "tablet"
-                    ? "1"
-                    : data.form === "liquid"
-                      ? "10"
-                      : "1 scoop"
-                }
-                keyboardType={data.form === "powder" ? "default" : "numeric"}
-                value={data.quantity}
-                onChangeText={(quantity) =>
-                  setData((d) => ({ ...d, quantity }))
-                }
-                style={{ marginTop: 24 }}
-              />
-            </View>
-          )}
-
-          {step === 2 && (
-            <View style={styles.step}>
-              <AppText variant="labelMedium" style={styles.sectionLabelStep2}>
-                When do you take it?
-              </AppText>
-
-              {data.moments.map((m) => (
-                <AppCard
-                  key={m.id}
-                  style={styles.momentCard}
-                  contentStyle={styles.momentCardContent}
-                >
-                  <Pressable
-                    style={({ pressed }) => [
-                      styles.momentHeader,
-                      pressed && styles.momentHeaderPressed,
-                    ]}
-                    onPress={() => updateMoment(m.id, { active: !m.active })}
-                    accessibilityRole="checkbox"
-                    accessibilityState={{ checked: m.active }}
-                    accessibilityLabel={`${m.label}, ${m.active ? "selected" : "not selected"}`}
-                  >
-                    <View
-                      style={[
-                        styles.momentToggleDisk,
-                        m.active && styles.momentToggleDiskActive,
-                      ]}
-                    >
-                      {m.active ? (
-                        <MaterialCommunityIcons
-                          name="check"
-                          size={16}
-                          color="#FFFFFF"
-                        />
-                      ) : null}
-                    </View>
-                    <View style={styles.momentTitleWrap}>
-                      <AppText variant="titleMedium" style={styles.momentTitle}>
-                        {m.label}
-                      </AppText>
-                    </View>
-                  </Pressable>
-
-                  {m.active ? (
-                    <Animated.View
-                      entering={FadeIn.duration(200)}
-                      style={styles.mealRelationContainer}
-                      accessibilityLabel={`Meal relation for ${m.label}`}
-                    >
-                      <AppText variant="labelSmall" style={styles.mealLabel}>
-                        Meal relation
-                      </AppText>
-                      <View
-                        style={styles.mealChipRow}
-                        accessibilityRole="radiogroup"
-                      >
-                        {(["before", "with", "after"] as MealRelation[]).map(
-                          (r) => {
-                            const selected = m.mealRelation === r;
-                            return (
-                              <Pressable
-                                key={r}
-                                style={({ pressed }) => [
-                                  styles.mealChip,
-                                  selected && styles.mealChipActive,
-                                  pressed && styles.mealChipPressed,
-                                ]}
-                                onPress={() =>
-                                  updateMoment(m.id, { mealRelation: r })
-                                }
-                                accessibilityRole="radio"
-                                accessibilityState={{ selected }}
-                                accessibilityLabel={`${r}, meal relation`}
-                              >
-                                <AppText
-                                  style={[
-                                    styles.mealChipText,
-                                    selected && styles.mealChipTextActive,
-                                  ]}
-                                >
-                                  {r.charAt(0).toUpperCase() + r.slice(1)}
-                                </AppText>
-                              </Pressable>
-                            );
-                          },
-                        )}
+                        {m.active ? (
+                          <MaterialCommunityIcons
+                            name="check"
+                            size={16}
+                            color="#FFFFFF"
+                          />
+                        ) : null}
                       </View>
-                    </Animated.View>
-                  ) : null}
-                </AppCard>
-              ))}
-            </View>
-          )}
+                      <View style={styles.momentTitleWrap}>
+                        <AppText
+                          variant="titleMedium"
+                          style={styles.momentTitle}
+                        >
+                          {m.label}
+                        </AppText>
+                      </View>
+                    </Pressable>
 
-          {step === 3 && (
-            <View style={styles.step}>
-              <AppTextField
-                label="Stock Quantity (Optional)"
-                placeholder="e.g. 30"
-                keyboardType="numeric"
-                value={data.stock}
-                onChangeText={(stock) => setData((d) => ({ ...d, stock }))}
-              />
-              <AppText variant="bodySmall" style={styles.helperText}>
-                {"We'll use this to notify you when you're running low."}
-              </AppText>
-            </View>
-          )}
+                    {m.active ? (
+                      <Animated.View
+                        entering={FadeIn.duration(200)}
+                        style={styles.mealRelationContainer}
+                        accessibilityLabel={`Meal relation for ${m.label}`}
+                      >
+                        <AppText variant="labelSmall" style={styles.mealLabel}>
+                          Meal relation
+                        </AppText>
+                        <View
+                          style={styles.mealChipRow}
+                          accessibilityRole="radiogroup"
+                        >
+                          {(["before", "with", "after"] as MealRelation[]).map(
+                            (r) => {
+                              const selected = m.mealRelation === r;
+                              return (
+                                <Pressable
+                                  key={r}
+                                  style={({ pressed }) => [
+                                    styles.mealChip,
+                                    selected && styles.mealChipActive,
+                                    pressed && styles.mealChipPressed
+                                  ]}
+                                  onPress={() =>
+                                    updateMoment(m.id, { mealRelation: r })
+                                  }
+                                  accessibilityRole="radio"
+                                  accessibilityState={{ selected }}
+                                  accessibilityLabel={`${r}, meal relation`}
+                                >
+                                  <AppText
+                                    style={[
+                                      styles.mealChipText,
+                                      selected && styles.mealChipTextActive
+                                    ]}
+                                  >
+                                    {r.charAt(0).toUpperCase() + r.slice(1)}
+                                  </AppText>
+                                </Pressable>
+                              );
+                            }
+                          )}
+                        </View>
+                      </Animated.View>
+                    ) : null}
+                  </AppCard>
+                ))}
+              </View>
+            )}
 
-          {step === 4 && (
-            <View style={styles.step}>
-              <AppText variant="labelMedium" style={styles.sectionLabel}>
-                Duration (Optional)
-              </AppText>
-              <AppTextField
-                label="Start Date"
-                placeholder="YYYY-MM-DD"
-                value={data.startDate}
-                onChangeText={(startDate) =>
-                  setData((d) => ({ ...d, startDate }))
-                }
-                style={{ marginTop: 12 }}
-              />
-              <AppTextField
-                label="End Date"
-                placeholder="YYYY-MM-DD"
-                value={data.endDate}
-                onChangeText={(endDate) => setData((d) => ({ ...d, endDate }))}
-                style={{ marginTop: 20 }}
-              />
-            </View>
-          )}
-
-          {step === 5 && (
-            <View style={styles.step}>
-              <AppText variant="titleLarge" style={styles.reviewHeading}>
-                Review Medication
-              </AppText>
-
-              <ReviewItem
-                label="Identity"
-                title={data.name}
-                subtitle={data.whatFor}
-                onEdit={() => setStep(1)}
-              />
-
-              <ReviewItem
-                label="Dosage"
-                title={`${data.quantity} ${data.form}`}
-                onEdit={() => setStep(1)}
-              />
-
-              <ReviewItem
-                label="Schedule"
-                title={data.moments
-                  .filter((m) => m.active)
-                  .map((m) => `${m.label} (${m.mealRelation})`)
-                  .join(", ")}
-                onEdit={() => setStep(2)}
-              />
-
-              {data.stock ? (
-                <ReviewItem
-                  label="Stock"
-                  title={`Current stock: ${data.stock}`}
-                  onEdit={() => setStep(3)}
+            {step === 3 && (
+              <View style={styles.step}>
+                <AppTextField
+                  label="Stock Quantity (Optional)"
+                  placeholder="e.g. 30"
+                  keyboardType="numeric"
+                  value={data.stock}
+                  onChangeText={(stock) => setData((d) => ({ ...d, stock }))}
                 />
-              ) : null}
+                <AppText variant="bodySmall" style={styles.helperText}>
+                  {"We'll use this to notify you when you're running low."}
+                </AppText>
+              </View>
+            )}
 
-              {(data.startDate || data.endDate) && (
-                <ReviewItem
-                  label="Duration"
-                  title={[
-                    data.startDate ? `Starts: ${data.startDate}` : null,
-                    data.endDate ? `Ends: ${data.endDate}` : null,
-                  ]
-                    .filter(Boolean)
-                    .join("\n")}
-                  onEdit={() => setStep(4)}
+            {step === 4 && (
+              <View style={styles.step}>
+                <AppText variant="labelMedium" style={styles.sectionLabel}>
+                  Duration (Optional)
+                </AppText>
+                <AppTextField
+                  label="Start Date"
+                  placeholder="YYYY-MM-DD"
+                  value={data.startDate}
+                  onChangeText={(startDate) =>
+                    setData((d) => ({ ...d, startDate }))
+                  }
+                  style={{ marginTop: 12 }}
                 />
-              )}
-            </View>
-          )}
+                <AppTextField
+                  label="End Date"
+                  placeholder="YYYY-MM-DD"
+                  value={data.endDate}
+                  onChangeText={(endDate) =>
+                    setData((d) => ({ ...d, endDate }))
+                  }
+                  style={{ marginTop: 20 }}
+                />
+              </View>
+            )}
+
+            {step === 5 && (
+              <View style={styles.step}>
+                <AppText variant="titleLarge" style={styles.reviewHeading}>
+                  Review Medication
+                </AppText>
+
+                <ReviewItem
+                  label="Identity"
+                  title={data.name}
+                  subtitle={data.whatFor}
+                  onEdit={() => setStep(1)}
+                />
+
+                <ReviewItem
+                  label="Dosage"
+                  title={`${data.quantity} ${data.form}`}
+                  onEdit={() => setStep(1)}
+                />
+
+                <ReviewItem
+                  label="Schedule"
+                  title={data.moments
+                    .filter((m) => m.active)
+                    .map((m) => `${m.label} (${m.mealRelation})`)
+                    .join(", ")}
+                  onEdit={() => setStep(2)}
+                />
+
+                {data.stock ? (
+                  <ReviewItem
+                    label="Stock"
+                    title={`Current stock: ${data.stock}`}
+                    onEdit={() => setStep(3)}
+                  />
+                ) : null}
+
+                {(data.startDate || data.endDate) && (
+                  <ReviewItem
+                    label="Duration"
+                    title={[
+                      data.startDate ? `Starts: ${data.startDate}` : null,
+                      data.endDate ? `Ends: ${data.endDate}` : null
+                    ]
+                      .filter(Boolean)
+                      .join("\n")}
+                    onEdit={() => setStep(4)}
+                  />
+                )}
+              </View>
+            )}
           </Animated.View>
         </ScrollView>
 
         <View
           style={[
             styles.footer,
-            { paddingBottom: Math.max(insets.bottom, 20) },
+            { paddingBottom: Math.max(insets.bottom, 20) }
           ]}
         >
           <View style={styles.footerCancelWrap}>
@@ -642,7 +651,7 @@ export default function AddMedicationScreen() {
               accessibilityLabel={step === 1 ? "Cancel" : "Back"}
               style={({ pressed }) => [
                 styles.footerCancelPressable,
-                pressed && styles.footerCancelPressed,
+                pressed && styles.footerCancelPressed
               ]}
             >
               <AppText style={styles.footerCancelLabel}>
@@ -657,7 +666,7 @@ export default function AddMedicationScreen() {
               accessibilityRole="button"
               accessibilityLabel={step < 5 ? "Continue" : "Save medication"}
               accessibilityState={{
-                disabled: step < 5 ? !canContinue : saving,
+                disabled: step < 5 ? !canContinue : saving
               }}
               style={({ pressed }) => [
                 styles.footerContinuePill,
@@ -665,17 +674,21 @@ export default function AddMedicationScreen() {
                   styles.footerContinuePillDisabled,
                 pressed &&
                   (step < 5 ? canContinue : !saving) &&
-                  styles.footerContinuePillPressed,
+                  styles.footerContinuePillPressed
               ]}
             >
               <AppText
                 style={[
                   styles.footerContinueLabel,
                   (step < 5 ? !canContinue : saving) &&
-                    styles.footerContinueLabelDisabled,
+                    styles.footerContinueLabelDisabled
                 ]}
               >
-                {step < 5 ? "Continue" : saving ? "Saving..." : "Save Medication"}
+                {step < 5
+                  ? "Continue"
+                  : saving
+                    ? "Saving..."
+                    : "Save Medication"}
               </AppText>
             </Pressable>
           </View>
@@ -691,7 +704,9 @@ export default function AddMedicationScreen() {
             </AppText>
           </Dialog.Content>
           <Dialog.Actions style={styles.unsavedDialogActions}>
-            <PaperButton onPress={keepEditing}>{t("meds_unsavedKeep")}</PaperButton>
+            <PaperButton onPress={keepEditing}>
+              {t("meds_unsavedKeep")}
+            </PaperButton>
             <PaperButton onPress={discardUnsaved}>
               {t("meds_unsavedDiscard")}
             </PaperButton>
@@ -728,7 +743,7 @@ function ReviewItem({
   label,
   title,
   subtitle,
-  onEdit,
+  onEdit
 }: {
   label: string;
   title: string;
@@ -760,76 +775,76 @@ function ReviewItem({
 const styles = StyleSheet.create({
   pageRoot: {
     flex: 1,
-    backgroundColor: paperTheme.colors.background,
+    backgroundColor: paperTheme.colors.background
   },
   header: {
     paddingHorizontal: 0,
     paddingBottom: 8,
-    backgroundColor: paperTheme.colors.background,
+    backgroundColor: paperTheme.colors.background
   },
   headerTitle: {
     color: paperTheme.colors.onSurface,
     fontWeight: "700",
-    letterSpacing: -0.3,
+    letterSpacing: -0.3
   },
   progressContainer: {
-    marginTop: 18,
+    marginTop: 18
   },
   progressBar: {
     height: 6,
     backgroundColor: "rgba(0, 88, 188, 0.08)",
     borderRadius: 999,
-    overflow: "hidden",
+    overflow: "hidden"
   },
   progressFill: {
     height: "100%",
     backgroundColor: paperTheme.colors.primary,
-    borderRadius: 999,
+    borderRadius: 999
   },
   stepText: {
     marginTop: 8,
     color: paperTheme.colors.onSurfaceVariant,
-    opacity: 0.92,
+    opacity: 0.92
   },
   content: {
     flex: 1,
-    backgroundColor: paperTheme.colors.background,
+    backgroundColor: paperTheme.colors.background
   },
   scrollContent: {
     paddingHorizontal: 0,
     paddingTop: 12,
-    paddingBottom: 40,
+    paddingBottom: 40
   },
   stepTransitionWrap: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   step: {
-    gap: 8,
+    gap: 8
   },
   sectionLabel: {
     marginBottom: 12,
-    color: paperTheme.colors.onSurfaceVariant,
+    color: paperTheme.colors.onSurfaceVariant
   },
   sectionLabelStep2: {
     marginBottom: 14,
     marginTop: 2,
     color: paperTheme.colors.onSurfaceVariant,
     opacity: 0.88,
-    letterSpacing: 0.2,
+    letterSpacing: 0.2
   },
   helperText: {
     marginTop: 12,
     color: paperTheme.colors.onSurfaceVariant,
-    paddingHorizontal: 4,
+    paddingHorizontal: 4
   },
   reviewHeading: {
     marginBottom: 20,
     color: paperTheme.colors.onSurface,
-    fontWeight: "700",
+    fontWeight: "700"
   },
   formPicker: {
     flexDirection: "row",
-    gap: 12,
+    gap: 12
   },
   formOption: {
     flex: 1,
@@ -840,19 +855,19 @@ const styles = StyleSheet.create({
     borderColor: paperTheme.colors.outline,
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    gap: 4
   },
   formOptionActive: {
     backgroundColor: paperTheme.colors.primary,
-    borderColor: paperTheme.colors.primary,
+    borderColor: paperTheme.colors.primary
   },
   formLabel: {
     fontSize: 12,
     color: paperTheme.colors.onSurfaceVariant,
-    fontWeight: "600",
+    fontWeight: "600"
   },
   formLabelActive: {
-    color: "#FFFFFF",
+    color: "#FFFFFF"
   },
   momentCard: {
     padding: 0,
@@ -862,12 +877,12 @@ const styles = StyleSheet.create({
     borderColor: MOMENT_CARD_BORDER,
     backgroundColor: "#FFFFFF",
     elevation: 0,
-    shadowOpacity: 0,
+    shadowOpacity: 0
   },
   momentCardContent: {
     paddingHorizontal: 0,
     paddingTop: 0,
-    paddingBottom: 0,
+    paddingBottom: 0
   },
   momentHeader: {
     flexDirection: "row",
@@ -875,10 +890,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 16,
     minHeight: 54,
-    gap: 14,
+    gap: 14
   },
   momentHeaderPressed: {
-    opacity: 0.85,
+    opacity: 0.85
   },
   momentToggleDisk: {
     width: 28,
@@ -888,19 +903,19 @@ const styles = StyleSheet.create({
     borderColor: MOMENT_DISK_IDLE,
     backgroundColor: "#FFFFFF",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   momentToggleDiskActive: {
     borderColor: paperTheme.colors.primary,
-    backgroundColor: paperTheme.colors.primary,
+    backgroundColor: paperTheme.colors.primary
   },
   momentTitleWrap: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "center"
   },
   momentTitle: {
     fontWeight: "600",
-    color: paperTheme.colors.onSurface,
+    color: paperTheme.colors.onSurface
   },
   mealRelationContainer: {
     paddingHorizontal: 18,
@@ -908,18 +923,18 @@ const styles = StyleSheet.create({
     paddingBottom: 14,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: MEAL_SECTION_RULE,
-    backgroundColor: "transparent",
+    backgroundColor: "transparent"
   },
   mealLabel: {
     marginBottom: 8,
     color: paperTheme.colors.onSurfaceVariant,
     fontWeight: "500",
-    opacity: 0.9,
+    opacity: 0.9
   },
   mealChipRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
+    gap: 8
   },
   mealChip: {
     paddingVertical: 10,
@@ -927,22 +942,22 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     borderWidth: 1,
     borderColor: paperTheme.colors.outline,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF"
   },
   mealChipActive: {
     borderColor: paperTheme.colors.primary,
-    backgroundColor: PRIMARY_SOFT_CHIP,
+    backgroundColor: PRIMARY_SOFT_CHIP
   },
   mealChipPressed: {
-    opacity: 0.88,
+    opacity: 0.88
   },
   mealChipText: {
     fontSize: 13,
     fontWeight: "600",
-    color: paperTheme.colors.onSurfaceVariant,
+    color: paperTheme.colors.onSurfaceVariant
   },
   mealChipTextActive: {
-    color: paperTheme.colors.primary,
+    color: paperTheme.colors.primary
   },
   reviewItem: {
     flexDirection: "row",
@@ -950,14 +965,14 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: paperTheme.colors.surfaceVariant,
-    gap: 12,
+    gap: 12
   },
   reviewLabel: {
     color: paperTheme.colors.onSurfaceVariant,
-    marginBottom: 2,
+    marginBottom: 2
   },
   reviewSubtitle: {
-    color: paperTheme.colors.onSurfaceVariant,
+    color: paperTheme.colors.onSurfaceVariant
   },
   footer: {
     flexDirection: "row",
@@ -967,18 +982,18 @@ const styles = StyleSheet.create({
     gap: 12,
     backgroundColor: paperTheme.colors.background,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: paperTheme.colors.surfaceVariant,
+    borderTopColor: paperTheme.colors.surfaceVariant
   },
   footerCancelWrap: {
     flexShrink: 0,
     justifyContent: "center",
-    minHeight: 56,
+    minHeight: 56
   },
   footerContinueWrap: {
     flex: 1,
     minWidth: 0,
     justifyContent: "center",
-    minHeight: 56,
+    minHeight: 56
   },
   footerCancelPressable: {
     borderRadius: 999,
@@ -989,15 +1004,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     minHeight: 50,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   footerCancelPressed: {
-    opacity: 0.72,
+    opacity: 0.72
   },
   footerCancelLabel: {
     fontSize: 16,
     fontWeight: "700",
-    color: paperTheme.colors.primary,
+    color: paperTheme.colors.primary
   },
   footerContinuePill: {
     alignSelf: "stretch",
@@ -1009,29 +1024,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     minHeight: 50,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   footerContinuePillDisabled: {
     backgroundColor: "#FFFFFF",
-    borderColor: paperTheme.colors.outline,
+    borderColor: paperTheme.colors.outline
   },
   footerContinuePillPressed: {
-    opacity: 0.9,
+    opacity: 0.9
   },
   footerContinueLabel: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "#FFFFFF"
   },
   footerContinueLabelDisabled: {
-    color: paperTheme.colors.onSurfaceVariant,
+    color: paperTheme.colors.onSurfaceVariant
   },
   unsavedDialogBody: {
-    color: paperTheme.colors.onSurfaceVariant,
+    color: paperTheme.colors.onSurfaceVariant
   },
   unsavedDialogActions: {
     flexWrap: "wrap",
     justifyContent: "flex-end",
-    rowGap: 8,
-  },
+    rowGap: 8
+  }
 });

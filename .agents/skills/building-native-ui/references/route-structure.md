@@ -127,7 +127,7 @@ import Stack from "expo-router/stack";
 
 export const unstable_settings = {
   index: { anchor: "index" },
-  settings: { anchor: "settings" },
+  settings: { anchor: "settings" }
 };
 
 export default function Layout({ segment }: { segment: string }) {
@@ -203,7 +203,7 @@ Export `unstable_settings` to configure route behavior:
 
 ```tsx
 export const unstable_settings = {
-  anchor: "index",
+  anchor: "index"
 };
 ```
 

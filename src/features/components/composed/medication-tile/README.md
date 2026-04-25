@@ -5,7 +5,7 @@ Composed list item for displaying medication information.
 ## Usage
 
 ```tsx
-import { MedicationTile } from './medication-tile';
+import { MedicationTile } from "./medication-tile";
 
 <MedicationTile
   name="Paracetamol"
@@ -13,8 +13,8 @@ import { MedicationTile } from './medication-tile';
   schedule="Sáng, Trưa, Tối"
   remaining={10}
   active={true}
-  onPress={() => console.log('Tapped')}
-/>
+  onPress={() => console.log("Tapped")}
+/>;
 ```
 
 ## Props

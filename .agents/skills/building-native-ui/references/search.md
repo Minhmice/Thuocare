@@ -10,8 +10,8 @@ Add a search bar to the stack header with `headerSearchBarOptions`:
   options={{
     headerSearchBarOptions: {
       placeholder: "Search",
-      onChangeText: (event) => console.log(event.nativeEvent.text),
-    },
+      onChangeText: (event) => console.log(event.nativeEvent.text)
+    }
   }}
 />
 ```
@@ -81,8 +81,8 @@ export function useSearch(options: any = {}) {
         onCancelButtonPress(e: any) {
           setSearch("");
           options.onCancelButtonPress?.(e);
-        },
-      },
+        }
+      }
     });
   }, [options, navigation]);
 
@@ -96,7 +96,7 @@ export function useSearch(options: any = {}) {
 function SearchScreen() {
   const search = useSearch({ placeholder: "Search items..." });
 
-  const filteredItems = items.filter(item =>
+  const filteredItems = items.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -114,7 +114,7 @@ function SearchScreen() {
 ### Simple Text Filter
 
 ```tsx
-const filtered = items.filter(item =>
+const filtered = items.filter((item) =>
   item.name.toLowerCase().includes(search.toLowerCase())
 );
 ```
@@ -122,12 +122,12 @@ const filtered = items.filter(item =>
 ### Multiple Fields
 
 ```tsx
-const filtered = items.filter(item => {
+const filtered = items.filter((item) => {
   const query = search.toLowerCase();
   return (
     item.name.toLowerCase().includes(query) ||
     item.description.toLowerCase().includes(query) ||
-    item.tags.some(tag => tag.toLowerCase().includes(query))
+    item.tags.some((tag) => tag.toLowerCase().includes(query))
   );
 });
 ```
@@ -154,10 +154,11 @@ function SearchScreen() {
   const search = useSearch();
   const debouncedSearch = useDebounce(search, 300);
 
-  const filteredItems = useMemo(() =>
-    items.filter(item =>
-      item.name.toLowerCase().includes(debouncedSearch.toLowerCase())
-    ),
+  const filteredItems = useMemo(
+    () =>
+      items.filter((item) =>
+        item.name.toLowerCase().includes(debouncedSearch.toLowerCase())
+      ),
     [debouncedSearch]
   );
 
@@ -190,8 +191,8 @@ When using NativeTabs with a search role, the search bar integrates with the tab
     options={{
       headerSearchBarOptions: {
         placeholder: "Search...",
-        onChangeText: (e) => setSearch(e.nativeEvent.text),
-      },
+        onChangeText: (e) => setSearch(e.nativeEvent.text)
+      }
     }}
   />
 </Stack>

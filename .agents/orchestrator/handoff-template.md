@@ -2,24 +2,31 @@
 
 ```markdown
 Objective:
+
 - <what this child agent must achieve>
 
 ScopeIn:
+
 - <included files/modules/decisions>
 
 ScopeOut:
+
 - <explicit exclusions>
 
 Inputs:
+
 - <docs, diffs, constraints, prior outputs>
 
 Constraints:
+
 - <time/tool/policy/safety limits>
 
 ExpectedOutput:
+
 - <exact artifact format expected>
 
 DueCondition:
+
 - <what makes this handoff complete>
 ```
 
@@ -31,6 +38,7 @@ When using same-skill parallel instances (see SKILL-DETAILS § Fan-out), add:
 InstanceId: <instance-1 | instance-2 | instance-3>
 
 SharedContext:
+
 - <design tokens / theme name / API contract / shared config — same for all instances; keep minimal>
 ```
 
@@ -42,5 +50,6 @@ When using `SKILL-DETAILS.md` § Heavy phase expansion, add:
 SubphaseId: <subphase-1 | subphase-2 | ...>
 SubphaseGoal: <what this subphase must achieve>
 DependsOn:
+
 - <prior subphase outputs required (if any)>
 ```
