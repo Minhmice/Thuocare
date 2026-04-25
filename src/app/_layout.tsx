@@ -5,6 +5,7 @@ import { PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "../lib/auth/AuthProvider";
 import { LanguageProvider } from "../lib/i18n/LanguageProvider";
+import { MedicationsProvider } from "../lib/meds/MedicationsProvider";
 import { AndroidNavigationBar } from "../lib/system/AndroidNavigationBar";
 import { paperTheme } from "../theme/paperTheme";
 
@@ -15,9 +16,11 @@ export default function RootLayout() {
         <LanguageProvider>
           <AuthProvider>
             <PaperProvider theme={paperTheme}>
-              <StatusBar style="dark" />
-              <AndroidNavigationBar />
-              <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: paperTheme.colors.surface } }} />
+              <MedicationsProvider>
+                <StatusBar style="dark" />
+                <AndroidNavigationBar />
+                <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: paperTheme.colors.surface } }} />
+              </MedicationsProvider>
             </PaperProvider>
           </AuthProvider>
         </LanguageProvider>

@@ -26,6 +26,7 @@ import { paperTheme } from "../../theme/paperTheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   addLocalMedication,
+  removeLocalMedication,
   setPendingHighlightId,
   upsertLocalMedication,
 } from "../../lib/meds/localMedsStore";
@@ -34,7 +35,11 @@ import {
   snapshotFromFormData,
   type MedFormData,
 } from "../../lib/meds/formFromMedication";
-import { findMedicationById } from "../../features/meds/repository";
+import {
+  findMedicationById,
+  upsertMedicationRemote,
+} from "../../features/meds/repository";
+import { useMedicationsData } from "../../lib/meds/MedicationsProvider";
 import { useLanguage } from "../../lib/i18n/LanguageProvider";
 import type { Medication } from "../../types/medication";
 
@@ -51,6 +56,13 @@ type Step = 1 | 2 | 3 | 4 | 5;
 type DosageForm = MedFormData["form"];
 type MealRelation = "before" | "with" | "after";
 type Moment = MedFormData["moments"][number];
+
+function localDateKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 
 function medicationFromWizardForm(
   id: string,
@@ -110,6 +122,7 @@ export default function AddMedicationScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { t } = useLanguage();
+  const { refresh: refreshMeds } = useMedicationsData();
   const params = useLocalSearchParams<{ editId?: string }>();
   const editId =
     typeof params.editId === "string"
@@ -124,6 +137,8 @@ export default function AddMedicationScreen() {
     JSON.stringify(INITIAL_DATA),
   );
   const [unsavedVisible, setUnsavedVisible] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const skipDirtyCheckRef = useRef(false);
 
   const progressTrackWidth = useSharedValue(0);
@@ -206,9 +221,24 @@ export default function AddMedicationScreen() {
     return () => sub.remove();
   }, [step, unsavedVisible]);
 
-  const commitSave = useCallback(() => {
+  const commitSave = useCallback(async () => {
     const id = editId ?? Math.random().toString(36).substring(2, 9);
-    const med = medicationFromWizardForm(id, data);
+    let med = medicationFromWizardForm(id, data);
+    if (!editId) {
+      const firstActive = data.moments.find((m) => m.active)?.id ?? "morning";
+      const scheduled = (() => {
+        if (firstActive === "evening") return { period: "evening" as const, time: "18:00" as const };
+        if (firstActive === "noon") return { period: "afternoon" as const, time: "12:00" as const };
+        return { period: "morning" as const, time: "08:00" as const };
+      })();
+      med = {
+        ...med,
+        scheduledDate: localDateKey(new Date()),
+        scheduledAt: scheduled.time,
+        period: scheduled.period,
+        doseStatus: "upcoming",
+      };
+    }
     if (editId) {
       upsertLocalMedication(med);
     } else {
@@ -218,12 +248,28 @@ export default function AddMedicationScreen() {
     const json = JSON.stringify(data);
     setBaselineJson(json);
     baselineJsonRef.current = json;
-    skipDirtyCheckRef.current = true;
-    router.back();
-    setTimeout(() => {
-      skipDirtyCheckRef.current = false;
-    }, 400);
-  }, [editId, data, router]);
+
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await upsertMedicationRemote(med, Boolean(editId));
+      await refreshMeds();
+      skipDirtyCheckRef.current = true;
+      router.back();
+      setTimeout(() => {
+        skipDirtyCheckRef.current = false;
+      }, 400);
+    } catch (err) {
+      if (!editId) {
+        removeLocalMedication(id);
+      }
+      setSaveError(
+        err instanceof Error ? err.message : "Failed to save medication",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }, [editId, data, router, refreshMeds]);
 
   const discardUnsaved = useCallback(() => {
     setUnsavedVisible(false);
@@ -237,7 +283,7 @@ export default function AddMedicationScreen() {
   const saveUnsavedAndLeave = useCallback(() => {
     if (!canSaveWizard) return;
     setUnsavedVisible(false);
-    commitSave();
+    void commitSave();
   }, [canSaveWizard, commitSave]);
 
   const keepEditing = useCallback(() => {
@@ -265,7 +311,7 @@ export default function AddMedicationScreen() {
   }, [step]);
 
   const handleSave = useCallback(() => {
-    commitSave();
+    void commitSave();
   }, [commitSave]);
 
   const updateMoment = (id: string, updates: Partial<Moment>) => {
@@ -607,31 +653,29 @@ export default function AddMedicationScreen() {
           <View style={styles.footerContinueWrap}>
             <Pressable
               onPress={step < 5 ? handleContinue : handleSave}
-              disabled={step < 5 && !canContinue}
+              disabled={step < 5 ? !canContinue : saving}
               accessibilityRole="button"
               accessibilityLabel={step < 5 ? "Continue" : "Save medication"}
               accessibilityState={{
-                disabled: step < 5 && !canContinue,
+                disabled: step < 5 ? !canContinue : saving,
               }}
               style={({ pressed }) => [
                 styles.footerContinuePill,
-                step < 5 &&
-                  !canContinue &&
+                (step < 5 ? !canContinue : saving) &&
                   styles.footerContinuePillDisabled,
                 pressed &&
-                  (step >= 5 || canContinue) &&
+                  (step < 5 ? canContinue : !saving) &&
                   styles.footerContinuePillPressed,
               ]}
             >
               <AppText
                 style={[
                   styles.footerContinueLabel,
-                  step < 5 &&
-                    !canContinue &&
+                  (step < 5 ? !canContinue : saving) &&
                     styles.footerContinueLabelDisabled,
                 ]}
               >
-                {step < 5 ? "Continue" : "Save Medication"}
+                {step < 5 ? "Continue" : saving ? "Saving..." : "Save Medication"}
               </AppText>
             </Pressable>
           </View>
@@ -658,6 +702,21 @@ export default function AddMedicationScreen() {
             >
               {t("meds_unsavedSave")}
             </PaperButton>
+          </Dialog.Actions>
+        </Dialog>
+
+        <Dialog
+          visible={saveError !== null}
+          onDismiss={() => setSaveError(null)}
+        >
+          <Dialog.Title>Save Failed</Dialog.Title>
+          <Dialog.Content>
+            <AppText variant="bodyMedium" style={styles.unsavedDialogBody}>
+              {saveError ?? ""}
+            </AppText>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <PaperButton onPress={() => setSaveError(null)}>OK</PaperButton>
           </Dialog.Actions>
         </Dialog>
       </Portal>
