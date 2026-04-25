@@ -1,168 +1,141 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import React from "react";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AppText } from "../../../../components/ui/AppText";
 import type { NextDoseGroup } from "../../../../types/home";
-import { CollapsedView } from "./collapsed-view";
-import { ExpandedView } from "./expanded-view";
-import { COLLAPSE_END, COLLAPSE_START, PRIMARY } from "./shared-parts";
-
-const EXPANDED_MIN_HEIGHT = 420;
-const CARD_SIDE_PADDING = 20;
-const COLLAPSED_TOP_GAP = 12;
+import { SliderConfirm } from "../slider-confirm";
 
 export type ReminderExperienceProps = {
   readonly nextDose: NextDoseGroup;
   readonly viewportHeight: number;
   readonly topInset: number;
   readonly onConfirm: () => void;
-  readonly scrollY?: Animated.Value;
+  readonly onSnooze?: () => void;
+  readonly onSkip?: () => void;
+  readonly scrollY?: any; // kept for backwards compat but ignored
   readonly children: React.ReactNode;
 };
 
 export function ReminderExperience({
   nextDose,
-  viewportHeight,
-  topInset,
   onConfirm,
-  scrollY,
-  children,
+  onSnooze,
+  onSkip,
 }: ReminderExperienceProps) {
-  const internalScrollY = useRef(new Animated.Value(0)).current;
-  const reminderScrollY = scrollY ?? internalScrollY;
-  const [isImmersive, setIsImmersive] = useState(true);
+  const insets = useSafeAreaInsets();
 
-  const [touchFocus, setTouchFocus] = useState<"expanded" | "collapsed">("expanded");
-  const threshold = 180; // Point where touch focus flips
+  const isOverdue = nextDose.minutesLate > 0;
+  const badgeLabel = isOverdue ? `Overdue \u00B7 ${nextDose.minutesLate}m late` : "Due now";
 
-  // Synchronize immersive mode AND touch focus
-  useEffect(() => {
-    const id = reminderScrollY.addListener(({ value }) => {
-      // Status bar handling
-      const shouldBeImmersive = value < 20;
-      if (shouldBeImmersive !== isImmersive) {
-        setIsImmersive(shouldBeImmersive);
-      }
-
-      // Touch layer focus handling
-      const newFocus = value < threshold ? "expanded" : "collapsed";
-      if (newFocus !== touchFocus) {
-        setTouchFocus(newFocus);
-      }
-    });
-    return () => reminderScrollY.removeListener(id);
-  }, [isImmersive, touchFocus, reminderScrollY]);
-
-  // We make the shell taller than the viewport and offset it to hide 
-  // the permanent border radius in fullscreen mode.
-  const CORNER_BUFFER = 60;
-  const expandedHeight = Math.max(EXPANDED_MIN_HEIGHT, viewportHeight) + (CORNER_BUFFER * 2);
-
-  const shellScale = reminderScrollY.interpolate({
-    inputRange: [0, COLLAPSE_START, COLLAPSE_END],
-    outputRange: [1, 1, 0.92],
-    extrapolate: "clamp",
-  });
-
-  const shellTranslateY = reminderScrollY.interpolate({
-    inputRange: [0, COLLAPSE_START, COLLAPSE_END],
-    outputRange: [-CORNER_BUFFER, -CORNER_BUFFER, COLLAPSED_TOP_GAP],
-    extrapolate: "clamp",
-  });
-
-  const expandedOpacity = reminderScrollY.interpolate({
-    inputRange: [0, COLLAPSE_START, COLLAPSE_END - 80, COLLAPSE_END],
-    outputRange: [1, 1, 0, 0],
-    extrapolate: "clamp",
-  });
-
-  const expandedTranslateY = reminderScrollY.interpolate({
-    inputRange: [0, COLLAPSE_START, COLLAPSE_END],
-    outputRange: [CORNER_BUFFER, CORNER_BUFFER, CORNER_BUFFER - 20],
-    extrapolate: "clamp",
-  });
-
-  const collapsedOpacity = reminderScrollY.interpolate({
-    inputRange: [0, COLLAPSE_START + 40, COLLAPSE_END - 20, COLLAPSE_END],
-    outputRange: [0, 0, 1, 1],
-    extrapolate: "clamp",
-  });
-
-  const collapsedTranslateY = reminderScrollY.interpolate({
-    inputRange: [0, COLLAPSE_START + 84, COLLAPSE_END],
-    outputRange: [CORNER_BUFFER + 24, CORNER_BUFFER + 24, CORNER_BUFFER],
-    extrapolate: "clamp",
-  });
+  // e.g. "Evening dose"
+  const getPeriodLabel = (time?: string) => {
+    if (!time) return "Scheduled dose";
+    const parts = time.split(':');
+    const hhStr = parts[0];
+    if (!hhStr) return "Scheduled dose";
+    
+    const hour = parseInt(hhStr, 10);
+    if (!isNaN(hour)) {
+      if (hour < 12) return "Morning dose";
+      if (hour < 17) return "Afternoon dose";
+      if (hour < 21) return "Evening dose";
+      return "Night dose";
+    }
+    return "Scheduled dose";
+  };
 
   return (
-    <View style={styles.root} pointerEvents="box-none">
-      <StatusBar hidden={isImmersive} animated />
-      <Animated.ScrollView
-        contentInsetAdjustmentBehavior="never"
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: reminderScrollY } } }],
-          { useNativeDriver: true }
-        )}
-        scrollEventThrottle={8}
-        showsVerticalScrollIndicator={false}
-      >
-        <Animated.View
-          style={[
-            styles.shell,
-            {
-              height: expandedHeight,
-              borderRadius: 40,
-              transform: [
-                { translateY: shellTranslateY },
-                { scale: shellScale }
-              ],
-            },
-          ]}
-        >
-          <Animated.View
-            style={[
-              styles.layer,
-              {
-                opacity: expandedOpacity,
-                transform: [{ translateY: expandedTranslateY }],
-              },
-            ]}
-            pointerEvents={touchFocus === "expanded" ? "auto" : "none"}
-          >
-            <ExpandedView
-              nextDose={nextDose}
-              expandedHeight={viewportHeight}
-              topInset={topInset}
-              onConfirm={onConfirm}
-              scrollY={reminderScrollY}
-            />
-          </Animated.View>
+    <View style={styles.root}>
+      <StatusBar style="light" animated />
+      <LinearGradient
+        colors={["#0058BC", "#003B82"]}
+        style={StyleSheet.absoluteFill}
+      />
 
-          <Animated.View
-            style={[
-              styles.layer,
-              {
-                opacity: collapsedOpacity,
-                transform: [{ translateY: collapsedTranslateY }],
-              },
-            ]}
-            pointerEvents={touchFocus === "collapsed" ? "auto" : "none"}
-          >
-            <CollapsedView
-              nextDose={nextDose}
-              onConfirm={onConfirm}
-              scrollY={reminderScrollY}
-            />
-          </Animated.View>
-        </Animated.View>
-
-        <View style={styles.scheduleSection}>
-          {children}
+      <View style={[styles.mainContainer, { paddingTop: Math.max(32, insets.top + 16), paddingBottom: Math.max(24, insets.bottom + 16) }]}>
+        
+        {/* Top Area: Overdue Badge */}
+        <View style={styles.badgeContainer}>
+          <View style={styles.badge}>
+            <MaterialCommunityIcons name="clock-outline" size={16} color="#FFFFFF" />
+            <AppText variant="labelMedium" style={styles.badgeText}>
+              {badgeLabel}
+            </AppText>
+          </View>
         </View>
 
-        <View style={{ height: 200 }} />
-      </Animated.ScrollView>
+        {/* Hero Center */}
+        <View style={styles.heroCenter}>
+          <AppText style={styles.timeText}>
+            {nextDose.scheduledAt}
+          </AppText>
+          <AppText variant="headlineSmall" style={styles.subtitleText}>
+            {getPeriodLabel(nextDose.scheduledAt)}
+          </AppText>
+          <View style={styles.contextRow}>
+            <MaterialCommunityIcons name="clock-outline" size={18} color="#ADC6FF" />
+            <AppText variant="bodyMedium" style={styles.contextText}>
+              {nextDose.medications.length} {nextDose.medications.length === 1 ? 'medicine' : 'medicines'}
+            </AppText>
+          </View>
+        </View>
+
+        {/* Medicine Zone */}
+        <ScrollView style={styles.medicineZone} contentContainerStyle={styles.medicineZoneContent} showsVerticalScrollIndicator={false}>
+          {nextDose.medications.map((med) => (
+            <View key={med.id} style={styles.medCard}>
+              <View style={styles.medCardContent}>
+                <View style={styles.dueNowChip}>
+                  <AppText style={styles.dueNowChipText}>DUE NOW</AppText>
+                </View>
+                <AppText variant="titleMedium" style={styles.medName}>
+                  {med.name}
+                </AppText>
+                <AppText variant="bodyMedium" style={styles.medDetails}>
+                  {med.note || "Take as prescribed"} {med.instruction ? `\u00B7 ${med.instruction}` : ''}
+                </AppText>
+              </View>
+              <View style={styles.medIconBox}>
+                <MaterialCommunityIcons name="pill" size={32} color="#0058BC" />
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+
+        {/* Bottom Action Area */}
+        <View style={styles.bottomSection}>
+          <View style={styles.secondaryActions}>
+            <TouchableOpacity style={styles.actionButton} onPress={onSnooze} activeOpacity={0.8}>
+              <MaterialCommunityIcons name="sleep" size={24} color="#FFFFFF" />
+              <AppText variant="labelLarge" style={styles.actionButtonText}>
+                Snooze 10 min
+              </AppText>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.actionButton} onPress={onSkip} activeOpacity={0.8}>
+              <MaterialCommunityIcons name="close" size={24} color="#FFFFFF" />
+              <AppText variant="labelLarge" style={styles.actionButtonText}>
+                Skip dose
+              </AppText>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.primaryAction}>
+            <SliderConfirm
+              label="Slide to confirm dose"
+              onConfirm={onConfirm}
+              size="lg"
+            />
+            <AppText variant="bodySmall" style={styles.sliderHelper}>
+              Marks {nextDose.medications.length} {nextDose.medications.length === 1 ? 'medicine' : 'medicines'} as taken now.
+            </AppText>
+          </View>
+        </View>
+
+      </View>
     </View>
   );
 }
@@ -170,28 +143,143 @@ export function ReminderExperience({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    // Transparent wrapper
-  },
-  scrollContent: {
-    // Transparent wrapper
-    paddingBottom: 0, 
-  },
-  shell: {
-    backgroundColor: PRIMARY,
-    overflow: "hidden",
-  },
-  layer: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
+    zIndex: 999, // Ensure it's rendered as a takeover
   },
-  scheduleSection: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
+  mainContainer: {
+    flex: 1,
+    paddingHorizontal: 24,
+  },
+  badgeContainer: {
+    alignItems: "center",
+    marginBottom: 24,
+  },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  badgeText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+    letterSpacing: 0.5,
+  },
+  heroCenter: {
+    alignItems: "center",
+    marginBottom: 32,
+  },
+  timeText: {
+    fontSize: 88,
+    lineHeight: 88,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: -2,
+    marginBottom: 4,
+  },
+  subtitleText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+  contextRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  contextText: {
+    color: "#ADC6FF",
+  },
+  medicineZone: {
+    flex: 1,
+  },
+  medicineZoneContent: {
+    gap: 16,
     paddingBottom: 24,
+  },
+  medCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderRadius: 24,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
     gap: 16,
   },
+  medCardContent: {
+    flex: 1,
+  },
+  dueNowChip: {
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(0, 88, 188, 0.1)",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  dueNowChipText: {
+    color: "#0058BC",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 1,
+  },
+  medName: {
+    color: "#1A1C1F",
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+  medDetails: {
+    color: "#414755",
+  },
+  medIconBox: {
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: "#E8F1FF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  bottomSection: {
+    marginTop: "auto",
+    gap: 24,
+  },
+  secondaryActions: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  actionButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    paddingVertical: 16,
+    borderRadius: 20,
+    gap: 8,
+  },
+  actionButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "500",
+  },
+  primaryAction: {
+    gap: 12,
+  },
+  sliderHelper: {
+    textAlign: "center",
+    color: "#ADC6FF",
+  },
 });
+
