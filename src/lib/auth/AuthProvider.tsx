@@ -159,17 +159,25 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     const password = input.password;
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: input.fullName.trim(),
-          phone,
-          timezone: "Asia/Ho_Chi_Minh"
+    let data: Awaited<ReturnType<typeof supabase.auth.signUp>>["data"];
+    let error: Awaited<ReturnType<typeof supabase.auth.signUp>>["error"];
+    try {
+      const res = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: input.fullName.trim(),
+            phone,
+            timezone: "Asia/Ho_Chi_Minh"
+          }
         }
-      }
-    });
+      });
+      data = res.data;
+      error = res.error;
+    } catch (e) {
+      throw e;
+    }
 
     async function finishWithSessionUser(user: NonNullable<typeof data.session>["user"]) {
       let row = await fetchProfileRowWithRetry(user.id);
@@ -218,7 +226,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
       await finishWithSessionUser(data.session.user);
       return;
     }
-
     const signedIn = await supabase.auth.signInWithPassword({ email, password });
     if (!signedIn.error && signedIn.data.session?.user) {
       await finishWithSessionUser(signedIn.data.session.user);
