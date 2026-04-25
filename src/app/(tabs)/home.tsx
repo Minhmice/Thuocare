@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
   StyleSheet,
@@ -15,8 +15,11 @@ import { AlertBanner } from "../../features/components/composed/alert-banner";
 import { ScreenHeader } from "../../features/components/composed/screen-header";
 import { SummaryStatsCard } from "../../features/components/composed/summary-stats-row/card";
 import { ReminderExperience } from "../../features/components/composed/reminder-experience";
-import { getHomeData } from "../../features/home/repository";
+import { getProfile } from "../../features/me/repository";
 import { useLanguage } from "../../lib/i18n/LanguageProvider";
+import { computeDailySummary } from "../../lib/meds/computeDailySummary";
+import { useMedicationsData } from "../../lib/meds/MedicationsProvider";
+import { profileDisplayFromFullName } from "../../lib/profile/displayFromFullName";
 import { useUIState } from "../../lib/ui-context";
 import { MainTabBar } from "../../features/components/composed/main-tab-bar";
 import type {
@@ -30,6 +33,13 @@ const ERROR = "#C41E1E";
 const ON_SURFACE = "#1A1C1F";
 const ON_SURFACE_VARIANT = "#5F6673";
 const SURFACE_LOW = "#F3F3F8";
+
+function localDateKey(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 
 function getGreeting(t: (key: any) => string): string {
   const h = new Date().getHours();
@@ -257,38 +267,55 @@ function PhotoConfirmationStub({ t }: { readonly t: (key: any) => string }) {
 }
 export default function HomeScreen() {
   const { locale, t } = useLanguage();
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [data, setData] = useState<HomeData | null>(null);
+  const { items: medications, loading: medsLoading, error: medsError, refresh } =
+    useMedicationsData();
+  const [profileName, setProfileName] = useState<string>("—");
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [allSet, setAllSet] = useState(false);
-  const hasLoadedRef = useRef(false);
+  const seededAllSetRef = useRef(false);
   const { height: viewportHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { homeScrollY, setHomeReminderActive } = useUIState();
 
-  const load = useCallback(async () => {
+  const loadProfile = useCallback(async () => {
     try {
-      setLoadError(null);
-      if (!hasLoadedRef.current) {
-        setLoading(true);
-      }
-      const result = await getHomeData();
-      hasLoadedRef.current = true;
-      setData(result);
-      setAllSet(result.allSetToday);
+      setProfileError(null);
+      setProfileLoading(true);
+      const profile = await getProfile();
+      const userName = profile
+        ? profileDisplayFromFullName(profile.fullName)
+        : "—";
+      setProfileName(userName);
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : "Failed to load");
+      setProfileError(err instanceof Error ? err.message : "Failed to load");
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
     }
   }, []);
 
   useFocusEffect(
     useCallback(() => {
-      void load();
-    }, [load])
+      void loadProfile();
+    }, [loadProfile])
   );
 
+  const todayKey = useMemo(() => localDateKey(new Date()), []);
+
+  const data: HomeData | null = useMemo(() => {
+    if (medsLoading && medications.length === 0) return null;
+    if (medsError && medications.length === 0) return null;
+    const summary = computeDailySummary(medications ?? [], todayKey);
+    return {
+      userName: profileName,
+      stats: summary.stats,
+      missedDoseAlert: summary.missedDoseAlert,
+      stockWarning: summary.stockWarning,
+      nextDose: summary.nextDose,
+      schedule: summary.schedule,
+      allSetToday: summary.allSetToday,
+    };
+  }, [medications, medsError, medsLoading, profileName, todayKey]);
 
   const showReminder = !allSet && data?.nextDose != null;
 
@@ -296,8 +323,17 @@ export default function HomeScreen() {
     setHomeReminderActive(showReminder);
   }, [showReminder, setHomeReminderActive]);
 
-  if (loading && !hasLoadedRef.current) return <LoadingState />;
-  if (loadError) return <ErrorState message={loadError} onRetry={load} />;
+  useEffect(() => {
+    if (!data) return;
+    if (seededAllSetRef.current) return;
+    setAllSet(data.allSetToday);
+    seededAllSetRef.current = true;
+  }, [data]);
+
+  if (medsLoading && medications.length === 0) return <LoadingState />;
+  if (medsError && medications.length === 0) return <ErrorState message={medsError} onRetry={refresh} />;
+  if (profileLoading) return <LoadingState />;
+  if (profileError) return <ErrorState message={profileError} onRetry={loadProfile} />;
   if (!data) return <LoadingState />;
 
   return (

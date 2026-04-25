@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -11,13 +11,18 @@ import { MainTabBar } from "../../features/components/composed/main-tab-bar";
 import { MedicationTile } from "../../features/components/composed/medication-tile";
 import { ScreenHeader } from "../../features/components/composed/screen-header";
 import { SummaryStatsCard } from "../../features/components/composed/summary-stats-row/card";
-import { getMedications } from "../../features/meds/repository";
 import { useLanguage } from "../../lib/i18n/LanguageProvider";
+import { useMedicationsData } from "../../lib/meds/MedicationsProvider";
 import {
   isLocalMedicationId,
   removeLocalMedication,
   takePendingHighlightId,
 } from "../../lib/meds/localMedsStore";
+import {
+  deleteMedicationRemote,
+  markRemoteDeletePending,
+  clearRemoteDeletePending,
+} from "../../features/meds/repository";
 import { paperTheme } from "../../theme/paperTheme";
 import type { Medication } from "../../types/medication";
 
@@ -37,65 +42,69 @@ function medScheduleLine(item: Medication): string {
 
 type MedsDialog =
   | null
-  | { kind: "demo" }
-  | { kind: "delete"; id: string };
+  | { kind: "delete"; id: string }
+  | { kind: "deleteError"; message: string };
 
 export default function MedsScreen() {
   const router = useRouter();
   const { t } = useLanguage();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [items, setItems] = useState<Medication[]>([]);
+  const { items, loading, error, refresh } = useMedicationsData();
   const [activeHighlightId, setActiveHighlightId] = useState<string | null>(null);
   const [medDialog, setMedDialog] = useState<MedsDialog>(null);
   const listRef = useRef<FlatList<Medication> | null>(null);
-  const hasLoadedRef = useRef(false);
+  const itemsRef = useRef<Medication[]>(items);
 
-  const load = useCallback(async (): Promise<Medication[]> => {
-    try {
-      setError(null);
-      if (!hasLoadedRef.current) setLoading(true);
-      const data = await getMedications();
-      const list = data ?? [];
-      hasLoadedRef.current = true;
-      setItems(list);
-      return list;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load medications");
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  useEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
 
   useFocusEffect(
     useCallback(() => {
+      let scrollTimer: ReturnType<typeof setTimeout> | null = null;
       let clearHighlight: ReturnType<typeof setTimeout> | null = null;
 
-      void load().then((list) => {
-        const highlightId = takePendingHighlightId();
-        if (!highlightId) return;
+      const highlightId = takePendingHighlightId();
+      if (!highlightId) return () => undefined;
 
-        setActiveHighlightId(highlightId);
+      setActiveHighlightId(highlightId);
 
-        setTimeout(() => {
-          const index = list.findIndex((m) => m.id === highlightId);
-          if (index >= 0) {
-            listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.1 });
-          }
-        }, 150);
+      // Items usually exist already from the cached provider snapshot.
+      // If they arrive shortly after focus (initial boot), we still re-attempt
+      // in `useEffect` below.
+      scrollTimer = setTimeout(() => {
+        const index = itemsRef.current.findIndex((m) => m.id === highlightId);
+        if (index >= 0) {
+          listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.1 });
+        }
+      }, 150);
 
-        clearHighlight = setTimeout(() => setActiveHighlightId(null), 1500);
-      });
+      clearHighlight = setTimeout(() => setActiveHighlightId(null), 1500);
 
       return () => {
+        if (scrollTimer != null) clearTimeout(scrollTimer);
         if (clearHighlight != null) clearTimeout(clearHighlight);
       };
-    }, [load])
+    }, [])
   );
 
-  if (loading && !hasLoadedRef.current) return <LoadingState />;
-  if (error) return <ErrorState message={error} onRetry={load} />;
+  useEffect(() => {
+    if (!activeHighlightId) return;
+    const id = activeHighlightId;
+    const timer = setTimeout(() => {
+      const index = itemsRef.current.findIndex((m) => m.id === id);
+      if (index >= 0) {
+        listRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0.1 });
+      }
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [activeHighlightId, items]);
+
+  const onRetry = useCallback(async () => {
+    await refresh();
+  }, [refresh]);
+
+  if (loading && items.length === 0) return <LoadingState />;
+  if (error && items.length === 0) return <ErrorState message={error} onRetry={onRetry} />;
 
   const dashboard = {
     total: items.length,
@@ -198,10 +207,6 @@ export default function MedsScreen() {
               } as never)
             }
             onDeletePress={() => {
-              if (!isLocalMedicationId(item.id)) {
-                setMedDialog({ kind: "demo" });
-                return;
-              }
               setMedDialog({ kind: "delete", id: item.id });
             }}
           />
@@ -220,24 +225,6 @@ export default function MedsScreen() {
           onDismiss={() => setMedDialog(null)}
           style={styles.medDialog}
         >
-          {medDialog?.kind === "demo" ? (
-            <>
-              <Dialog.Content style={styles.medDialogContent}>
-                <AppText variant="titleMedium" style={styles.medDialogTitle}>
-                  {t("meds_deleteDemoTitle")}
-                </AppText>
-                <AppText variant="bodyMedium" style={styles.medDialogSubtitle}>
-                  {t("meds_deleteDemoMessage")}
-                </AppText>
-              </Dialog.Content>
-              <Dialog.Actions style={styles.medDialogActions}>
-                <Button mode="text" onPress={() => setMedDialog(null)} textColor={paperTheme.colors.primary}>
-                  {t("common_ok")}
-                </Button>
-              </Dialog.Actions>
-            </>
-          ) : null}
-
           {medDialog?.kind === "delete" ? (
             <>
               <Dialog.Content style={styles.medDialogContent}>
@@ -249,19 +236,61 @@ export default function MedsScreen() {
                 </AppText>
               </Dialog.Content>
               <Dialog.Actions style={styles.medDialogActions}>
-                <Button mode="text" onPress={() => setMedDialog(null)} textColor={paperTheme.colors.onSurfaceVariant}>
+                <Button
+                  mode="text"
+                  onPress={() => setMedDialog(null)}
+                  textColor={paperTheme.colors.onSurfaceVariant}
+                >
                   {t("common_cancel")}
                 </Button>
                 <Button
                   mode="text"
                   textColor={paperTheme.colors.error}
                   onPress={() => {
-                    removeLocalMedication(medDialog.id);
-                    void load();
+                    const id = medDialog.id;
                     setMedDialog(null);
+                    if (isLocalMedicationId(id)) {
+                      removeLocalMedication(id);
+                      return;
+                    }
+                    markRemoteDeletePending(id);
+                    deleteMedicationRemote(id)
+                      .then(() => refresh())
+                      .catch((err: unknown) => {
+                        clearRemoteDeletePending(id);
+                        setMedDialog({
+                          kind: "deleteError",
+                          message:
+                            err instanceof Error
+                              ? err.message
+                              : "Failed to delete medication",
+                        });
+                      });
                   }}
                 >
                   {t("meds_deleteConfirmDelete")}
+                </Button>
+              </Dialog.Actions>
+            </>
+          ) : null}
+
+          {medDialog?.kind === "deleteError" ? (
+            <>
+              <Dialog.Content style={styles.medDialogContent}>
+                <AppText variant="titleMedium" style={styles.medDialogTitle}>
+                  Delete Failed
+                </AppText>
+                <AppText variant="bodyMedium" style={styles.medDialogSubtitle}>
+                  {medDialog.message}
+                </AppText>
+              </Dialog.Content>
+              <Dialog.Actions style={styles.medDialogActions}>
+                <Button
+                  mode="text"
+                  onPress={() => setMedDialog(null)}
+                  textColor={paperTheme.colors.primary}
+                >
+                  {t("common_ok")}
                 </Button>
               </Dialog.Actions>
             </>
