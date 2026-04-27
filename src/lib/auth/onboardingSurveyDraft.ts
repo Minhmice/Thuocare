@@ -15,7 +15,12 @@ export type OnboardingSurveyDraft = {
 export async function readOnboardingSurveyDraft(
   accountId: string
 ): Promise<OnboardingSurveyDraft | null> {
-  const raw = await SecureStore.getItemAsync(draftKey(accountId));
+  let raw: string | null = null;
+  try {
+    raw = await SecureStore.getItemAsync(draftKey(accountId));
+  } catch {
+    return null;
+  }
   if (!raw) {
     return null;
   }
@@ -41,11 +46,19 @@ export async function writeOnboardingSurveyDraft(
     stepIndex: Math.min(Math.max(0, draft.stepIndex), SURVEY_LAST_STEP),
     answers: draft.answers
   };
-  await SecureStore.setItemAsync(draftKey(accountId), JSON.stringify(safe));
+  try {
+    await SecureStore.setItemAsync(draftKey(accountId), JSON.stringify(safe));
+  } catch {
+    // Ignore draft persistence failures; flow still works.
+  }
 }
 
 export async function clearOnboardingSurveyDraft(
   accountId: string
 ): Promise<void> {
-  await SecureStore.deleteItemAsync(draftKey(accountId));
+  try {
+    await SecureStore.deleteItemAsync(draftKey(accountId));
+  } catch {
+    // Ignore failures.
+  }
 }

@@ -215,17 +215,24 @@ export default function SurveyScreen() {
       return;
     }
     let alive = true;
-    void readOnboardingSurveyDraft(record.id).then((draft) => {
-      if (!alive) {
-        return;
+    const run = async () => {
+      try {
+        const draft = await readOnboardingSurveyDraft(record.id);
+        if (!alive) return;
+        if (draft) {
+          skipNextPersist.current = true;
+          setStepIndex(draft.stepIndex);
+          setAnswers(draft.answers);
+        }
+      } catch {
+        // Draft load is best-effort; never crash onboarding.
+      } finally {
+        if (alive) {
+          setHydrated(true);
+        }
       }
-      if (draft) {
-        skipNextPersist.current = true;
-        setStepIndex(draft.stepIndex);
-        setAnswers(draft.answers);
-      }
-      setHydrated(true);
-    });
+    };
+    void run();
     return () => {
       alive = false;
     };
@@ -239,7 +246,9 @@ export default function SurveyScreen() {
       skipNextPersist.current = false;
       return;
     }
-    void writeOnboardingSurveyDraft(record.id, { stepIndex, answers });
+    void writeOnboardingSurveyDraft(record.id, { stepIndex, answers }).catch(
+      () => undefined
+    );
   }, [record?.id, stepIndex, answers, hydrated]);
 
   if (status === "ready") {

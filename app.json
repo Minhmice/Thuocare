@@ -32,13 +32,16 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymous.thuocare-mobile",
+      "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "com.anonymous.thuocare.mobile",
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro"
@@ -51,7 +54,7 @@
         "visibility": "visible"
       },
       "eas": {
-        "projectId": "536a7a2a-64ac-44fc-8143-90a150e59bc0"
+        "projectId": "0b20d3ee-dbc1-4e8d-87e3-3b6c2443a372"
       }
     }
   }

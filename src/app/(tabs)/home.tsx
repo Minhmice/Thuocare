@@ -279,6 +279,7 @@ export default function HomeScreen() {
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [allSet, setAllSet] = useState(false);
+  const [reminderPersistError, setReminderPersistError] = useState<string | null>(null);
   const { height: viewportHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const { homeScrollY, setHomeReminderActive } = useUIState();
@@ -322,21 +323,29 @@ export default function HomeScreen() {
     };
   }, [medications, medsError, medsLoading, profileName, todayKey]);
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = useCallback(async () => {
     if (!data?.nextDose) return;
+    setReminderPersistError(null);
     setAllSet(true);
     const doseId = formatDoseId({
       scheduledDate: data.nextDose.scheduledDate,
       scheduledAt: data.nextDose.scheduledAt
     });
     const medicineIds = data.nextDose.medications.map((m) => m.id);
-    void markDoseTaken({
-      doseId,
-      takenAtISO: new Date().toISOString(),
-      medicineIds,
-      medications
-    });
-  }, [data, medications, todayKey]);
+    try {
+      await markDoseTaken({
+        doseId,
+        takenAtISO: new Date().toISOString(),
+        medicineIds,
+        medications
+      });
+    } catch (err) {
+      setAllSet(false);
+      setReminderPersistError(
+        err instanceof Error ? err.message : "Failed to save reminder"
+      );
+    }
+  }, [data, medications]);
 
   const showReminder = !allSet && data?.nextDose != null;
 
@@ -386,6 +395,16 @@ export default function HomeScreen() {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.topSection}>
+              {reminderPersistError ? (
+                <AlertBanner
+                  variant="warning"
+                  icon="alert-circle"
+                  title={t("common_error")}
+                  description={reminderPersistError}
+                  actionLabel={t("common_dismiss")}
+                  onAction={() => setReminderPersistError(null)}
+                />
+              ) : null}
               <GreetingHeader
                 userName={data.userName}
                 greeting={getGreeting(t)}

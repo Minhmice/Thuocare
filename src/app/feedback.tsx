@@ -232,7 +232,9 @@ export default function FeedbackScreen() {
 
         <PrimaryButton
           label={t("feedback_submit")}
-          onPress={() => void onSubmit()}
+          onPress={() => {
+            void onSubmit().catch(() => undefined);
+          }}
           loading={submitting}
           disabled={submitting}
           style={styles.submitBtn}

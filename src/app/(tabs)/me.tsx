@@ -158,13 +158,13 @@ export default function MeScreen() {
       {
         text: t("settings_languageEnglish"),
         onPress: () => {
-          void chooseLanguage("en");
+          void chooseLanguage("en").catch(() => undefined);
         }
       },
       {
         text: t("settings_languageVietnamese"),
         onPress: () => {
-          void chooseLanguage("vi");
+          void chooseLanguage("vi").catch(() => undefined);
         }
       },
       { text: t("common_cancel"), style: "cancel" }
