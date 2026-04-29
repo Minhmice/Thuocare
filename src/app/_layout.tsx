@@ -6,6 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "../lib/auth/AuthProvider";
 import { LanguageProvider } from "../lib/i18n/LanguageProvider";
 import { MedicationsProvider } from "../lib/meds/MedicationsProvider";
+import { NotificationProvider } from "../lib/notifications";
 import { AndroidNavigationBar } from "../lib/system/AndroidNavigationBar";
 import { paperTheme } from "../theme/paperTheme";
 
@@ -17,22 +18,24 @@ export default function RootLayout() {
           <AuthProvider>
             <PaperProvider theme={paperTheme}>
               <MedicationsProvider>
-                <StatusBar style="dark" />
-                <AndroidNavigationBar />
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    contentStyle: { backgroundColor: paperTheme.colors.surface }
-                  }}
-                >
-                  <Stack.Screen
-                    name="reminder/[doseId]"
-                    options={{
+                <NotificationProvider>
+                  <StatusBar style="dark" />
+                  <AndroidNavigationBar />
+                  <Stack
+                    screenOptions={{
                       headerShown: false,
-                      presentation: "fullScreenModal"
+                      contentStyle: { backgroundColor: paperTheme.colors.surface }
                     }}
-                  />
-                </Stack>
+                  >
+                    <Stack.Screen
+                      name="reminder/[doseId]"
+                      options={{
+                        headerShown: false,
+                        presentation: "fullScreenModal"
+                      }}
+                    />
+                  </Stack>
+                </NotificationProvider>
               </MedicationsProvider>
             </PaperProvider>
           </AuthProvider>

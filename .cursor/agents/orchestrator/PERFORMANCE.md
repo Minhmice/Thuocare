@@ -23,7 +23,7 @@ Improvements to make agents run faster, use fewer tokens, and avoid unnecessary 
 
 ---
 
-## 3. Phase 2 (review + QA): risk-based
+## 3. Phase 2 (review + QA): mandatory unless explicitly skipped
 
 - **Default**: After Phase 1 (implement), run **code-reviewer** and **qa-tester** in parallel before considering the task done.
 - **Fast path** (only when the user explicitly says so): if the user explicitly says “skip review/QA”, you may run smoke checks instead of full Phase 2.

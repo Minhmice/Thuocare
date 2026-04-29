@@ -1,6 +1,6 @@
 ---
 name: rule-skill-ingestor
-model: gpt-5.3-codex-high
+model: inherit
 description: Ingest new Cursor rules/skills into the agent system data (rules, mappings, catalogs).
 ---
 

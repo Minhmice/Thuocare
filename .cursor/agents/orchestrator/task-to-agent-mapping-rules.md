@@ -24,12 +24,12 @@
 
 | Task Category                      | Agent 1               | Agent 2                                                                        | Parallel?                      | Notes                                 |
 | ---------------------------------- | --------------------- | ------------------------------------------------------------------------------ | ------------------------------ | ------------------------------------- |
-| **UI bug or design fix**           | frontend-developer    | backend-developer (only if API dependency) else typescript-specialist          | Yes (2)                        | Default 2 parallel for focused fixes  |
-| **API bug or service bug**         | backend-developer     | frontend-developer (only if UI depends on contract) else typescript-specialist | Yes (2)                        | Default 2 parallel for focused fixes  |
+| **UI bug or design fix**           | frontend-developer    | backend-developer (only if API dependency) else typescript-specialist          | Yes (2) if needed              | Add Agent 2 only when boundary/contract/risk exists |
+| **API bug or service bug**         | backend-developer     | frontend-developer (only if UI depends on contract) else typescript-specialist | Yes (2) if needed              | Add Agent 2 only when boundary/contract/risk exists |
 | **Full flow bug (UI → API)**       | backend-developer     | frontend-developer                                                             | Yes (2)                        | Both in parallel                      |
 | **Schema/RLS/data integrity bug**  | database-specialist   | backend-developer                                                              | Yes (2)                        | DB + backend integration              |
 | **Contract drift or DTO mismatch** | typescript-specialist | backend-developer OR frontend-developer (where break is)                       | Yes (2)                        | TS owns contract; impl follows        |
-| **Small stabilization pass**       | pick 2 closest agents | —                                                                              | Yes (2)                        | Minimum 2 agents for stabilization    |
+| **Small stabilization pass**       | pick closest agent    | pick 2nd closest agent (only if boundary/contract/risk exists)                 | Yes (2) if needed              | 1 agent ok for single-domain, low-risk |
 | **gws CLI / Google Workspace CLI** | google-cli-specialist | typescript-specialist (if contract) or code-reviewer                           | Yes (2) if contract/QA; else 1 | Discovery, auth, commands, validation |
 
 ---
@@ -72,9 +72,9 @@
 
 ### 2.2 Lane Composition Rules
 
-All agents run **in parallel** (at the same time). Merge owner combines outputs after completion.
+When multiple agents are selected, they run **in parallel** (at the same time). Merge owner combines outputs after completion.
 
-| Scope                 | Agent 1               | Agent 2                                 | Merge Owner           |
+| Scope                 | Agent 1               | Agent 2 (only if boundary/contract/risk) | Merge Owner           |
 | --------------------- | --------------------- | --------------------------------------- | --------------------- |
 | **Backend-only**      | backend-developer     | typescript-specialist                   | backend-developer     |
 | **Frontend-only**     | frontend-developer    | typescript-specialist OR code-reviewer  | frontend-developer    |
@@ -95,9 +95,9 @@ When the task is **large** and **single-domain** (e.g. add theme across app, red
 
 ## 3. Parallel Selection Rules
 
-### When to use 2 agents in parallel (default for focused fixes)
+### When to use 2 agents in parallel (boundary/contract/risk)
 
-- **Focused fix, UI adjustment, behavior alignment, targeted stabilization** → default to exactly 2 parallel agents.
+- **Boundary/contract/risk exists** (e.g. UI↔API contract, DTO drift, shared type surface, DB+backend integration) → use 2 agents in parallel.
 - Task spans **UI and API** in the same user flow → backend-developer + frontend-developer.
 - UI-only fix with no API dependency → frontend-developer + typescript-specialist.
 - API-only fix with no UI dependency → backend-developer + typescript-specialist.
@@ -110,7 +110,7 @@ When the task is **large** and **single-domain** (e.g. add theme across app, red
 
 ### When to use 1 agent (no parallel)
 
-- Single-file change, trivial one-module fix.
+- Single-file change, or single-domain low-risk fix.
 - User explicitly requests single agent.
 
 ---
@@ -169,11 +169,11 @@ For every delegated task, use this format. Each agent block must use the exact n
 **Final merge**: [merge owner]
 ```
 
-For focused fixes, default to exactly 2 parallel agents.
+For focused fixes, use 1 agent unless a boundary/contract/risk exists.
 
 ---
 
-## 6. Quick Reference: Task → Agents (2 parallel default)
+## 6. Quick Reference: Task → Agents (2 when needed)
 
 | User says / Task implies                                               | Agent 1                            | Agent 2                                 |
 | ---------------------------------------------------------------------- | ---------------------------------- | --------------------------------------- |
