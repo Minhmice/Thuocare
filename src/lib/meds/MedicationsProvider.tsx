@@ -11,6 +11,8 @@ import {
   getMedicationsMerged
 } from "../../features/meds/repository";
 import { subscribeLocalMedications } from "./localMedsStore";
+import { getNotificationPermissionStatus } from "../notifications/permissions";
+import { rescheduleMedicationNotifications } from "../notifications/scheduler";
 import type { Medication } from "../../types/medication";
 
 type MedicationsContextValue = {
@@ -70,6 +72,21 @@ export function MedicationsProvider({
       setError(null);
     });
   }, []);
+
+  // Debounced notification reschedule: fires 600 ms after items settle, but only
+  // when permissions are already granted. Never prompts; never mutates meds state.
+  useEffect(() => {
+    if (loading) return;
+    const snapshot = items; // stable capture for the async closure
+    const timer = setTimeout(() => {
+      void (async () => {
+        const perm = await getNotificationPermissionStatus();
+        if (perm.status !== "granted") return;
+        await rescheduleMedicationNotifications({ medications: snapshot });
+      })();
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [items, loading]);
 
   return (
     <MedicationsContext.Provider value={{ items, loading, error, refresh }}>
